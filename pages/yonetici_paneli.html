@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yönetici Paneli</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .active-link { background-color: #6d28d9; color: white; font-weight: 600; }
+  </style>
+</head>
+
+<body class="bg-gray-100">
+<div class="flex min-h-screen">
+
+  <!-- SOL SIDEBAR (SABİT) -->
+  <aside class="w-64 bg-gray-900 text-gray-300 flex flex-col p-4 sticky top-0 h-screen">
+    <div class="p-4 mb-6 text-center border-b border-gray-700">
+      <h1 class="text-2xl font-bold text-white">Sağlık Portalı</h1>
+      <p id="hosgeldiniz-mesaji" class="text-sm mt-2 text-purple-400"></p>
+    </div>
+
+    <nav class="flex-grow">
+      <ul class="space-y-2">
+        <li>
+          <a href="#" data-page="anasayfa" class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Ana Sayfa
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="doktorlar" class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path d="M12 14l9-5-9-5-9 5 9 5z"></path>
+              <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6"></path>
+            </svg>
+            Doktorlarımız
+          </a>
+        </li>
+
+        <li>
+          <a href="#" data-page="hastalar" class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            Hastalarımız
+          </a>
+        </li>
+
+        <li>
+          <a href="reception_kaydi.html" class="flex items-center p-3 rounded-lg hover:bg-purple-700 bg-purple-600 text-white transition-colors mt-4">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+            </svg>
+            Resepsiyon Ekle
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="mt-auto">
+      <a href="yonetmen_giris.html" id="cikis-butonu"
+        class="flex items-center justify-center p-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        Çıkış Yap
+      </a>
+    </div>
+  </aside>
+
+  <!-- SAĞ İÇERİK -->
+  <main class="flex-1 p-10">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+      <div>
+        <h1 id="hastane-adi" class="text-4xl font-bold text-gray-800 uppercase tracking-wider"></h1>
+        <p class="text-gray-500 mt-2">Yönetici kontrol paneli</p>
+      </div>
+      <div class="bg-white border border-gray-100 shadow-sm rounded-xl px-4 py-3">
+        <p class="text-xs text-gray-500">Sistem Durumu</p>
+        <p id="sistem-durum" class="text-sm font-semibold text-emerald-600">Bağlı</p>
+      </div>
+    </div>
+
+    <!-- ANA SAYFA -->
+    <div id="content-anasayfa" class="page-content">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <p class="text-xs text-gray-500">Toplam Doktor</p>
+          <p id="toplam-doktor" class="text-3xl font-extrabold text-purple-700 mt-2">0</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <p class="text-xs text-gray-500">Toplam Hasta</p>
+          <p id="toplam-hasta" class="text-3xl font-extrabold text-indigo-700 mt-2">0</p>
+        </div>
+        <div class="bg-white p-5 rounded-2xl shadow-sm border border-gray-100">
+          <p class="text-xs text-gray-500">Branş Sayısı</p>
+          <p id="brans-sayisi" class="text-3xl font-extrabold text-slate-800 mt-2">0</p>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-800">Branşlara Göre Doktorlarımız</h2>
+            <p class="text-gray-500 text-sm mt-1">Branş bazında doktor listesi ve hızlı arama.</p>
+          </div>
+
+          <div class="w-full md:w-80">
+            <input id="anasayfa-arama" type="text"
+              class="w-full px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Doktor adı veya branş ara...">
+          </div>
+        </div>
+
+        <div id="doktor-listesi-anasayfa" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- DOKTORLAR -->
+    <div id="content-doktorlar" class="page-content hidden">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-800">Doktor Yönetimi</h2>
+            <p class="text-gray-500 text-sm mt-1">Arama / filtreleme ve liste görüntüleme.</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <input id="doktor-arama" type="text"
+              class="w-full sm:w-72 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Doktor adı, branş, e-posta...">
+
+            <select id="doktor-brans-filtre"
+              class="w-full sm:w-56 px-4 py-2 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="">Tüm Branşlar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-gray-100">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ad Soyad</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Branş</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-posta</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefon</th>
+              <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">İşlemler</th>
+            </tr>
+            </thead>
+            <tbody id="doktor-tablosu-body" class="bg-white divide-y divide-gray-200"></tbody>
+          </table>
+        </div>
+
+        <p id="doktor-uyari" class="text-sm text-gray-500 mt-4 hidden"></p>
+      </div>
+    </div>
+
+    <!-- HASTALAR -->
+    <div id="content-hastalar" class="page-content hidden">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-800">Hasta Yönetimi</h2>
+            <p class="text-gray-500 text-sm mt-1">Veritabanındaki tüm hasta kayıtları listelenir.</p>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+            <input id="hasta-arama" type="text"
+              class="w-full sm:w-80 px-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              placeholder="Ad, TC, e-posta, telefon...">
+            <select id="hasta-hizli-filtre"
+              class="w-full sm:w-56 px-4 py-2 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-purple-500">
+              <option value="">Tümü</option>
+              <option value="son7">Son 7 Gün</option>
+              <option value="son30">Son 30 Gün</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-gray-100">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ad Soyad</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">T.C.</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">E-posta</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Telefon</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Doğum Tarihi</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kayıt</th>
+            </tr>
+            </thead>
+            <tbody id="hasta-tablosu-body" class="bg-white divide-y divide-gray-200">
+              <tr><td colspan="6" class="text-center py-10 text-gray-400">Veriler yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p id="hasta-uyari" class="text-sm text-gray-500 mt-4 hidden"></p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+  const API = 'http://localhost:5000';
+
+  function esc(s) {
+    return (s ?? '').toString()
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#39;');
+  }
+
+  function showPage(pageId) {
+    document.querySelectorAll('.page-content').forEach(page => page.classList.add('hidden'));
+    const el = document.getElementById(`content-${pageId}`);
+    if (el) el.classList.remove('hidden');
+
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active-link'));
+    const active = document.querySelector(`a[data-page="${pageId}"]`);
+    if (active) active.classList.add('active-link');
+  }
+
+  function groupBy(arr, keyFn) {
+    const m = new Map();
+    (arr || []).forEach(x => {
+      const k = keyFn(x) || 'Diğer';
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(x);
+    });
+    return m;
+  }
+
+  // ====== Render: Anasayfa Branş Listesi ======
+  function renderBransListesi(doktorlar, query) {
+    const container = document.getElementById('doktor-listesi-anasayfa');
+    container.innerHTML = '';
+
+    const q = (query || '').toLowerCase().trim();
+    const filtered = (doktorlar || []).filter(d => {
+      const blob = `${d.adSoyad || ''} ${d.brans || ''} ${d.mail || ''}`.toLowerCase();
+      return !q || blob.includes(q);
+    });
+
+    if (filtered.length === 0) {
+      container.innerHTML = `<p class="text-gray-500">Sonuç bulunamadı.</p>`;
+      return;
+    }
+
+    const byBrans = groupBy(filtered, d => d.brans);
+    for (const [brans, list] of byBrans.entries()) {
+      const block = document.createElement('div');
+      block.className = "bg-gray-50 border border-gray-100 rounded-xl p-4";
+
+      block.innerHTML = `
+        <div class="flex items-center justify-between">
+          <h4 class="text-md font-bold text-gray-700">${esc(brans)}</h4>
+          <span class="text-xs font-semibold px-2 py-1 rounded-full bg-purple-100 text-purple-700">${list.length} doktor</span>
+        </div>
+        <ul class="mt-3 space-y-2">
+          ${list.map(d => `
+            <li class="flex items-center justify-between bg-white rounded-lg border border-gray-100 px-3 py-2">
+              <span class="text-gray-800 font-medium">${esc(d.adSoyad)}</span>
+              <span class="text-xs text-gray-500">${esc(d.telefon || '')}</span>
+            </li>
+          `).join('')}
+        </ul>
+      `;
+      container.appendChild(block);
+    }
+  }
+
+  // ====== Render: Doktor Tablosu ======
+  function renderDoktorTable(doktorlar, q, brans) {
+    const body = document.getElementById('doktor-tablosu-body');
+    const uyari = document.getElementById('doktor-uyari');
+    body.innerHTML = '';
+
+    const query = (q || '').toLowerCase().trim();
+    const filtered = (doktorlar || []).filter(d => {
+      const blob = `${d.adSoyad || ''} ${d.brans || ''} ${d.mail || ''} ${d.telefon || ''}`.toLowerCase();
+      const okQ = !query || blob.includes(query);
+      const okB = !brans || (d.brans === brans);
+      return okQ && okB;
+    });
+
+    if (filtered.length === 0) {
+      body.innerHTML = `<tr><td colspan="5" class="text-center py-10 text-gray-400">Doktor bulunamadı.</td></tr>`;
+      uyari.classList.add('hidden');
+      return;
+    }
+
+    // Eğer doktor_id yoksa aksiyonlar pasif (tasarım bozulmadan)
+    filtered.forEach(d => {
+      const hasId = d.doktor_id !== undefined && d.doktor_id !== null;
+      body.innerHTML += `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${esc(d.adSoyad)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(d.brans || '-')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(d.mail || '-')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(d.telefon || '-')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <button class="px-3 py-2 rounded-lg text-xs font-bold ${hasId ? 'bg-indigo-600 hover:bg-indigo-700 text-white' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}"
+              ${hasId ? `data-edit="${esc(d.doktor_id)}"` : 'disabled'}>
+              Düzenle
+            </button>
+            <button class="ml-2 px-3 py-2 rounded-lg text-xs font-bold ${hasId ? 'bg-red-600 hover:bg-red-700 text-white' : 'bg-gray-200 text-gray-500 cursor-not-allowed'}"
+              ${hasId ? `data-del="${esc(d.doktor_id)}"` : 'disabled'}>
+              Sil
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+
+    if ((doktorlar || []).some(x => x.doktor_id == null)) {
+      uyari.textContent = "Not: Doktor Sil/Düzenle için backend doktor_id döndürmelidir. Şu an listede ID olmadığı için işlemler pasif gösterildi.";
+      uyari.classList.remove('hidden');
+    } else {
+      uyari.classList.add('hidden');
+    }
+  }
+
+  function fillBransOptions(doktorlar) {
+    const select = document.getElementById('doktor-brans-filtre');
+    const current = select.value;
+    const bransSet = new Set((doktorlar || []).map(d => d.brans).filter(Boolean));
+    const branslar = Array.from(bransSet).sort((a,b) => a.localeCompare(b, 'tr'));
+
+    select.innerHTML = `<option value="">Tüm Branşlar</option>` + branslar.map(b => `<option value="${esc(b)}">${esc(b)}</option>`).join('');
+    select.value = current;
+  }
+
+  // ====== Render: Hasta Tablosu ======
+  function renderHastaTable(hastalar, q, quickFilter) {
+    const body = document.getElementById('hasta-tablosu-body');
+    const uyari = document.getElementById('hasta-uyari');
+    body.innerHTML = '';
+
+    const query = (q || '').toLowerCase().trim();
+    const now = new Date();
+
+    const filtered = (hastalar || []).filter(h => {
+      const blob = `${h.adSoyad || ''} ${h.tc || ''} ${h.email || ''} ${h.telefon || ''}`.toLowerCase();
+      const okQ = !query || blob.includes(query);
+
+      let okF = true;
+      if (quickFilter === 'son7' || quickFilter === 'son30') {
+        const days = quickFilter === 'son7' ? 7 : 30;
+        const t = h.kayitTarihi ? new Date(h.kayitTarihi) : null;
+        if (!t || isNaN(t)) okF = false;
+        else {
+          const diff = (now - t) / (1000*60*60*24);
+          okF = diff <= days;
+        }
+      }
+
+      return okQ && okF;
+    });
+
+    if (filtered.length === 0) {
+      body.innerHTML = `<tr><td colspan="6" class="text-center py-10 text-gray-400">Hasta bulunamadı.</td></tr>`;
+      uyari.classList.add('hidden');
+      return;
+    }
+
+    filtered.forEach(h => {
+      const dtDogum = h.dogumTarihi ? new Date(h.dogumTarihi) : null;
+      const dogum = (dtDogum && !isNaN(dtDogum)) ? dtDogum.toLocaleDateString('tr-TR') : '-';
+
+      const dtKayit = h.kayitTarihi ? new Date(h.kayitTarihi) : null;
+      const kayit = (dtKayit && !isNaN(dtKayit)) ? dtKayit.toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' }) : '-';
+
+      body.innerHTML += `
+        <tr class="hover:bg-gray-50">
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">${esc(h.adSoyad)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(h.tc || '-')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(h.email || '-')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(h.telefon || '-')}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(dogum)}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">${esc(kayit)}</td>
+        </tr>
+      `;
+    });
+
+    uyari.classList.add('hidden');
+  }
+
+  // ====== Data normalize (backend farklı döndürürse uyum sağla) ======
+  function normalizeDoktorlar(raw) {
+    // beklenen: {doktor_id, isim, soyisim, brans, mail, telefon} veya zaten adSoyad
+    return (raw || []).map(d => {
+      const adSoyad = d.adSoyad || (`${d.isim || d.Ad || ''} ${d.soyisim || d.Soyad || ''}`.trim());
+      return {
+        doktor_id: d.doktor_id ?? d.id ?? null,
+        adSoyad,
+        brans: d.brans ?? d.Bransi ?? d.uzmanlik ?? '',
+        mail: d.mail ?? d.email ?? '',
+        telefon: d.telefon ?? d.Tel ?? ''
+      };
+    });
+  }
+
+  function normalizeHastalar(raw) {
+    // beklenen: {hasta_id, Ad, Soyad, TcKimlikNo, Email, Telefon, DogumTarihi, kayit_tarihi}
+    return (raw || []).map(h => {
+      const adSoyad = h.adSoyad || (`${h.Ad || h.isim || ''} ${h.Soyad || h.soyisim || ''}`.trim());
+      return {
+        hasta_id: h.hasta_id ?? h.id ?? null,
+        adSoyad,
+        tc: h.TcKimlikNo ?? h.tc ?? '',
+        email: h.Email ?? h.email ?? '',
+        telefon: h.Telefon ?? h.telefon ?? '',
+        dogumTarihi: h.DogumTarihi ?? h.dogum_tarihi ?? h.dogumTarihi ?? null,
+        kayitTarihi: h.kayit_tarihi ?? h.kayitTarihi ?? h.created_at ?? null
+      };
+    });
+  }
+
+  // ====== Sayfa başlangıcı ======
+  window.onload = async () => {
+    const yoneticiId = localStorage.getItem('yoneticiId');
+    if (!yoneticiId) {
+      window.location.href = 'yonetici_giris.html';
+      return;
+    }
+
+    // Menü click
+    document.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const pageId = link.getAttribute('data-page');
+        showPage(pageId);
+      });
+    });
+
+    // Çıkış
+    document.getElementById('cikis-butonu').addEventListener('click', function(event) {
+      event.preventDefault();
+      const onay = window.confirm('Çıkış yapmak istediğinize emin misiniz?');
+      if (onay) {
+        localStorage.removeItem('yoneticiId');
+        window.location.href = this.href;
+      }
+    });
+
+    let hastaneId = null;
+    let doktorlar = [];
+    let hastalar = [];
+
+    try {
+      const response = await fetch(`${API}/yonetici-paneli/veri/${yoneticiId}`);
+      if (!response.ok) throw new Error('Veri yüklenemedi');
+      const veri = await response.json();
+
+      document.getElementById('hosgeldiniz-mesaji').textContent = `Hoş geldiniz, ${veri.yoneticiAdi || ''}`;
+      document.getElementById('hastane-adi').textContent = veri.hastaneAdi || '';
+      hastaneId = veri.hastaneId ?? veri.hastane_id ?? null;
+
+      // 1) Eğer backend doktorlar/hastalar döndürüyorsa direkt al
+      if (Array.isArray(veri.doktorlar)) doktorlar = normalizeDoktorlar(veri.doktorlar);
+      if (Array.isArray(veri.hastalar)) hastalar = normalizeHastalar(veri.hastalar);
+
+      // 2) Eski sistem (branslar objesi) varsa oradan doktorları üret (ID yok -> işlemler pasif)
+      if ((!doktorlar || doktorlar.length === 0) && veri.branslar) {
+        const temp = [];
+        for (const brans in veri.branslar) {
+          (veri.branslar[brans] || []).forEach(ad => temp.push({ adSoyad: ad, brans }));
+        }
+        doktorlar = normalizeDoktorlar(temp);
+      }
+
+      // 3) Eğer hala doktor yoksa ve hastaneId varsa ekstra endpoint çağır
+      if ((!doktorlar || doktorlar.length === 0) && hastaneId) {
+        try {
+          const r = await fetch(`${API}/yonetici/hastane-doktorlar/${hastaneId}`);
+          if (r.ok) doktorlar = normalizeDoktorlar(await r.json());
+        } catch (_) {}
+      }
+
+      // 4) Hastalar: panel verisi içinde yoksa hastaneId ile çek
+      if ((!hastalar || hastalar.length === 0) && hastaneId) {
+        try {
+          const r = await fetch(`${API}/yonetici/hastane-hastalar/${hastaneId}`);
+          if (r.ok) hastalar = normalizeHastalar(await r.json());
+        } catch (_) {}
+      }
+
+      // KPI
+      document.getElementById('toplam-doktor').textContent = doktorlar.length;
+      document.getElementById('toplam-hasta').textContent = hastalar.length;
+      document.getElementById('brans-sayisi').textContent = new Set(doktorlar.map(d => d.brans).filter(Boolean)).size;
+
+      // Anasayfa branş listesi + arama
+      renderBransListesi(doktorlar, '');
+      document.getElementById('anasayfa-arama').addEventListener('input', (e) => {
+        renderBransListesi(doktorlar, e.target.value);
+      });
+
+      // Doktor sayfası: filtreler
+      fillBransOptions(doktorlar);
+      const doktorArama = document.getElementById('doktor-arama');
+      const doktorBrans = document.getElementById('doktor-brans-filtre');
+      const rerenderDoktor = () => renderDoktorTable(doktorlar, doktorArama.value, doktorBrans.value);
+
+      doktorArama.addEventListener('input', rerenderDoktor);
+      doktorBrans.addEventListener('change', rerenderDoktor);
+      rerenderDoktor();
+
+      // Hasta sayfası: filtreler
+      const hastaArama = document.getElementById('hasta-arama');
+      const hastaFiltre = document.getElementById('hasta-hizli-filtre');
+      const rerenderHasta = () => renderHastaTable(hastalar, hastaArama.value, hastaFiltre.value);
+
+      hastaArama.addEventListener('input', rerenderHasta);
+      hastaFiltre.addEventListener('change', rerenderHasta);
+      rerenderHasta();
+
+      showPage('anasayfa');
+
+    } catch (error) {
+      console.error("Hata:", error);
+      document.getElementById('sistem-durum').textContent = 'Bağlantı Yok';
+      document.getElementById('sistem-durum').className = 'text-sm font-semibold text-red-600';
+      document.body.innerHTML = `
+        <div class="text-center p-10 text-red-600">
+          <h1 class="text-2xl font-bold">Sunucuya bağlanırken bir hata oluştu.</h1>
+          <p class="text-gray-500 mt-2">Konsolu (F12) ve Node terminalini kontrol edin.</p>
+        </div>`;
+    }
+  };
+</script>
+</body>
+</html>

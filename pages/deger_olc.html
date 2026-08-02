@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Değer Ölç | Kalori & Protein</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>body{font-family:Inter, sans-serif;}</style>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="flex items-center justify-between">
+      <a href="fitnes_takip.html" class="text-blue-700 font-bold">← Panele Dön</a>
+      <button id="logoutBtn" class="text-sm font-bold text-red-600">Çıkış</button>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow p-8 mt-4 border">
+      <h1 class="text-3xl font-extrabold">📊 Kalori & Protein Ölç</h1>
+      <p class="text-gray-600 mt-2">
+        Yiyecekleri seç, gramaj gir, toplam kalori ve proteini hesapla.
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-4 mt-8">
+        <div class="md:col-span-2 border rounded-2xl p-6">
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-extrabold">Yiyecek Listesi</h2>
+            <button id="addRow" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl">+ Satır Ekle</button>
+          </div>
+
+          <div id="rows" class="mt-4 space-y-3"></div>
+
+          <div class="mt-4 flex gap-3">
+            <button id="calcBtn" class="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl">
+              Hesapla
+            </button>
+            <button id="clearBtn" class="px-5 py-3 rounded-xl border font-semibold hover:bg-gray-50">
+              Temizle
+            </button>
+          </div>
+        </div>
+
+        <div class="border rounded-2xl p-6 bg-gray-50">
+          <h2 class="text-xl font-extrabold">Toplam</h2>
+          <div class="mt-4 space-y-3">
+            <div class="bg-white border rounded-2xl p-5">
+              <p class="text-sm text-gray-600">Kalori</p>
+              <p class="text-3xl font-extrabold" id="outKcal">0</p>
+            </div>
+            <div class="bg-white border rounded-2xl p-5">
+              <p class="text-sm text-gray-600">Protein</p>
+              <p class="text-3xl font-extrabold" id="outProt">0</p>
+            </div>
+          </div>
+
+          <div class="mt-6 bg-blue-50 border border-blue-100 rounded-2xl p-4">
+            <p class="font-bold text-blue-900">İpucu</p>
+            <p class="text-blue-900 mt-1 text-sm">
+              Hesap doğruluğu için gramajı mutfak terazisiyle ölçmek en iyisidir.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <p id="info" class="mt-6 text-sm text-gray-600"></p>
+    </div>
+  </div>
+
+  <script>
+    function getUser(){ try { return JSON.parse(localStorage.getItem("hastaBilgisi")); } catch { return null; } }
+    function requireLogin(){ const u=getUser(); if(!u||!u.id){ window.location.href="login.html"; return null; } return u; }
+
+    // Basit “offline” besin veri tabanı (100g başına)
+    const foodDB = [
+      { key:"Tavuk Göğüs", kcal:165, protein:31 },
+      { key:"Yumurta", kcal:155, protein:13 },
+      { key:"Yoğurt (sade)", kcal:61, protein:3.5 },
+      { key:"Yulaf", kcal:389, protein:16.9 },
+      { key:"Pirinç (pişmiş)", kcal:130, protein:2.7 },
+      { key:"Bulgur (pişmiş)", kcal:83, protein:3.1 },
+      { key:"Somon", kcal:208, protein:20 },
+      { key:"Mercimek (pişmiş)", kcal:116, protein:9 },
+      { key:"Elma", kcal:52, protein:0.3 },
+      { key:"Badem", kcal:579, protein:21 },
+    ];
+
+    function rowTemplate(idx){
+      const options = foodDB.map(f => `<option value="${f.key}">${f.key}</option>`).join("");
+      return `
+        <div class="row border rounded-2xl p-4 bg-gray-50">
+          <div class="grid md:grid-cols-4 gap-3 items-end">
+            <div class="md:col-span-2">
+              <label class="text-sm font-semibold">Yiyecek</label>
+              <select class="food mt-1 w-full border rounded-xl px-3 py-3">
+                <option value="">Seçiniz...</option>
+                ${options}
+                <option value="CUSTOM">Özel (kendim gireceğim)</option>
+              </select>
+            </div>
+            <div>
+              <label class="text-sm font-semibold">Gram (g)</label>
+              <input class="gram mt-1 w-full border rounded-xl px-3 py-3" type="number" min="0" step="1" value="100">
+            </div>
+            <div class="flex justify-end">
+              <button class="remove text-red-600 font-bold">Sil</button>
+            </div>
+          </div>
+
+          <!-- Custom alan -->
+          <div class="custom mt-3 hidden grid md:grid-cols-2 gap-3">
+            <div>
+              <label class="text-sm font-semibold">100g Kalori</label>
+              <input class="ckcal mt-1 w-full border rounded-xl px-3 py-3" type="number" min="0" step="1" value="0">
+            </div>
+            <div>
+              <label class="text-sm font-semibold">100g Protein (g)</label>
+              <input class="cprot mt-1 w-full border rounded-xl px-3 py-3" type="number" min="0" step="0.1" value="0">
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function addRow(){
+      const wrap = document.getElementById("rows");
+      const div = document.createElement("div");
+      div.innerHTML = rowTemplate(Date.now());
+      const row = div.firstElementChild;
+
+      const sel = row.querySelector(".food");
+      const custom = row.querySelector(".custom");
+      sel.addEventListener("change", ()=>{
+        custom.classList.toggle("hidden", sel.value !== "CUSTOM");
+      });
+
+      row.querySelector(".remove").addEventListener("click", ()=>{
+        row.remove();
+      });
+
+      wrap.appendChild(row);
+    }
+
+    function calc(){
+      let totalKcal = 0;
+      let totalProt = 0;
+
+      document.querySelectorAll(".row").forEach(row=>{
+        const foodKey = row.querySelector(".food").value;
+        const gram = Number(row.querySelector(".gram").value) || 0;
+
+        if (!foodKey || gram <= 0) return;
+
+        let kcal100=0, prot100=0;
+        if (foodKey === "CUSTOM"){
+          kcal100 = Number(row.querySelector(".ckcal").value) || 0;
+          prot100 = Number(row.querySelector(".cprot").value) || 0;
+        } else {
+          const f = foodDB.find(x=>x.key===foodKey);
+          if (!f) return;
+          kcal100 = f.kcal; prot100 = f.protein;
+        }
+
+        totalKcal += (kcal100 * gram / 100);
+        totalProt += (prot100 * gram / 100);
+      });
+
+      document.getElementById("outKcal").textContent = Math.round(totalKcal);
+      document.getElementById("outProt").textContent = (Math.round(totalProt*10)/10).toFixed(1);
+      document.getElementById("info").textContent = "✅ Hesaplandı. İstersen satır ekleyerek gün boyu yediklerini toplayabilirsin.";
+    }
+
+    function clearAll(){
+      document.getElementById("rows").innerHTML = "";
+      addRow();
+      document.getElementById("outKcal").textContent = "0";
+      document.getElementById("outProt").textContent = "0";
+      document.getElementById("info").textContent = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const u=requireLogin(); if(!u) return;
+      addRow();
+
+      document.getElementById("addRow").addEventListener("click", addRow);
+      document.getElementById("calcBtn").addEventListener("click", calc);
+      document.getElementById("clearBtn").addEventListener("click", clearAll);
+
+      document.getElementById("logoutBtn").addEventListener("click", ()=>{
+        localStorage.removeItem("hastaBilgisi");
+        window.location.href="login.html";
+      });
+    });
+  </script>
+</body>
+</html>

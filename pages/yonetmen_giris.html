@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yönetici Girişi - Sağlık Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Yönetici Girişi</h1>
+            <p class="mt-2 text-gray-600">Lütfen bilgilerinizi girerek devam edin.</p>
+        </div>
+        
+        <form id="yonetici-formu" class="mt-8 space-y-6">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="email" class="sr-only">E-posta</label>
+                    <input id="email" name="email" type="email" autocomplete="email" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="E-posta Adresi">
+                </div>
+                <div>
+                    <label for="parola" class="sr-only">Parola</label>
+                    <input id="parola" name="parola" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm" placeholder="Parola">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors">
+                    Giriş Yap
+                </button>
+            </div>
+        </form>
+
+        <div id="hata-mesaji" class="text-center text-red-600 font-medium"></div>
+
+        <div class="text-sm text-center">
+            <span class="text-gray-600">Hesabın yok mu?</span>
+            <a href="yonetmen_kaydi.html" class="font-medium text-purple-600 hover:text-purple-500 transition-colors">
+                Kayıt Ol
+            </a>
+        </div>
+        <div class="text-center">
+            <a href="login.html" class="font-medium text-purple-600 hover:text-purple-500 transition-colors">
+                &larr; Rol Seçim Ekranına Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('yonetici-formu').addEventListener('submit', async function(event) {
+            event.preventDefault(); // Formun sayfayı yenilemesini engeller
+
+            const email = document.getElementById('email').value;
+            const parola = document.getElementById('parola').value;
+            const hataMesajiKutusu = document.getElementById('hata-mesaji');
+
+            // Önceki hata mesajını temizle
+            hataMesajiKutusu.textContent = '';
+
+            try {
+                // Sunucudaki endpoint'e (URL'e) istek gönderiyoruz
+                const response = await fetch('http://localhost:5000/yoneticiler/giris', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, parola: parola }),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) { // Giriş başarılıysa (HTTP status 200-299)
+                    alert(result.mesaj);
+
+                    // =========================================================
+                    // === İSTEDİĞİNİZ DEĞİŞİKLİK BURAYA EKLENDİ ===
+                    // Yönetici ID'sini bir sonraki sayfada kullanmak üzere tarayıcı hafızasına kaydediyoruz.
+                    localStorage.setItem('yoneticiId', result.yonetici.id); 
+                    // =========================================================
+
+                    // Başarılı giriş sonrası yönetici paneline yönlendir
+                    window.location.href = 'yonetici_paneli.html'; 
+                    
+                } else {
+                    // Giriş başarısızsa, sunucudan gelen hata mesajını göster
+                    hataMesajiKutusu.textContent = result.mesaj;
+                }
+            } catch (error) {
+                // Ağ hatası veya sunucuya ulaşılamama durumu
+                console.error('Giriş sırasında bir hata oluştu:', error);
+                hataMesajiKutusu.textContent = 'Sunucuya bağlanılamadı. Lütfen tekrar deneyin.';
+            }
+        });
+    </script>
+
+</body>
+</html>

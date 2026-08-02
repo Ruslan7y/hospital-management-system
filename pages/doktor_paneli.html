@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doktor Paneli</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .active-link { background-color: #4f46e5; color: white; font-weight: 600; }
+    #hasta-bilgi-modal { transition: opacity 0.3s ease-in-out; }
+    .data-table th, .data-table td { padding: 12px 16px; }
+    .tab-active { background-color: #4f46e5; color: white; border-color: transparent; }
+  </style>
+</head>
+
+<body class="bg-gray-100 m-0">
+<div class="flex min-h-screen">
+
+  <!-- SOL SIDEBAR -->
+  <aside class="w-64 bg-gray-900 text-gray-300 flex flex-col p-4">
+    <div class="p-4 mb-6 text-center border-b border-gray-700">
+      <h1 class="text-2xl font-bold text-white">Doktor Paneli</h1>
+      <p id="doktor-adi-sidebar" class="text-sm mt-2 text-indigo-400"></p>
+      <div id="seflik-durumu-placeholder"></div>
+    </div>
+
+    <nav class="flex-grow">
+      <ul class="space-y-2">
+        <li>
+          <a href="#" data-page="anasayfa"
+             class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Ana Sayfa
+          </a>
+        </li>
+
+        <!-- BEKLEME LİSTESİ -->
+        <li>
+          <a href="#" data-page="bekleme"
+             class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            Bekleme Listesi
+          </a>
+        </li>
+
+        <!-- HASTALARIM -->
+        <li>
+          <a href="#" data-page="hastalar"
+             class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+            </svg>
+            Hastalarım
+          </a>
+        </li>
+
+        <!-- YARDIMCI DOKTOR -->
+        <li>
+          <a href="doktoryardimci_ai.html"
+             class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors text-sky-400">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m20 0h-2M5 15H3m20 0h-2M14 12V6M10 12V6M8 12h8M12 22v-4"></path>
+            </svg>
+            Yardımcı Doktor
+          </a>
+        </li>
+
+        <!-- BÖLÜM YÖNETİMİ -->
+        <li id="bolum-yonetimi-link" class="hidden">
+          <a href="#" data-page="yonetim"
+             class="nav-link flex items-center p-3 rounded-lg hover:bg-gray-700 transition-colors text-amber-300">
+            <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 19.9A13.916 13.916 0 0011.196 19m3.404.204a13.916 13.916 0 01-1.196.2A13.916 13.916 0 018 19.9c.665 0 1.305-.05 1.933-.14a13.916 13.916 0 011.405-.282m-6.035 0a13.916 13.916 0 01-2.28 0m-3.44 2.04C3.009 17.799 2 14.517 2 11c0-3.517 1.009-6.799 2.753-9.571C6.56 3.652 9.146 2 12 2c2.854 0 5.44.652 7.247 1.429C20.991 4.201 22 7.483 22 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04a13.916 13.916 0 00-1.405-.282m-2.28 0a13.916 13.916 0 01-1.196-.2m0 0c-.417.06-.84.11-1.27.14"></path>
+            </svg>
+            Bölüm Yönetimi
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="mt-auto">
+      <a href="doktor_giris.html" id="cikis-butonu"
+         class="flex items-center justify-center p-3 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold transition-colors">
+        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+        </svg>
+        Çıkış Yap
+      </a>
+    </div>
+  </aside>
+
+  <!-- ANA İÇERİK -->
+  <main class="flex-1 p-10 relative">
+    <h1 id="hastane-adi" class="text-4xl font-bold text-gray-800 uppercase tracking-wider mb-8 text-center"></h1>
+
+    <!-- ANA SAYFA -->
+    <div id="content-anasayfa" class="page-content">
+      <div class="bg-white p-6 rounded-xl shadow-md max-w-2xl mx-auto">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Yaklaşan Randevular</h2>
+        <div id="randevular-listesi-anasayfa" class="space-y-4"></div>
+      </div>
+
+      <div id="bolum-sefi-karti" class="bg-white p-6 rounded-xl shadow-md absolute top-24 right-10 w-96">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Bölüm Şefi</h2>
+        <div id="bolum-sefi-bilgileri"></div>
+      </div>
+    </div>
+
+    <!-- BEKLEME LİSTESİ -->
+    <div id="content-bekleme" class="page-content hidden">
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-2xl font-semibold text-gray-700">Bekleme Listesi (Aktif)</h2>
+            <p class="text-gray-500 text-sm mt-1">Resepsiyon tarafından aktif edilen, size ait randevular.</p>
+          </div>
+          <a id="oda-ekrani-link"
+             href="#"
+             class="inline-flex items-center justify-center px-4 py-2 rounded-lg bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition">
+            Oda Ekranını Aç
+          </a>
+        </div>
+
+        <table class="min-w-full divide-y divide-gray-200 data-table">
+          <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hasta</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Randevu No</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Saat</th>
+            <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">İşlem</th>
+          </tr>
+          </thead>
+          <tbody id="bekleme-tablosu-body" class="bg-white divide-y divide-gray-200">
+            <tr><td colspan="4" class="text-center py-8 text-gray-400">Veriler yükleniyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HASTALARIM -->
+    <div id="content-hastalar" class="page-content hidden">
+      <div class="bg-white p-6 rounded-xl shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-700 mb-4">Hastalarım</h2>
+        <p class="text-gray-500">
+          Odaya kabul ettiğiniz (Çağrıldı) ve muayenesi tamamlanmış (Tamamlandı) hastalar burada listelenir.
+        </p>
+
+        <table class="min-w-full divide-y divide-gray-200 data-table mt-4">
+          <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Hasta Adı</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Son İşlem Tarihi</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Durum</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">İşlemler</th>
+          </tr>
+          </thead>
+          <tbody id="onaylanmis-hasta-tablosu-body" class="bg-white divide-y divide-gray-200"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- BÖLÜM YÖNETİMİ -->
+    <div id="content-yonetim" class="page-content hidden">
+      <div class="max-w-6xl mx-auto space-y-6">
+
+        <div class="bg-white rounded-2xl shadow-md p-6 border border-gray-100">
+          <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div>
+              <h2 class="text-2xl font-bold text-gray-800">Bölüm Yönetimi</h2>
+              <p class="text-gray-500 mt-1">Bölüm doktorlarını ve bölümdeki tüm hastaları buradan görüntüleyin.</p>
+            </div>
+
+            <div class="flex gap-3">
+              <div class="px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 min-w-[110px]">
+                <p class="text-xs text-gray-500">Doktor</p>
+                <p id="doktor-sayisi" class="text-lg font-bold text-gray-800">0</p>
+              </div>
+              <div class="px-4 py-3 rounded-xl bg-gray-50 border border-gray-100 min-w-[110px]">
+                <p class="text-xs text-gray-500">Hasta</p>
+                <p id="hasta-sayisi" class="text-lg font-bold text-gray-800">0</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 flex flex-col sm:flex-row gap-3">
+            <button id="tab-doktorlar"
+                    class="tab-btn tab-active w-full sm:w-auto px-5 py-3 rounded-xl font-semibold border border-gray-200 shadow-sm hover:shadow transition">
+              Bölümdeki Doktorlar
+            </button>
+
+            <button id="tab-hastalar"
+                    class="tab-btn w-full sm:w-auto px-5 py-3 rounded-xl font-semibold border border-gray-200 bg-white text-gray-700 shadow-sm hover:shadow transition">
+              Bölümdeki Hastalar
+            </button>
+          </div>
+        </div>
+
+        <section id="panel-doktorlar"
+                 class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
+          <div class="p-6 border-b bg-gradient-to-r from-indigo-50 to-white">
+            <h3 class="text-xl font-bold text-gray-800">Bölüm Doktorları</h3>
+            <p class="text-gray-500 mt-1">Bölümde kayıtlı doktorların listesi.</p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 data-table">
+              <thead class="bg-gray-50">
+              <tr>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">Ad Soyad</th>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">E-posta</th>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">Telefon</th>
+              </tr>
+              </thead>
+              <tbody id="bolum-doktorlari-tablosu-body" class="bg-white divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="panel-hastalar"
+                 class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden hidden">
+          <div class="p-6 border-b bg-gradient-to-r from-emerald-50 to-white">
+            <h3 class="text-xl font-bold text-gray-800">Bölümdeki Tüm Hastalar</h3>
+            <p class="text-gray-500 mt-1">Bölümde kayıtlı tüm hastaların listesi.</p>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 data-table">
+              <thead class="bg-gray-50">
+              <tr>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">Ad Soyad</th>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">T.C. Kimlik No</th>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">E-posta</th>
+                <th class="text-left text-xs font-semibold text-gray-500 uppercase">Telefon</th>
+              </tr>
+              </thead>
+              <tbody id="bolum-hastalari-tablosu-body" class="bg-white divide-y divide-gray-200"></tbody>
+            </table>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MODAL -->
+<div id="hasta-bilgi-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center p-4 hidden z-50">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <div class="p-5 border-b flex justify-between items-center sticky top-0 bg-white rounded-t-2xl">
+      <h2 id="modal-hasta-adi" class="text-2xl font-bold text-gray-800"></h2>
+      <button id="modal-kapat-btn" class="text-gray-500 text-3xl hover:text-gray-800">&times;</button>
+    </div>
+    <div id="modal-content" class="p-6 space-y-6 overflow-y-auto"></div>
+  </div>
+</div>
+
+<script>
+  // ========= GLOBAL =========
+  let randevular = []; // Doktorun tüm randevuları
+
+  // ========= Yardımcı Fonksiyonlar =========
+  function safeLower(x) { return (x || '').toString().toLowerCase().trim(); }
+
+  // DB’deki Cagr?ld? / Tamamland? gibi değerleri normalize et
+  function normalizeDurum(raw) {
+    const d = safeLower(raw);
+    if (!d) return '';
+    if (d.includes('onay')) return 'onay';
+    if (d.includes('cagr')) return 'cagrildi';
+    if (d.includes('tamam')) return 'tamamlandi';
+    return d;
+  }
+
+  function showPage(pageId) {
+    document.querySelectorAll('.page-content').forEach(page => page.classList.add('hidden'));
+    const pageElement = document.getElementById(`content-${pageId}`);
+    if (pageElement) pageElement.classList.remove('hidden');
+
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active-link'));
+    const activeLink = document.querySelector(`a[data-page="${pageId}"]`);
+    if (activeLink) activeLink.classList.add('active-link');
+  }
+
+  function populateBolumDoktorlari(doktorlar) {
+    const tabloBody = document.getElementById('bolum-doktorlari-tablosu-body');
+    tabloBody.innerHTML = '';
+    if (doktorlar && doktorlar.length > 0) {
+      doktorlar.forEach(doktor => {
+        tabloBody.innerHTML += `
+          <tr class="text-sm">
+            <td class="text-gray-900 font-medium">Dr. ${doktor.isim} ${doktor.soyisim}</td>
+            <td class="text-gray-600">${doktor.mail}</td>
+            <td class="text-gray-600">${doktor.telefon || 'Belirtilmemiş'}</td>
+          </tr>`;
+      });
+    } else {
+      tabloBody.innerHTML = '<tr><td colspan="3" class="text-center text-gray-500 py-6">Bölümde kayıtlı başka doktor bulunmuyor.</td></tr>';
+    }
+  }
+
+  function populateBolumHastalari(hastalar) {
+    const tabloBody = document.getElementById('bolum-hastalari-tablosu-body');
+    tabloBody.innerHTML = '';
+    if (hastalar && hastalar.length > 0) {
+      hastalar.forEach(hasta => {
+        tabloBody.innerHTML += `
+          <tr class="text-sm">
+            <td class="text-gray-900 font-medium">${hasta.Ad} ${hasta.Soyad}</td>
+            <td class="text-gray-600">${hasta.TcKimlikNo}</td>
+            <td class="text-gray-600">${hasta.Email}</td>
+            <td class="text-gray-600">${hasta.Telefon || 'Belirtilmemiş'}</td>
+          </tr>`;
+      });
+    } else {
+      tabloBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-6">Bölümde kayıtlı hasta bulunmuyor.</td></tr>';
+    }
+  }
+
+  // ========= HASTALARIM: Çağrıldı + Tamamlandı =========
+  function populateMuayeneEdilmisHastalar(liste, tumRandevular) {
+    const tabloBody = document.getElementById('onaylanmis-hasta-tablosu-body');
+    tabloBody.innerHTML = '';
+
+    const filtreli = (liste || []).filter(r => {
+      const status = normalizeDurum(r.durum);
+      return status === 'cagrildi' || status === 'tamamlandi';
+    });
+
+    if (filtreli.length === 0) {
+      tabloBody.innerHTML = '<tr><td colspan="4" class="text-center text-gray-500 py-6">Henüz odaya alınmış veya muayenesi tamamlanmış hasta bulunmamaktadır.</td></tr>';
+      return;
+    }
+
+    const hastaMap = new Map();
+    filtreli.forEach(r => {
+      const hastaAdi = r.hasta;
+      if (!hastaMap.has(hastaAdi) || r.id > hastaMap.get(hastaAdi).id) {
+        hastaMap.set(hastaAdi, r);
+      }
+    });
+
+    Array.from(hastaMap.values()).forEach((r) => {
+      const tarihObj = new Date(r.tarih);
+      const tarih = (tarihObj instanceof Date && !isNaN(tarihObj))
+        ? tarihObj.toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' })
+        : 'Bilinmiyor';
+
+      const durumKey = normalizeDurum(r.durum);
+      const originalIndex = (tumRandevular || []).findIndex(x => x.id === r.id);
+
+      let durumMetni = r.durum || '-';
+      let muayeneMetni = '';
+      let durumRenk = 'text-gray-500';
+
+      if (durumKey === 'cagrildi') {
+        durumMetni = 'Odaya Çağrıldı';
+        muayeneMetni = 'Muayene devam ediyor';
+        durumRenk = 'text-amber-600';
+      } else if (durumKey === 'tamamlandi') {
+        durumMetni = 'Tamamlandı';
+        muayeneMetni = 'Muayene sonlandırıldı';
+        durumRenk = 'text-green-600';
+      }
+
+      let islemButonlari = `
+        <button data-index="${originalIndex}"
+                class="bilgi-oku-btn-hasta inline-flex items-center px-3 py-1 rounded-md bg-sky-100 text-sky-700 text-xs font-semibold hover:bg-sky-200">
+          Bilgileri Oku
+        </button>
+      `;
+
+      if (durumKey === 'cagrildi') {
+        islemButonlari += `
+          <button data-id="${r.id}"
+                  class="muayene-sonlandir-btn inline-flex items-center px-3 py-1 rounded-md bg-emerald-100 text-emerald-700 text-xs font-semibold hover:bg-emerald-200">
+            Muayeneyi Sonlandır
+          </button>
+          <button data-index="${originalIndex}"
+                  class="teshis-gir-btn inline-flex items-center px-3 py-1 rounded-md bg-indigo-100 text-indigo-700 text-xs font-semibold hover:bg-indigo-200">
+            Teşhis Gir
+          </button>
+        `;
+      } else {
+        islemButonlari += `
+          <button class="inline-flex items-center px-3 py-1 rounded-md bg-gray-100 text-gray-400 text-xs font-semibold cursor-not-allowed">
+            Muayene Sonlandı
+          </button>
+        `;
+      }
+
+      tabloBody.innerHTML += `
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${r.hasta}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${tarih}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm">
+            <div class="${durumRenk} font-semibold">${durumMetni}</div>
+            <div class="text-xs text-gray-500">${muayeneMetni}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+            ${islemButonlari}
+          </td>
+        </tr>`;
+    });
+  }
+
+  // ========= BÖLÜM YÖNETİMİ TABLARI =========
+  function initBolumYonetimiTabs(veri) {
+    const tabDoktorlar = document.getElementById('tab-doktorlar');
+    const tabHastalar  = document.getElementById('tab-hastalar');
+    const panelDoktorlar = document.getElementById('panel-doktorlar');
+    const panelHastalar  = document.getElementById('panel-hastalar');
+
+    const doktorSayisiEl = document.getElementById('doktor-sayisi');
+    const hastaSayisiEl  = document.getElementById('hasta-sayisi');
+
+    const doktorSayisi = (veri.bolumDoktorlari && veri.bolumDoktorlari.length) ? veri.bolumDoktorlari.length : 0;
+    const hastaSayisi  = (veri.bolumHastalari && veri.bolumHastalari.length) ? veri.bolumHastalari.length : 0;
+
+    if (doktorSayisiEl) doktorSayisiEl.textContent = doktorSayisi;
+    if (hastaSayisiEl)  hastaSayisiEl.textContent  = hastaSayisi;
+
+    function setActive(which) {
+      const isDoktor = which === 'doktor';
+      tabDoktorlar.classList.toggle('tab-active', isDoktor);
+      tabHastalar.classList.toggle('tab-active', !isDoktor);
+      panelDoktorlar.classList.toggle('hidden', !isDoktor);
+      panelHastalar.classList.toggle('hidden', isDoktor);
+    }
+
+    tabDoktorlar.addEventListener('click', () => setActive('doktor'));
+    tabHastalar.addEventListener('click', () => setActive('hasta'));
+    setActive('doktor');
+  }
+
+  // ========= Bekleme Listesi =========
+  async function loadBeklemeListesi(doktorId) {
+    const body = document.getElementById('bekleme-tablosu-body');
+    if (!body) return;
+
+    body.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-400">Yükleniyor...</td></tr>`;
+
+    try {
+      const res = await fetch(`http://localhost:5000/doktor/aktif-randevular/${doktorId}`);
+      const data = await res.json();
+      const rows = Array.isArray(data) ? data : [];
+
+      if (rows.length === 0) {
+        body.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-gray-400">Bekleme listesinde aktif hasta yok.</td></tr>`;
+        return;
+      }
+
+      body.innerHTML = rows.map(r => {
+        const dt = new Date(r.randevu_tarihi);
+        const saat = dt.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
+        return `
+          <tr class="hover:bg-gray-50">
+            <td class="px-6 py-4">
+              <div class="font-semibold text-gray-900">${r.hastaAdSoyad || '-'}</div>
+              <div class="text-xs text-gray-500">TC: ${r.TcKimlikNo || '-'}</div>
+            </td>
+            <td class="px-6 py-4 text-sm text-gray-700 font-semibold">#${r.randevu_id}</td>
+            <td class="px-6 py-4 text-sm text-gray-600">${saat}</td>
+            <td class="px-6 py-4 text-right">
+              <button class="cagir-btn inline-flex items-center px-4 py-2 rounded-lg text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition"
+                      data-id="${r.randevu_id}"
+                      data-hasta="${(r.hastaAdSoyad || '-').replace(/"/g,'&quot;')}">
+                Odaya Çağır
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Odaya Çağır butonları
+      body.querySelectorAll('.cagir-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const randevuId = btn.getAttribute('data-id');
+          const hastaAdSoyad = btn.getAttribute('data-hasta') || 'Hasta';
+
+          if (!confirm(`#${randevuId} numaralı randevuyu odaya çağırmak istiyor musunuz?`)) return;
+
+          try {
+            const callRes = await fetch(`http://localhost:5000/doktor/randevu-cagir/${randevuId}`, { method: 'PUT' });
+            const callData = await callRes.json();
+            if (callRes.ok) {
+              alert('Hasta çağrıldı. Oda ekranında görünecek.');
+
+              // 1) Bekleme listesini yenile
+              await loadBeklemeListesi(doktorId);
+
+              // 2) Global randevular dizisini güncelle
+              const idx = randevular.findIndex(x => String(x.id) === String(randevuId));
+              const simdiIso = new Date().toISOString();
+
+              if (idx !== -1) {
+                randevular[idx].durum = 'Cagr?ld?';
+                randevular[idx].tarih = simdiIso;
+              } else {
+                randevular.push({
+                  id: Number(randevuId),
+                  hasta: hastaAdSoyad,
+                  tarih: simdiIso,
+                  durum: 'Cagr?ld?',
+                  hastaDetay: null,
+                  ozgecmisler: []
+                });
+              }
+
+              // 3) Hastalarım tablosunu güncelle
+              populateMuayeneEdilmisHastalar(randevular, randevular);
+
+            } else {
+              alert(callData?.mesaj || 'Çağırma işlemi başarısız.');
+            }
+          } catch (e) {
+            console.error(e);
+            alert('Sunucu bağlantı hatası!');
+          }
+        });
+      });
+
+    } catch (e) {
+      console.error(e);
+      body.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-red-500">Sunucu bağlantı hatası!</td></tr>`;
+    }
+  }
+
+  // ========= MODAL =========
+  function initModal() {
+    const modal = document.getElementById('hasta-bilgi-modal');
+    const modalKapatBtn = document.getElementById('modal-kapat-btn');
+    const modalHastaAdi = document.getElementById('modal-hasta-adi');
+    const modalContent = document.getElementById('modal-content');
+
+    function openModal(randevu) {
+      modalHastaAdi.innerText = randevu.hasta || 'Hasta';
+
+      let yas = 'Belirtilmemiş';
+      if (randevu.hastaDetay && randevu.hastaDetay.dogumTarihi) {
+        yas = new Date().getFullYear() - new Date(randevu.hastaDetay.dogumTarihi).getFullYear();
+      }
+
+      let contentHTML = `
+        <div class="bg-red-50 p-4 rounded-lg border border-red-200">
+          <h3 class="font-bold text-red-800 text-lg">Randevu Nedeni / Şikayet</h3>
+          <p class="text-gray-700 mt-1">${randevu.not || 'Belirtilmemiş'}</p>
+        </div>
+
+        <div class="mt-6">
+          <h3 class="font-bold text-gray-800 text-lg border-b pb-2 mb-3">Hasta Bilgileri</h3>
+          <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+            <div>
+              <dt class="font-semibold text-gray-500">Doğum Tarihi (Yaş):</dt>
+              <dd class="text-gray-900">
+                ${randevu.hastaDetay && randevu.hastaDetay.dogumTarihi
+                  ? `${new Date(randevu.hastaDetay.dogumTarihi).toLocaleDateString('tr-TR')} (${yas})`
+                  : 'Belirtilmemiş'}
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-gray-500">Telefon:</dt>
+              <dd class="text-gray-900">
+                ${(randevu.hastaDetay && randevu.hastaDetay.telefon) ? randevu.hastaDetay.telefon : 'Belirtilmemiş'}
+              </dd>
+            </div>
+            <div class="col-span-1 md:col-span-2">
+              <dt class="font-semibold text-gray-500">E-posta:</dt>
+              <dd class="text-gray-900">
+                ${(randevu.hastaDetay && randevu.hastaDetay.email) ? randevu.hastaDetay.email : 'Belirtilmemiş'}
+              </dd>
+            </div>
+          </dl>
+        </div>
+      `;
+
+      if (randevu.ozgecmisler && randevu.ozgecmisler.length > 0) {
+        const oz = randevu.ozgecmisler[0];
+        contentHTML += `
+          <div class="mt-6">
+            <h3 class="font-bold text-gray-800 text-lg border-b pb-2 mb-3">Tıbbi Özgeçmiş (En Son Kayıt)</h3>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 text-sm">
+              <div class="col-span-2">
+                <dt class="font-semibold text-gray-500">Teşhis Edilen Hastalık:</dt>
+                <dd class="text-gray-900 text-base">${oz.teshis_edilen_hastalik || 'Belirtilmemiş'}</dd>
+              </div>
+              <div><dt class="font-semibold text-gray-500">Önceki Hastane:</dt><dd class="text-gray-900">${oz.onceki_hastane || 'Belirtilmemiş'}</dd></div>
+              <div><dt class="font-semibold text-gray-500">Önceki Doktor:</dt><dd class="text-gray-900">${oz.onceki_doktor || 'Belirtilmemiş'}</dd></div>
+              <div><dt class="font-semibold text-gray-500">Kullanılan İlaç:</dt><dd class="text-gray-900">${oz.kullanilan_ilac || 'Belirtilmemiş'}</dd></div>
+              <div><dt class="font-semibold text-gray-500">İlaç Kullanım Süresi:</dt><dd class="text-gray-900">${oz.ilac_kullanim_suresi || 'Belirtilmemiş'}</dd></div>
+              <div class="col-span-2"><dt class="font-semibold text-gray-500">Mevcut İlaçlar:</dt><dd class="text-gray-900">${oz.mevcut_ilaclar || 'Belirtilmemiş'}</dd></div>
+            </dl>
+          </div>`;
+      } else {
+        contentHTML += '<p class="mt-6 text-gray-500">Bu hasta için kayıtlı bir tıbbi özgeçmiş bulunamadı.</p>';
+      }
+
+      modalContent.innerHTML = contentHTML;
+      modal.classList.remove('hidden');
+    }
+
+    modalKapatBtn.addEventListener('click', () => modal.classList.add('hidden'));
+    modal.addEventListener('click', (event) => { if (event.target === modal) modal.classList.add('hidden'); });
+
+    return { openModal };
+  }
+
+  // ========= Başlatma =========
+  window.onload = async () => {
+    const doktorId = localStorage.getItem('doktorId');
+    if (!doktorId) {
+      window.location.href = 'doktor_giris.html';
+      return;
+    }
+
+    try {
+      const response = await fetch(`http://localhost:5000/doktor-paneli/veri/${doktorId}`);
+      if (!response.ok) throw new Error('Panel verileri yüklenemedi.');
+      const veri = await response.json();
+
+      document.getElementById('doktor-adi-sidebar').textContent = `Dr. ${veri.doktorAdi || ''}`;
+      document.getElementById('hastane-adi').textContent = veri.hastaneAdi || '';
+
+      // Global randevular dizisi
+      randevular = Array.isArray(veri.randevular) ? veri.randevular : [];
+
+      // Oda ekranı linki
+      const odaLink = document.getElementById('oda-ekrani-link');
+      if (odaLink) odaLink.href = `doktor_monitor.html?doktorId=${doktorId}`;
+
+      // Şeflik & bölüm yönetimi
+      const seflikPlaceholder = document.getElementById('seflik-durumu-placeholder');
+      const sefKarti = document.getElementById('bolum-sefi-karti');
+      const sefKutusu = document.getElementById('bolum-sefi-bilgileri');
+
+      if (veri.sefOlduguBolum) {
+        seflikPlaceholder.innerHTML = `<p class="text-xs text-amber-400 font-semibold mt-1">✓ ${veri.sefOlduguBolum} Bölüm Şefi</p>`;
+        sefKarti.style.display = 'none';
+        document.getElementById('bolum-yonetimi-link').classList.remove('hidden');
+
+        populateBolumDoktorlari(veri.bolumDoktorlari || []);
+        populateBolumHastalari(veri.bolumHastalari || []);
+        initBolumYonetimiTabs(veri);
+
+      } else {
+        sefKarti.style.display = 'block';
+        if (veri.bolumSefi) {
+          sefKutusu.innerHTML = `
+            <p class="text-lg font-medium text-gray-900">Dr. ${veri.bolumSefi.sefIsim} ${veri.bolumSefi.sefSoyisim}</p>
+            <p class="text-gray-600"><strong>E-posta:</strong> ${veri.bolumSefi.sefMail}</p>
+            <p class="text-gray-600"><strong>Telefon:</strong> ${veri.bolumSefi.sefTelefon || 'Belirtilmemiş'}</p>`;
+        } else {
+          sefKutusu.innerHTML = '<p class="text-gray-500">Bölüm şefi atanmamış.</p>';
+        }
+      }
+
+      // Ana sayfa: onay bekleyen randevular
+      const randevuListesiAnasayfa = document.getElementById('randevular-listesi-anasayfa');
+      randevuListesiAnasayfa.innerHTML = '';
+
+      const onayBekleyen = randevular.filter(r => normalizeDurum(r.durum) === 'onay');
+
+      if (onayBekleyen.length > 0) {
+        onayBekleyen.forEach(r => {
+          const tarihObj = new Date(r.tarih);
+          const tarih = (tarihObj instanceof Date && !isNaN(tarihObj))
+            ? tarihObj.toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' })
+            : (r.tarih || '');
+
+          randevuListesiAnasayfa.innerHTML += `
+            <div class="border rounded-lg p-4 bg-gray-50">
+              <p class="font-semibold text-indigo-700">${r.hasta || '-'}</p>
+              <p class="text-sm text-gray-600">${tarih}</p>
+            </div>`;
+        });
+      } else {
+        randevuListesiAnasayfa.innerHTML = '<p class="text-gray-500">Yaklaşan randevunuz bulunmamaktadır.</p>';
+      }
+
+      // Hastalarım (Çağrıldı + Tamamlandı)
+      populateMuayeneEdilmisHastalar(randevular, randevular);
+
+      // Modal
+      const modalApi = initModal();
+
+      // Hastalarım tablo tıklamaları (Bilgi Oku / Muayene Sonlandır / Teşhis Gir)
+      document.getElementById('onaylanmis-hasta-tablosu-body').addEventListener('click', async function (event) {
+        const target = event.target;
+
+        // Bilgileri Oku
+        if (target.classList.contains('bilgi-oku-btn-hasta')) {
+          const originalIndex = parseInt(target.getAttribute('data-index'), 10);
+          const r = randevular[originalIndex];
+          if (r) modalApi.openModal(r);
+          return;
+        }
+
+        // Muayeneyi Sonlandır
+        if (target.classList.contains('muayene-sonlandir-btn')) {
+          const randevuId = target.getAttribute('data-id');
+          if (!confirm(`#${randevuId} numaralı randevunun muayenesini sonlandırmak istiyor musunuz?`)) return;
+
+          try {
+            const res = await fetch(`http://localhost:5000/doktor/muayene-sonlandir/${randevuId}`, {
+              method: 'PUT'
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              alert(data?.mesaj || 'Muayene sonlandırma işlemi başarısız.');
+              return;
+            }
+
+            alert(data.mesaj || 'Muayene sonlandırıldı.');
+
+            const idx = randevular.findIndex(x => String(x.id) === String(randevuId));
+            if (idx !== -1) {
+              randevular[idx].durum = 'Tamamland?';
+              randevular[idx].tarih = new Date().toISOString();
+            }
+
+            populateMuayeneEdilmisHastalar(randevular, randevular);
+
+          } catch (err) {
+            console.error(err);
+            alert('Sunucu bağlantı hatası! (muayene sonlandır)');
+          }
+          return;
+        }
+
+        // Teşhis Gir
+        if (target.classList.contains('teshis-gir-btn')) {
+          const originalIndex = parseInt(target.getAttribute('data-index'), 10);
+          const r = randevular[originalIndex];
+          if (!r) {
+            alert('Randevu bulunamadı.');
+            return;
+          }
+
+          // Teşhis sayfası için gerekli bilgileri LocalStorage'a koy
+          localStorage.setItem('aktifRandevuId', r.id);
+          localStorage.setItem('aktifDoktorId', doktorId);
+          if (r.hastaDetay && r.hastaDetay.hasta_id) {
+            localStorage.setItem('aktifHastaId', r.hastaDetay.hasta_id);
+          }
+
+          window.location.href = 'yeni_teshis.html';
+        }
+      });
+
+      // Bekleme listesi verileri
+      await loadBeklemeListesi(doktorId);
+
+      // Menü tıklamaları
+      document.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', (event) => {
+          const page = link.getAttribute('data-page');
+          if (page) {
+            event.preventDefault();
+            showPage(page);
+          }
+        });
+      });
+
+      // Çıkış
+      document.getElementById('cikis-butonu').addEventListener('click', function (event) {
+        event.preventDefault();
+        if (window.confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+          localStorage.clear();
+          window.location.href = this.href;
+        }
+      });
+
+      // İlk açılışta hash'e göre sayfa
+      const initialPage = window.location.hash.substring(1) || 'anasayfa';
+      showPage(initialPage);
+
+    } catch (error) {
+      console.error("Hata:", error);
+      document.body.innerHTML = `
+        <div class="text-center p-10 text-red-600">
+          <h1>Panel bilgileri yüklenirken bir hata oluştu. Lütfen tekrar giriş yapın.</h1>
+          <p class="text-sm text-gray-500 mt-2">
+            Detay için tarayıcınızın konsolunu (F12) ve sunucu (Node.js) terminalini kontrol edin.
+          </p>
+        </div>`;
+    }
+  };
+</script>
+
+</body>
+</html>

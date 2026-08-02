@@ -1,0 +1,22 @@
+# Environment variables — NEVER commit secrets/API keys/DB credentials
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Node.js
+node_modules/
+
+# Large trained model file (100MB+, exceeds GitHub's file size limit)
+# See README for how to obtain/regenerate this file
+rontgen_siniflandirici_final.h5
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Resepsiyonist Girişi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 class="text-2xl font-bold text-gray-800 text-center mb-6">Resepsiyonist Girişi</h2>
+        <form id="loginForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">E-posta</label>
+                <input type="email" id="email" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Şifre</label>
+                <input type="password" id="sifre" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+            </div>
+            <button type="submit" class="w-full bg-purple-600 text-white p-3 rounded-lg font-bold hover:bg-purple-700 transition">Giriş Yap</button>
+        </form>
+        <p id="mesaj" class="mt-4 text-center text-sm font-medium text-red-600"></p>
+                <div class="text-center">
+            <a href="login.html" class="font-medium text-purple-600 hover:text-purple-500">
+                &larr; Rol Seçim Ekranına Geri Dön
+            </a>
+        </div>
+    </div>
+    
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const parola = document.getElementById('sifre').value;
+
+            try {
+                const response = await fetch('http://localhost:5000/reception/giris', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, parola })
+                });
+
+                const sonuc = await response.json();
+
+                if (response.ok) {
+                    // resepsiyon_id'yi hafızaya al
+                    localStorage.setItem('receptionId', sonuc.reception.id);
+                    
+                    if (sonuc.ilkGiris) {
+                        // Eğer ilk giriş ise profil tamamlama sayfasına git
+                        window.location.href = 'reception_profil_tamamla.html';
+                    } else {
+                        // Normal giriş ise panele git
+                        window.location.href = 'reception_panel.html';
+                    }
+                } else {
+                    document.getElementById('mesaj').textContent = sonuc.mesaj;
+                }
+            } catch (err) {
+                document.getElementById('mesaj').textContent = "Sunucuya bağlanılamadı.";
+            }
+        });
+    </script>
+</body>
+</html>

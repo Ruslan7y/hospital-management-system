@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Kontrol Paneli - Sağlık Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Aktif menü öğesi için özel stil */
+        .active-link {
+            background-color: #4f46e5; /* indigo-700 */
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="flex h-screen">
+        <div class="w-64 bg-gray-800 text-white flex flex-col">
+            <div class="px-8 py-6 border-b border-gray-700">
+                <h2 class="text-2xl font-semibold">Admin Paneli</h2>
+                <span class="text-sm text-gray-400">Sağlık Portalı</span>
+            </div>
+            <nav class="flex-1 px-4 py-4 space-y-2">
+                <a href="#dashboard" class="flex items-center px-4 py-2 rounded-lg transition-colors hover:bg-gray-700 active-link">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Gösterge Paneli
+                </a>
+                <a href="yonetmen_yetkilendirme.html" class="flex items-center px-4 py-2 rounded-lg transition-colors hover:bg-gray-700">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Yetkilendirme
+                </a>
+                <a href="#kullanicilar" class="flex items-center px-4 py-2 rounded-lg transition-colors hover:bg-gray-700">
+                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M15 21a6 6 0 00-9-5.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-3-5.197z"></path></svg>
+                    Kullanıcı Yönetimi
+                </a>
+                <a href="#sistem" class="flex items-center px-4 py-2 rounded-lg transition-colors hover:bg-gray-700">
+                    <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    Sistem
+                </a>
+            </nav>
+            <div class="px-8 py-6 border-t border-gray-700">
+                <a href="login.html" class="w-full text-center block bg-red-600 hover:bg-red-700 rounded-lg py-2 transition-colors">Çıkış Yap</a>
+            </div>
+        </div>
+
+        <main class="flex-1 p-10 overflow-y-auto">
+
+            <section id="dashboard">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Gösterge Paneli</h1>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
+                        <div>
+                            <span class="text-sm text-gray-500">Toplam Hasta</span>
+                            <p class="text-3xl font-bold text-indigo-600">1,258</p>
+                        </div>
+                         <div class="bg-indigo-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
+                        <div>
+                            <span class="text-sm text-gray-500">Toplam Doktor</span>
+                            <p class="text-3xl font-bold text-green-600">76</p>
+                        </div>
+                         <div class="bg-green-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-5.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-5.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222 4 2.222V20M12 12L8 10l4-2 4 2-4 2z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
+                        <div>
+                            <span class="text-sm text-gray-500">Baş Hekim</span>
+                            <p class="text-xl font-bold text-blue-600">Dr. Ahmet Yılmaz</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-md flex items-center justify-between">
+                        <div>
+                            <span class="text-sm text-gray-500">Aktif Bölüm</span>
+                            <p class="text-3xl font-bold text-yellow-600">24</p>
+                        </div>
+                         <div class="bg-yellow-100 p-3 rounded-full">
+                           <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    <div class="lg:col-span-3 bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-semibold text-gray-800 mb-4">Aylık Randevu İstatistikleri</h3>
+                        <canvas id="randevuChart"></canvas>
+                    </div>
+                    <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-md">
+                        <h3 class="font-semibold text-gray-800 mb-4">Doktorların Şehirlere Göre Dağılımı</h3>
+                        <canvas id="sehirChart"></canvas>
+                    </div>
+                </div>
+            </section>
+            
+            <section id="yetkilendirme" class="mt-12">
+                <h1 class="text-3xl font-bold text-gray-800 mb-6">Yönetici Yetkilendirme İstekleri</h1>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left">
+                            <thead>
+                                <tr class="bg-gray-50 border-b">
+                                    <th class="py-3 px-4 font-semibold text-sm text-gray-600">Ad Soyad</th>
+                                    <th class="py-3 px-4 font-semibold text-sm text-gray-600">E-Posta</th>
+                                    <th class="py-3 px-4 font-semibold text-sm text-gray-600">Başvuru Tarihi</th>
+                                    <th class="py-3 px-4 font-semibold text-sm text-gray-600 text-center">İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="py-3 px-4">Ayşe Korkmaz</td>
+                                    <td class="py-3 px-4">ayse.korkmaz@example.com</td>
+                                    <td class="py-3 px-4">22.10.2025</td>
+                                    <td class="py-3 px-4 text-center space-x-2">
+                                        <button class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors">Onayla</button>
+                                        <button class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors">Reddet</button>
+                                    </td>
+                                </tr>
+                                <tr class="border-b hover:bg-gray-50">
+                                    <td class="py-3 px-4">Mehmet Öztürk</td>
+                                    <td class="py-3 px-4">mehmet.ozturk@example.com</td>
+                                    <td class="py-3 px-4">21.10.2025</td>
+                                    <td class="py-3 px-4 text-center space-x-2">
+                                        <button class="bg-green-500 hover:bg-green-600 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors">Onayla</button>
+                                        <button class="bg-red-500 hover:bg-red-600 text-white text-sm font-medium py-1 px-3 rounded-md transition-colors">Reddet</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+             <section id="kullanicilar" class="mt-12">
+                 <h1 class="text-3xl font-bold text-gray-800 mb-6">Kullanıcı Yönetimi</h1>
+                 <div class="bg-white p-6 rounded-xl shadow-md">
+                     <p class="text-gray-600">Bu alanda doktor, hasta ve diğer yöneticileri listeleyebilir, arama yapabilir ve bilgilerini güncelleyebilirsiniz.</p>
+                     </div>
+             </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- GRAFİK KODLARI ---
+        // Bu veriler normalde backend'den (server.js) API çağrısı ile alınmalıdır.
+
+        // 1. Randevu Grafiği (Çizgi)
+        const randevuCtx = document.getElementById('randevuChart').getContext('2d');
+        new Chart(randevuCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim'],
+                datasets: [{
+                    label: 'Aylık Randevu Sayısı',
+                    data: [120, 190, 150, 210, 180, 250],
+                    borderColor: 'rgb(79, 70, 229)',
+                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // 2. Şehir Dağılımı Grafiği (Pasta)
+        const sehirCtx = document.getElementById('sehirChart').getContext('2d');
+        new Chart(sehirCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['İstanbul', 'Ankara', 'İzmir', 'Konya', 'Diğer'],
+                datasets: [{
+                    label: 'Doktor Sayısı',
+                    data: [25, 18, 12, 11, 10],
+                    backgroundColor: [
+                        'rgb(239, 68, 68)',
+                        'rgb(59, 130, 246)',
+                        'rgb(245, 158, 11)',
+                        'rgb(16, 185, 129)',
+                        'rgb(107, 114, 128)'
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+    </script>
+    <script>
+      
+
+        // === ÇIKIŞ YAPMA ONAYI İÇİN YENİ KOD ===
+        document.getElementById('cikisYapButonu').addEventListener('click', function(event) {
+            event.preventDefault(); // Linkin varsayılan davranışını engelle
+            if (confirm('Çıkış yapmak istediğinizden emin misiniz?')) {
+                window.location.href = 'login.html'; // Kullanıcı onaylarsa yönlendir
+            }
+        });
+    </script>
+</body>
+</html>

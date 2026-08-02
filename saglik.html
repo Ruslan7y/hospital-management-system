@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth"> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PUMA</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        'blue': {
+                            '600': '#005A9C', 
+                            '700': '#004A8C',
+                            '50': '#F0F6FA'  
+                        },
+                        'cyan': {
+                            '500': '#00C1D4', 
+                            '600': '#00A9BB'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .hero-banner {
+            background: linear-gradient(rgba(8, 114, 206, 0.8), rgba(6, 106, 194, 0.7)), 
+                          url('https://placehold.co/1920x800/2C3E50/FFFFFF?text=Hastane+Hizmetlerimiz') 
+                          no-repeat center center / cover;
+        }
+
+        /* JavaScript ile tetiklenecek scroll animasyonu sınıfları */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* SSS Akordiyon için özel geçiş */
+        .faq-cevap {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+        
+        /* ======================================= */
+        /* KAYDIRICI (SLIDER) İÇİN GÜNCELLENMİŞ CSS KODLARI */
+        /* ======================================= */
+        .slider-container {
+            width: 100%;
+            max-width: 1500px;
+            margin: 20px auto 0 auto;
+            overflow: hidden;
+            position: relative;
+        }
+        .slider {
+            display: flex;
+            width: 200%;
+            transition: transform 0.6s ease-in-out;
+        }
+        .slide {
+            width: 50%;
+            text-align: center;
+            padding: 20px;
+        }
+        .hero-btn {
+            background: #0458a6;
+            color: rgb(251, 253, 255);
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+        .hero-btn:hover {
+            background: #99caf6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+        }
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            background: rgba(0,0,0,0.15);
+            color: rgb(255, 255, 255);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .arrow:hover {
+            background: rgba(0,0,0,0.3);
+        }
+        .arrow-left { left: -50px; }
+        .arrow-right { right: -50px; }
+        
+        /* Doktor AI Slide için özel stiller */
+        .ai-slide-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #005A9C;
+            margin-bottom: 15px;
+        }
+        .ai-slide-text {
+            font-size: 1.1rem;
+            color: #4B5563;
+            margin-bottom: 20px;
+        }
+        /* ======================================= */
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto flex items-center justify-between p-4 px-6">
+            <div class="text-2xl font-bold text-blue-600">
+                <a href="saglik.html">Saglik Portal</a>
+            </div>
+
+            <ul class="hidden md:flex items-center space-x-8 font-semibold text-gray-600">
+                <li><a href="saglik.html" class="hover:text-blue-600 transition-colors">Ana Sayfa</a></li>
+                <li><a href="doktorlarimiz .html" class="hover:text-blue-600 transition-colors">Doktorlarımız</a></li>
+                <li><a href="pages/randevuAlma.html" class="hover:text-blue-600 transition-colors">Randevu Al</a></li>
+                <li><a href="pages/chat_boot.html" class="hover:text-blue-600 transition-colors">Dokdor AI</a></li>
+                <li><a href="hizmetlerimiz.html" class="hover:text-blue-600 transition-colors">Hizmetlerimiz</a></li>
+                <li><a href="iletisim.html" class="hover:text-blue-600 transition-colors">İletişim</a></li>
+            </ul>
+
+            <div id="userArea">
+                <a href="pages/login.html"
+                    class="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow">
+                    Giriş Yap
+                </a>
+            </div>
+        </nav>
+    </header>
+    
+    <main id="mainContent">
+<section id="heroSection" class="bg-blue-50 py-20 text-center">
+ <div class="slider-container">
+        <div class="slider" id="slider">
+            <div class="slide">    
+    <h1 class="text-5xl font-bold text-gray-900 leading-tight">
+        Modern Sağlık Hizmetleri<br>Parmaklarınızın Ucunda
+    </h1>
+    <p class="mt-6 text-lg text-gray-600 max-w-2xl mx-auto mb-10">
+        En son teknoloji ve uzman kadromuz ile sağlığınızı önemsiyor, size en iyi hizmeti sunmak için çalışıyoruz.
+    </p>
+    
+   
+                <a href="#" id="heroRandevuBtn" class="hero-btn">Hemen Randevu Al</a>
+            </div>
+            
+            <div class="slide">
+                <h1 class="ai-slide-title">🤖 <br> Doktor AI</h1>
+                <h3 class="ai-slide-title"> 7/24 Sağlık Asistanınız</h3>
+                <p class="ai-slide-text">
+                    Aklınızdaki tüm soruların cevabı burada. **Anlık destek**, güvenilir bilgi ve kişiselleştirilmiş sağlık ipuçları için hemen sohbete başlayın.<br>
+                    <span class="font-bold text-green-700 block mt-2">"Sağlık, en büyük servettir." - Ralph Waldo Emerson</span>
+                </p>
+                <a href="#" class="hero-btn" style="background:#008056;">Hemen Sohbete Başla</a>
+            </div>
+        </div>
+        <div class="arrow arrow-left" onclick="prevSlide()">‹</div>
+        <div class="arrow arrow-right" onclick="nextSlide()">›</div>
+    </div>
+    </section>
+
+        <section id="hizmetlerSection" class="py-24 bg-gradient-to-b from-blue-50 to-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">Öne Çıkan Hizmetlerimiz</h2>
+                <p class="text-gray-600 text-lg mb-16 max-w-2xl mx-auto">
+                    Alanında uzman doktorlarımızla sunduğumuz modern tedavi yöntemleriyle sağlığınızı önemsiyoruz.
+                </p>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+                    <a href="#" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">❤️ Kardiyoloji</h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Kalp ve damar hastalıklarının tanı ve tedavisinde en güncel yaklaşımlar.
+                        </p>
+                    </a>
+                    <a href="#" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">🧠 Nöroloji</h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Beyin ve sinir sistemi hastalıklarında uzman teşhis ve tedavi hizmetleri.
+                        </p>
+                    </a>
+                    <a href="#" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">🦵 Ortopedi</h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Kas ve iskelet sistemi rahatsızlıklarınız için kişiye özel çözümler.
+                        </p>
+                    </a>
+                    <a href="pages/kalp_atisiolc.html" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">🩺 Kalp Atışı Ölçer</h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Kameranızı kullanarak kalp atış hızınızı anlık olarak ölçün ve takip edin.
+                        </p>
+                    </a>
+                    <a href="pages/solunum_tespit.html" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">🩺 Solunum Sistemi olcer</h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Kameranızı kullanarak Solunum sistemi Tespiti yap.
+                        </p>
+                    </a>
+                    <a href="pages/yuz_has.html" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition">🩺 Erken Belirtileri fark et</h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Kameranızı kullanarak Yuzunuzdeki belirtilerle Tespiti yap.
+                        </p>
+                    </a>
+                    <a href="pages/fitnes_takip.html" class="group relative block bg-white rounded-3xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-10 text-left border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-2xl font-bold text-blue-600 group-hover:text-blue-700 transition"> Fitnes yaparak Saglam vucuda dogru ilerle </h3>
+                            <span class="text-blue-500 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300 text-2xl">→</span>
+                        </div>
+                        <p class="text-gray-600 text-lg leading-relaxed">
+                            Dogru bilgilerle adimlayarak Saglam dunyaya yuru
+                        </p>
+                    </a>                    
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-20">
+        <div class="container mx-auto p-8 grid md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold mb-4">Sağlık Portalı</h3>
+                <p class="text-gray-400">Sağlıklı bir yaşam için daima yanınızdayız.</p>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">Hızlı Bağlantılar</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white">Hakkımızda</a></li>
+                    <li><a href="#" class="hover:text-white">Doktorlarımız</a></li>
+                    <li><a href="#" class="hover:text-white">İletişim</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-xl font-bold mb-4">İletişim Bilgileri</h3>
+                <p class="text-gray-400">Adres: Sağlık Cad. No:123, Şehir</p>
+                <p class="text-gray-400">Telefon: +90 123 456 78 90</p>
+            </div>
+        </div>
+        <div class="bg-gray-900 text-center p-4">
+            <p class="text-gray-500">&copy; 2025 Sağlık Portalı. Tüm hakları saklıdır.</p>
+        </div>
+    </footer>
+
+    <script>
+        /* =======================================
+// KAYDIRICI (SLIDER) İÇİN GÜNCELLENMİŞ JS KODU
+// ======================================= */
+let index = 0;
+const slider = document.getElementById("slider");
+
+function updateSlide() {
+    slider.style.transform = `translateX(-${index * 50}%)`;
+}
+function nextSlide() {
+    index = (index + 1) % 2;
+    updateSlide();
+}
+function prevSlide() {
+    index = (index - 1 + 2) % 2;
+    updateSlide();
+}
+// Otomatik kayma - her 3 saniyede bir (isteğiniz üzerine korundu)
+setInterval(nextSlide, 4000);
+// =======================================
+        // Sayfa yüklendiğinde çalışacak ana işlev
+        document.addEventListener('DOMContentLoaded', () => {
+            const userArea = document.getElementById('userArea');
+            const mainContent = document.getElementById('mainContent');
+            const user = JSON.parse(localStorage.getItem('hastaBilgisi'));
+            // Randevu butonu ID'si artık slider içindeki A etiketine bağlıdır.
+            const heroRandevuBtn = document.getElementById('heroRandevuBtn');
+
+            // Kullanıcı giriş yapmış mı kontrolü
+            if (user && user.ad && user.soyad && user.email) {
+                // --- KULLANICI GİRİŞ YAPMIŞSA ---
+
+                // Randevu butonu linkini randevu alma sayfasına yönlendir
+                heroRandevuBtn.href = 'pages/randevuAlma.html';
+
+                // Kullanıcı alanını profil menüsü ile değiştir
+                userArea.innerHTML = `
+                    <div class="relative flex items-center space-x-3">
+                        <span class="text-gray-800 font-medium hidden sm:inline">Hoş geldiniz, ${user.ad}</span>
+                        <div id="profileIcon" class="w-10 h-10 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 text-xl shadow cursor-pointer hover:bg-blue-300 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M5.121 17.804A9 9 0 1118.88 6.195M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </div>
+                        <div id="profileMenu" class="absolute right-0 top-12 w-56 bg-white rounded-xl shadow-lg border border-gray-100 hidden z-50">
+                            <div class="p-4 border-b border-gray-200 text-sm">
+                                <p class="font-bold">${user.ad} ${user.soyad}</p>
+                                <p class="text-gray-500 text-xs">${user.email}</p>
+                            </div>
+                            <ul class="text-sm text-gray-700">
+                                <li><a href="javascript:void(0);" id="randevularim-link" class="block px-4 py-2 hover:bg-gray-100">🗓️ Randevularım</a></li>
+                                <li><a href="pages/hasta-detay.html" class="block px-4 py-2 hover:bg-gray-100">👤 Bilgilerim</a></li>
+                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-100">⚙️ Ayarlar</a></li>
+                                <li><button id="logoutBtn" class="w-full text-left px-4 py-2 hover:bg-red-100 text-red-600 font-semibold">🚪 Çıkış Yap</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                `;
+
+                const profileIcon = document.getElementById('profileIcon');
+                const profileMenu = document.getElementById('profileMenu');
+                const randevularimLink = document.getElementById('randevularim-link');
+
+                // Profil Menüsü Aç/Kapa
+                profileIcon.addEventListener('click', (e) => { e.stopPropagation(); profileMenu.classList.toggle('hidden'); });
+                document.addEventListener('click', (e) => { if (!profileMenu.classList.contains('hidden') && !profileIcon.contains(e.target)) { profileMenu.classList.add('hidden'); } });
+                
+                // YENİ: Randevularım linki tıklandığında randevu listesini yükle
+                randevularimLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    randevulariYukle();
+                    profileMenu.classList.add('hidden'); // Menüyü kapat
+                });
+
+                // Çıkış Yap İşlemi
+                document.addEventListener('click', (e) => {
+                    if (e.target && e.target.id === 'logoutBtn') {
+                        e.preventDefault();
+                        const confirmBox = document.createElement('div');
+                        confirmBox.className = "fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50";
+                        confirmBox.innerHTML = `
+                            <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center">
+                                <h2 class="text-lg font-semibold mb-4">Çıkış yapmak istediğinizden emin misiniz?</h2>
+                                <div class="flex justify-center space-x-4">
+                                    <button id="evetBtn" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700">Evet</button>
+                                    <button id="hayirBtn" class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-400">Hayır</button>
+                                </div>
+                            </div>
+                        `;
+                        document.body.appendChild(confirmBox);
+                        document.getElementById('evetBtn').addEventListener('click', () => {
+                            localStorage.removeItem('hastaBilgisi');
+                            confirmBox.remove();
+                            window.location.reload();
+                        });
+                        document.getElementById('hayirBtn').addEventListener('click', () => confirmBox.remove());
+                    }
+                });
+
+            } else {
+                // --- KULLANICI GİRİŞ YAPMAMIŞSA ---
+                
+                // Randevu butonu, giriş yapmaya zorlar
+                heroRandevuBtn.addEventListener('click', (event) => {
+                    event.preventDefault(); 
+                    console.log('Randevu almak için lütfen önce giriş yapınız.');
+                    window.location.href = 'pages/login.html'; 
+                });
+            }
+        });
+
+        // =======================================================
+        // YENİ FONKSİYON: RANDEVU LİSTESİNİ YÜKLE
+        // =======================================================
+        async function randevulariYukle() {
+            const hastaBilgisi = JSON.parse(localStorage.getItem('hastaBilgisi'));
+            if (!hastaBilgisi || !hastaBilgisi.id) {
+                console.error("Hata: Giriş yapılmış hasta bulunamadı.");
+                window.location.href = 'pages/login.html'; // Giriş sayfasına yönlendir
+                return;
+            }
+
+            const mainContent = document.getElementById('mainContent');
+            
+            // Ana içeriği temizle ve yükleme alanını oluştur
+            mainContent.innerHTML = `
+                <div class="container mx-auto py-12 px-4 sm:px-6 lg:px-8">
+                    <h2 class="text-4xl font-extrabold text-blue-700 mb-8">🗓️ Randevularım</h2>
+                    <div id="randevu-listesi" class="space-y-4">
+                        <div class="text-center p-6 bg-white rounded-lg shadow">
+                            <i class="fas fa-spinner fa-spin text-2xl text-blue-600"></i>
+                            <p class="mt-2 text-gray-600">Randevularınız yükleniyor...</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+            const randevuListesiDiv = document.getElementById('randevu-listesi');
+
+            try {
+                // Backend endpoint'i çağırılıyor (server.js'de tanımlı varsayılır)
+                const response = await fetch(`http://localhost:5000/hasta-randevulari/${hastaBilgisi.id}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP hata kodu: ${response.status}`);
+                }
+                
+                const randevular = await response.json();
+
+                if (randevular.length === 0) {
+                    randevuListesiDiv.innerHTML = '<div class="bg-blue-100 p-6 rounded-lg text-blue-800 text-center font-medium shadow-md">Aktif veya geçmiş randevunuz bulunmamaktadır.</div>';
+                    return;
+                }
+
+                // Randevuları listeye dönüştür
+                randevuListesiDiv.innerHTML = randevular.map(randevu => {
+                    const tarih = new Date(randevu.randevu_tarihi).toLocaleString('tr-TR', { 
+                        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    });
+                    
+                    let durumClass, detayLink = '';
+                    
+                    if (randevu.randevu_durumu === 'Tamamlandı') {
+                        durumClass = 'bg-green-100 text-green-800 border-green-300';
+                        detayLink = `<a href="pages/hasta-detay.html?randevuId=${randevu.randevu_id}" class="text-sm font-semibold text-blue-600 hover:text-blue-500 ml-4 p-2 rounded-md transition hover:bg-blue-50">Teşhis Detayını Gör →</a>`;
+                    } else if (randevu.randevu_durumu === 'Onay Bekliyor') {
+                        durumClass = 'bg-yellow-100 text-yellow-800 border-yellow-300';
+                    } else if (randevu.randevu_durumu === 'Onaylandı') {
+                         durumClass = 'bg-indigo-100 text-indigo-800 border-indigo-300';
+                    } else {
+                        durumClass = 'bg-gray-100 text-gray-800 border-gray-300';
+                    }
+
+                    return `
+                        <div class="bg-white shadow-lg rounded-xl p-6 flex justify-between items-start transition hover:shadow-xl border-t-4 border-blue-600">
+                            <div>
+                                <p class="text-xl font-bold text-gray-900">Dr. ${randevu.doktorIsim} ${randevu.doktorSoyisim}</p>
+                                <p class="text-sm font-medium text-blue-600">${randevu.brans_adi}</p>
+                                <p class="text-gray-600 mt-2">${randevu.hastane_adi}</p>
+                                <p class="text-md font-semibold text-gray-700 mt-1">🗓️ ${tarih}</p>
+                            </div>
+                            <div class="flex flex-col items-end space-y-2">
+                                <span class="px-3 py-1 text-xs font-semibold rounded-full border ${durumClass}">
+                                    ${randevu.randevu_durumu}
+                                </span>
+                                ${detayLink}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Randevuları yüklerken hata:', error);
+                randevuListesiDiv.innerHTML = '<div class="bg-red-100 p-6 rounded-lg text-red-800 font-medium shadow-md">Randevularınızı çekerken bir sorun oluştu. Lütfen tekrar deneyin.</div>';
+            }
+        }
+
+    </script>
+</body>
+</html>

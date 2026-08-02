@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Girişi - Sağlık Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="../css/style.css"> -->
+    <style>
+        /* Proje özel stil dosyanız (style.css) olmadığı için temel fontu buradan ayarlayalım */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-xl">
+        <div class="text-center">
+            <h1 class="text-3xl font-bold text-gray-900">Admin Girişi</h1>
+            <p class="mt-2 text-gray-600">Lütfen bilgilerinizi girerek devam edin.</p>
+        </div>
+        
+        <!-- 
+            Formun 'id'sini 'adminGirisForm' olarak değiştirdim.
+            'action' ve 'method' özelliklerini sildim, çünkü JavaScript ile göndereceğiz.
+        -->
+        <form id="adminGirisForm" class="mt-8 space-y-6">
+            <input type="hidden" name="remember" value="true">
+            <div class="rounded-md shadow-sm -space-y-px">
+                <div>
+                    <label for="kullaniciAdi" class="sr-only">Kullanıcı Adı</label>
+                    <!-- 
+                        ID'yi 'admin-id' yerine 'kullaniciAdi' olarak değiştirdim.
+                        Bu, server.js'deki 'kullaniciAdi' beklentisiyle eşleşir.
+                    -->
+                    <input id="kullaniciAdi" name="kullaniciAdi" type="text" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Kullanıcı Adı">
+                </div>
+                <div>
+                    <label for="sifre" class="sr-only">Şifre</label>
+                    <!-- 
+                        ID'yi 'password' yerine 'sifre' olarak değiştirdim.
+                        Bu, server.js'deki 'sifre' beklentisiyle eşleşir.
+                    -->
+                    <input id="sifre" name="sifre" type="password" autocomplete="current-password" required class="appearance-none rounded-none relative block w-full px-3 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Şifre">
+                </div>
+            </div>
+
+            <div>
+                <button type="submit" class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    Giriş Yap
+                </button>
+            </div>
+        </form>
+
+        <!-- Mesajların gösterileceği alan -->
+        <div id="mesajAlani" class="text-center mt-4 text-sm"></div>
+
+        <div class="text-center mt-6">
+            <a href="login.html" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                &larr; Rol Seçim Ekranına Geri Dön
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Forma 'submit' olayı eklendi
+        document.getElementById('adminGirisForm').addEventListener('submit', async function(event) {
+            // Formun varsayılan (sayfayı yenileme) davranışını engelle
+            event.preventDefault();
+
+            const kullaniciAdi = document.getElementById('kullaniciAdi').value;
+            const sifre = document.getElementById('sifre').value;
+            const mesajAlani = document.getElementById('mesajAlani');
+
+            // Mesaj alanını temizle
+            mesajAlani.textContent = '';
+            mesajAlani.className = 'text-center mt-4 text-sm';
+
+            try {
+                const response = await fetch('http://localhost:5000/yonetici/giris', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        kullaniciAdi: kullaniciAdi,
+                        sifre: sifre
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Giriş başarılı
+                    mesajAlani.textContent = data.mesaj;
+                    mesajAlani.classList.add('text-green-600');
+                    
+                    // 1.5 saniye sonra yeni sayfaya yönlendir
+                    setTimeout(() => {
+                        window.location.href = 'admin_kontrol.html';
+                    }, 1500);
+
+                } else {
+                    // Giriş başarısız (Hata mesajını sunucudan al)
+                    mesajAlani.textContent = data.mesaj;
+                    mesajAlani.classList.add('text-red-600');
+                }
+
+            } catch (error) {
+                // Sunucuya bağlanılamazsa veya bir ağ hatası olursa
+                console.error('Giriş hatası:', error);
+                mesajAlani.textContent = 'Sunucuya bağlanılamadı. Lütfen tekrar deneyin.';
+                mesajAlani.classList.add('text-red-600');
+            }
+        });
+    </script>
+
+</body>
+</html>

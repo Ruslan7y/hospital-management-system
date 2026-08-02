@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yeni Teşhis ve Tedavi Kaydı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .form-group label { @apply block text-sm font-medium text-gray-700 mb-1; }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm p-2 border;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen">
+
+    <!-- ÜST ÇUBUK -->
+    <header class="w-full bg-white shadow-sm sticky top-0 z-20">
+        <div class="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
+            <button
+                id="geri-btn"
+                class="inline-flex items-center px-3 py-2 rounded-lg bg-slate-100 text-slate-700 text-sm font-semibold hover:bg-slate-200 transition"
+            >
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M15 19l-7-7 7-7" />
+                </svg>
+                Geri Dön
+            </button>
+
+            <div class="flex items-center gap-3">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs text-slate-500">Sayfa</p>
+                    <p class="text-sm font-semibold text-slate-800">Yeni Teşhis & Tedavi</p>
+                </div>
+                <span id="muayene-durum-badge"
+                      class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200">
+                    Muayene devam ediyor
+                </span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ANA İÇERİK -->
+    <main class="max-w-6xl mx-auto px-4 py-6">
+        <div class="bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-100">
+            <!-- Başlık -->
+            <div class="px-6 pt-6 pb-4 border-b border-slate-100 bg-slate-50">
+                <h1 class="text-2xl md:text-3xl font-bold text-slate-800 flex items-center gap-2">
+                    🩺 Yeni Teşhis ve Tedavi Kaydı
+                </h1>
+                <p class="text-slate-500 text-sm mt-1">
+                    Hastayı muayene ettikten sonra teşhis ve tedavi bilgilerini buradan kaydedebilirsiniz.
+                </p>
+            </div>
+
+            <!-- HASTA BİLGİLERİ -->
+            <section class="px-6 py-5 border-b border-slate-100 bg-indigo-50/60">
+                <div class="flex items-center justify-between gap-4 mb-3">
+                    <h2 class="text-lg font-semibold text-indigo-900 flex items-center gap-2">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold">1</span>
+                        Hasta Bilgileri
+                    </h2>
+                    <span id="hasta-etiket"
+                          class="hidden sm:inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-white text-indigo-700 border border-indigo-100">
+                        Yükleniyor...
+                    </span>
+                </div>
+
+                <div id="hasta-detaylari"
+                     class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-slate-800">
+                    <p>
+                        <span class="font-medium text-slate-600">Adı Soyadı:</span>
+                        <span id="hasta-ad-soyad" class="font-semibold text-slate-900 ml-1">Yükleniyor...</span>
+                    </p>
+                    <p>
+                        <span class="font-medium text-slate-600">Randevu Tarihi:</span>
+                        <span id="randevu-tarihi" class="font-semibold text-slate-900 ml-1">Yükleniyor...</span>
+                    </p>
+                    <p>
+                        <span class="font-medium text-slate-600">Hasta ID:</span>
+                        <span id="hasta-id-goster" class="text-slate-900 ml-1">Yükleniyor...</span>
+                    </p>
+                    <p>
+                        <span class="font-medium text-slate-600">Randevu ID:</span>
+                        <span id="randevu-id-goster" class="text-slate-900 ml-1">Yükleniyor...</span>
+                    </p>
+                </div>
+            </section>
+
+            <!-- FORM -->
+            <form id="teshis-form" onsubmit="kaydetVeGonder(event)">
+                <!-- TEŞHİS -->
+                <section class="px-6 py-6 border-b border-slate-100">
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-indigo-600 text-white text-sm font-bold">2</span>
+                        <h2 class="text-lg md:text-xl font-semibold text-slate-800">Teşhis / Tanı</h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group md:col-span-1">
+                            <label for="teshis-hastalik">Hastalık Seçimi (Branşınıza Özel)</label>
+                            <select id="teshis-hastalik"
+                                    onchange="document.getElementById('teshis-metni').value = this.value;"
+                                    class="bg-white">
+                                <option value="">Lütfen Uzmanlık Hastalığını Seçin (İsteğe Bağlı)</option>
+                            </select>
+                        </div>
+                        <div class="hidden md:block"></div>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label for="teshis-metni">Doktor Teşhis/Tanı Metni <span class="text-red-500">*</span></label>
+                        <textarea id="teshis-metni"
+                                  rows="4"
+                                  required
+                                  class="resize-y min-h-[96px]"
+                                  placeholder="Hastanın muayene bulgularına göre teşhisinizi detaylı şekilde yazınız."></textarea>
+                    </div>
+
+                    <div class="form-group mt-4">
+                        <label for="ek-notlar">Ek Notlar / Öneriler</label>
+                        <textarea id="ek-notlar"
+                                  rows="2"
+                                  class="resize-y"
+                                  placeholder="Hastaya ek tavsiyeler, dikkat edilmesi gerekenler vb."></textarea>
+                    </div>
+                </section>
+
+                <!-- İLAÇ REÇETESİ -->
+                <section class="px-6 py-6 border-b border-slate-100">
+                    <div class="flex items-center justify-between gap-2 mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-emerald-600 text-white text-sm font-bold">3</span>
+                            <h2 class="text-lg md:text-xl font-semibold text-slate-800">İlaç Reçetesi</h2>
+                        </div>
+                        <button type="button"
+                                onclick="ilacEkle()"
+                                class="inline-flex items-center px-3 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs md:text-sm font-semibold shadow-sm transition">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 6v12m6-6H6" />
+                            </svg>
+                            Yeni İlaç Ekle
+                        </button>
+                    </div>
+
+                    <div id="ilac-listesi" class="space-y-4">
+                        <!-- Dinamik ilaç kartları buraya eklenecek -->
+                    </div>
+                </section>
+
+                <!-- TESTLER -->
+                <section class="px-6 py-6 border-b border-slate-100">
+                    <div class="flex items-center justify-between gap-2 mb-4">
+                        <div class="flex items-center gap-2">
+                            <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-sky-600 text-white text-sm font-bold">4</span>
+                            <h2 class="text-lg md:text-xl font-semibold text-slate-800">Yapılan Test Sonuçları</h2>
+                        </div>
+                        <button type="button"
+                                onclick="testEkle()"
+                                class="inline-flex items-center px-3 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-xs md:text-sm font-semibold shadow-sm transition">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                      d="M12 6v12m6-6H6" />
+                            </svg>
+                            Yeni Test Ekle
+                        </button>
+                    </div>
+
+                    <div id="test-listesi" class="space-y-4">
+                        <!-- Dinamik test kartları buraya eklenecek -->
+                    </div>
+                </section>
+
+                <!-- BUTONLAR -->
+                <section class="px-6 py-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-slate-50">
+                    <p class="text-xs text-slate-500">
+                        <span class="text-red-500">*</span> işaretli alanlar zorunludur.
+                    </p>
+                    <div class="flex gap-3 justify-end">
+                        <button type="button"
+                                onclick="window.location.href='doktor_paneli.html#hastalar';"
+                                class="inline-flex items-center px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm font-semibold bg-white hover:bg-slate-100 transition">
+                            Vazgeç
+                        </button>
+                        <button type="submit"
+                                id="kaydet-btn"
+                                class="inline-flex items-center px-5 py-2.5 rounded-lg bg-indigo-700 hover:bg-indigo-800 text-white text-sm font-semibold shadow-md transition disabled:bg-slate-400 disabled:cursor-not-allowed">
+                            Teşhis ve Tedaviyi Kaydet
+                        </button>
+                    </div>
+                </section>
+            </form>
+        </div>
+    </main>
+
+    <!-- BAŞARI MESAJI -->
+    <div id="basari-mesaji"
+         class="fixed bottom-5 right-5 bg-emerald-500 text-white px-4 py-3 rounded-lg shadow-xl text-sm hidden">
+        ✅ Kayıt Başarılı!
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000';
+        let randevuData = {};
+
+        function normalizeDurum(raw) {
+            const d = (raw || '').toString().toLowerCase().trim();
+            if (!d) return '';
+            if (d.includes('onay')) return 'onay';
+            if (d.includes('cagr')) return 'cagrildi';
+            if (d.includes('tamam')) return 'tamamlandi';
+            return d;
+        }
+
+        // Geri butonu
+        document.getElementById('geri-btn').addEventListener('click', () => {
+            window.location.href = 'doktor_paneli.html#hastalar';
+        });
+
+        // =========================================================
+        // Sayfa Yüklenince
+        // =========================================================
+        window.onload = async () => {
+            const randevuId = localStorage.getItem('aktifRandevuId');
+            const doktorId = localStorage.getItem('aktifDoktorId');
+
+            if (!randevuId || !doktorId) {
+                alert("Randevu bilgisi eksik. Hastalarım sayfasına yönlendiriliyorsunuz.");
+                window.location.href = 'doktor_paneli.html#hastalar';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/doktor-paneli/veri/${doktorId}`);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Sunucu Hatası: ${response.status} ${errorText.substring(0, 100)}...`);
+                }
+                
+                const veri = await response.json();
+                randevuData = veri.randevular.find(r => r.id.toString() === randevuId.toString());
+
+                if (!randevuData) {
+                    alert("Randevu detayı bulunamadı. Hastalarım sayfasına yönlendiriliyorsunuz.");
+                    window.location.href = 'doktor_paneli.html#hastalar';
+                    return;
+                }
+                
+                const durumNorm = normalizeDurum(randevuData.durum);
+                const badge = document.getElementById('muayene-durum-badge');
+
+                if (durumNorm === 'tamamlandi') {
+                    badge.textContent = 'Muayene sonlandırıldı';
+                    badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-700 border border-emerald-200';
+                    alert("Bu randevu için muayene zaten tamamlanmış. Hastalarım sayfasına yönlendiriliyorsunuz.");
+                    window.location.href = 'doktor_paneli.html#hastalar';
+                    return;
+                } else if (durumNorm === 'cagrildi') {
+                    badge.textContent = 'Muayene devam ediyor';
+                    badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-amber-100 text-amber-700 border border-amber-200';
+                } else {
+                    badge.textContent = 'Muayene durumu: ' + (randevuData.durum || 'Bilinmiyor');
+                }
+
+                // Arayüzü doldur
+                document.getElementById('hasta-ad-soyad').textContent = randevuData.hasta;
+                document.getElementById('randevu-tarihi').textContent =
+                    new Date(randevuData.tarih).toLocaleString('tr-TR', { dateStyle: 'long', timeStyle: 'short' });
+                document.getElementById('hasta-id-goster').textContent = randevuData.hastaDetay?.hasta_id ?? '-';
+                document.getElementById('randevu-id-goster').textContent = randevuData.id;
+
+                const etiket = document.getElementById('hasta-etiket');
+                etiket.textContent = randevuData.hasta || 'Hasta';
+                etiket.classList.remove('hidden');
+
+                await yukleHastaliklar(doktorId);
+                
+                // Başlangıç için birer ilaç ve test bloğu
+                ilacEkle();
+                testEkle();
+
+            } catch (error) {
+                console.error("Yükleme Hatası:", error);
+                alert("Sayfa yüklenirken kritik bir hata oluştu. Hastalarım sayfasına yönlendiriliyorsunuz.");
+                window.location.href = 'doktor_paneli.html#hastalar';
+            }
+        };
+
+        async function yukleHastaliklar(doktorId) {
+            try {
+                const response = await fetch(`${API_URL}/doktor/hastaliklar/${doktorId}`);
+                if (!response.ok) throw new Error('Hastalık listesi yüklenemedi.');
+                const hastaliklar = await response.json();
+                
+                const selectElement = document.getElementById('teshis-hastalik');
+                selectElement.innerHTML = '<option value="">Lütfen Uzmanlık Hastalığını Seçin (İsteğe Bağlı)</option>';
+
+                hastaliklar.forEach(hastalik => {
+                    const option = document.createElement('option');
+                    option.value = hastalik;
+                    option.textContent = hastalik;
+                    selectElement.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error("Hastalık yükleme hatası:", error);
+            }
+        }
+
+        // =========================================================
+        // Dinamik Form Elemanları
+        // =========================================================
+        function ilacEkle() {
+            const list = document.getElementById('ilac-listesi');
+            const index = list.children.length;
+            const newIlac = document.createElement('div');
+            newIlac.className = 'border border-slate-200 p-4 rounded-xl bg-white shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4 relative';
+            newIlac.innerHTML = `
+                <button type="button"
+                        onclick="this.parentNode.remove()"
+                        class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold text-lg leading-none"
+                        title="İlacı Sil">&times;</button>
+                <div class="form-group md:col-span-2">
+                    <label for="ilac-adi-${index}">İlaç Adı</label>
+                    <input type="text" id="ilac-adi-${index}" data-type="ilac_adi" placeholder="Örn: Parol, Coraspin, vb." required>
+                </div>
+                <div class="form-group">
+                    <label for="ilac-dozaj-${index}">Dozaj/Miktar</label>
+                    <input type="text" id="ilac-dozaj-${index}" data-type="dozaj" placeholder="Örn: 10mg, 500mg, 1 kutu, vb.">
+                </div>
+                <div class="form-group">
+                    <label for="ilac-sure-${index}">Kullanım Süresi</label>
+                    <input type="text" id="ilac-sure-${index}" data-type="kullanim_suresi" placeholder="Örn: 7 gün, 3 ay, sürekli">
+                </div>
+                <div class="form-group md:col-span-2">
+                    <label for="ilac-sekil-${index}">Kullanım Şekli (Günde kaç kez, tok/aç)</label>
+                    <select id="ilac-sekil-${index}" data-type="kullanim_sekli" required class="bg-white">
+                        <option value="">Seçiniz</option>
+                        <option value="Yemekten Sonra Günde 1 Kez">Yemekten Sonra Günde 1 Kez</option>
+                        <option value="Yemekten Sonra Günde 2 Kez">Yemekten Sonra Günde 2 Kez</option>
+                        <option value="Yemekten Önce Günde 1 Kez">Yemekten Önce Günde 1 Kez</option>
+                        <option value="Aç Karnına Günde 1 Kez">Aç Karnına Günde 1 Kez</option>
+                        <option value="Günde 3 Kez (Saat Aralıklı)">Günde 3 Kez (Saat Aralıklı)</option>
+                        <option value="Gerektiğinde Kullan">Gerektiğinde Kullan</option>
+                    </select>
+                </div>
+            `;
+            list.appendChild(newIlac);
+        }
+
+        function testEkle() {
+            const list = document.getElementById('test-listesi');
+            const index = list.children.length;
+            const newTest = document.createElement('div');
+            newTest.className = 'border border-slate-200 p-4 rounded-xl bg-white shadow-sm grid grid-cols-1 md:grid-cols-2 gap-4 relative';
+            newTest.innerHTML = `
+                <button type="button"
+                        onclick="this.parentNode.remove()"
+                        class="absolute top-2 right-2 text-red-500 hover:text-red-700 font-bold text-lg leading-none"
+                        title="Testi Sil">&times;</button>
+                <div class="form-group md:col-span-2">
+                    <label for="test-adi-${index}">Test Adı</label>
+                    <input type="text" id="test-adi-${index}" data-type="test_adi" placeholder="Örn: Kan Testi, MR, EKG, vb." required>
+                </div>
+                <div class="form-group">
+                    <label for="test-degeri-${index}">Sonuç Değeri</label>
+                    <input type="text" id="test-degeri-${index}" data-type="sonuc_degeri" placeholder="Örn: 150">
+                </div>
+                <div class="form-group">
+                    <label for="test-araligi-${index}">Referans Aralığı</label>
+                    <input type="text" id="test-araligi-${index}" data-type="referans_araligi" placeholder="Örn: 70-100 mg/dL">
+                </div>
+                <div class="form-group md:col-span-2">
+                    <label for="test-sonucu-${index}">Sonuç Metni / Açıklaması</label>
+                    <textarea id="test-sonucu-${index}" rows="2" data-type="sonuc_metni" placeholder="Örn: Hafif Yüksek, Normal, Pozitif"></textarea>
+                </div>
+            `;
+            list.appendChild(newTest);
+        }
+
+        // =========================================================
+        // Veri Toplama & Gönderme
+        // =========================================================
+        function toplaFormVerisi() {
+            const teshisMetni = document.getElementById('teshis-metni').value.trim();
+            if (!teshisMetni) {
+                alert("Teşhis/Tanı metni boş bırakılamaz.");
+                return null;
+            }
+            const ekNotlar = document.getElementById('ek-notlar').value.trim();
+            
+            const ilacListesi = [];
+            document.querySelectorAll('#ilac-listesi > div').forEach(ilacDiv => {
+                const ilacAdi = ilacDiv.querySelector('[data-type="ilac_adi"]').value.trim();
+                const kullanimSekli = ilacDiv.querySelector('[data-type="kullanim_sekli"]').value.trim();
+
+                if (ilacAdi && kullanimSekli) { 
+                    ilacListesi.push({
+                        ilac_adi: ilacAdi,
+                        kullanim_sekli: kullanimSekli,
+                        kullanim_suresi: ilacDiv.querySelector('[data-type="kullanim_suresi"]').value.trim(),
+                        dozaj: ilacDiv.querySelector('[data-type="dozaj"]').value.trim()
+                    });
+                }
+            });
+
+            const testListesi = [];
+            document.querySelectorAll('#test-listesi > div').forEach(testDiv => {
+                const testAdi = testDiv.querySelector('[data-type="test_adi"]').value.trim();
+                if (testAdi) { 
+                    testListesi.push({
+                        test_adi: testAdi,
+                        sonuc_degeri: testDiv.querySelector('[data-type="sonuc_degeri"]').value.trim(),
+                        referans_araligi: testDiv.querySelector('[data-type="referans_araligi"]').value.trim(),
+                        sonuc_metni: testDiv.querySelector('[data-type="sonuc_metni"]').value.trim()
+                    });
+                }
+            });
+
+            return {
+                randevuId: parseInt(localStorage.getItem('aktifRandevuId')),
+                hastaId: parseInt(randevuData.hastaDetay.hasta_id),
+                doktorId: parseInt(localStorage.getItem('aktifDoktorId')),
+                teshisMetni: teshisMetni,
+                ekNotlar: ekNotlar,
+                ilaclar: ilacListesi,
+                testler: testListesi
+            };
+        }
+
+        async function kaydetVeGonder(event) {
+            event.preventDefault();
+            
+            const kaydetBtn = document.getElementById('kaydet-btn');
+            kaydetBtn.disabled = true;
+            kaydetBtn.textContent = 'Kaydediliyor...';
+
+            const veri = toplaFormVerisi();
+            if (!veri) {
+                kaydetBtn.disabled = false;
+                kaydetBtn.textContent = 'Teşhis ve Tedaviyi Kaydet';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/teshis-kaydet`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(veri)
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.mesaj || 'Kayıt sırasında bir hata oluştu.');
+                }
+
+                const result = await response.json();
+                
+                const basariMesaji = document.getElementById('basari-mesaji');
+                basariMesaji.textContent = result.mesaj || 'Teşhis başarıyla kaydedildi!';
+                basariMesaji.classList.remove('hidden');
+                setTimeout(() => basariMesaji.classList.add('hidden'), 4000);
+
+                // LocalStorage sadece bu randevu için temizlenebilir
+                localStorage.removeItem('aktifRandevuId');
+                localStorage.removeItem('aktifHastaId');
+
+                setTimeout(() => {
+                    window.location.href = 'doktor_paneli.html#hastalar'; 
+                }, 800);
+
+            } catch (error) {
+                console.error("Kayıt işlemi BAŞARISIZ oldu:", error);
+                alert("Kayıt işlemi BAŞARISIZ oldu: " + error.message);
+                kaydetBtn.disabled = false;
+                kaydetBtn.textContent = 'Teşhis ve Tedaviyi Kaydet';
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Daha Sağlıklı Bir Hayat | Fitness Takip</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style> body{font-family:Inter, sans-serif;} </style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 bg-gray-900 text-gray-200 p-5 flex flex-col">
+      <div class="mb-6">
+        <h1 class="text-xl font-extrabold text-white">💪 Daha Sağlıklı Bir Hayat</h1>
+        <p class="text-xs text-gray-400 mt-1">Fitness & Beslenme Asistanı</p>
+      </div>
+
+      <!-- Kullanıcı Kartı -->
+      <div class="bg-gray-800 rounded-2xl p-4 border border-gray-700">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-full bg-blue-600 flex items-center justify-center font-bold text-white" id="userInitials">?</div>
+          <div class="min-w-0">
+            <p class="font-semibold text-white truncate" id="userName">-</p>
+            <p class="text-xs text-gray-400 truncate" id="userMail">-</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mt-4 text-center">
+          <div class="bg-gray-900/60 rounded-xl p-2">
+            <p class="text-[11px] text-gray-400">Yaş</p>
+            <p class="font-semibold text-white" id="vYas">-</p>
+          </div>
+          <div class="bg-gray-900/60 rounded-xl p-2">
+            <p class="text-[11px] text-gray-400">Boy</p>
+            <p class="font-semibold text-white" id="vBoy">-</p>
+          </div>
+          <div class="bg-gray-900/60 rounded-xl p-2">
+            <p class="text-[11px] text-gray-400">Kilo</p>
+            <p class="font-semibold text-white" id="vKilo">-</p>
+          </div>
+        </div>
+
+        <div class="mt-3 bg-gray-900/60 rounded-xl p-3">
+          <p class="text-[11px] text-gray-400">Durum</p>
+          <p class="font-semibold text-white" id="vDurum">-</p>
+          <p class="text-xs text-gray-400 mt-1" id="vBmiLine">-</p>
+        </div>
+      </div>
+
+      <!-- Menü -->
+      <nav class="mt-6 flex-1">
+        <a href="fit.html" class="block px-4 py-3 rounded-xl hover:bg-gray-800 transition font-semibold">🏋️ Fitnes</a>
+        <a href="diyet.html" class="block px-4 py-3 rounded-xl hover:bg-gray-800 transition font-semibold">🥗 Diyet</a>
+        <a href="dogru_qidalanma.html" class="block px-4 py-3 rounded-xl hover:bg-gray-800 transition font-semibold">🍎 Doğru Qidalanma</a>
+        <a href="deger_olc.html" class="block px-4 py-3 rounded-xl hover:bg-gray-800 transition font-semibold">📊 Değer Ölç</a>
+      </nav>
+
+      <!-- ✅ Çıkış yerine Geri Dön -->
+      <button id="backBtn" class="mt-6 w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl">
+        ← Geri Dön
+      </button>
+    </aside>
+
+    <!-- CONTENT -->
+    <main class="flex-1 p-8">
+      <div class="max-w-5xl mx-auto">
+        <div class="bg-white rounded-3xl shadow p-8 border border-gray-100">
+          <h2 class="text-3xl font-extrabold text-gray-900">Fitness Takip Paneli</h2>
+          <p class="text-gray-600 mt-2">
+            Buradan hedefini belirleyebilir, beslenmeni yönetebilir ve ilerlemeni haftalık takip edebilirsin.
+          </p>
+
+          <div class="grid md:grid-cols-3 gap-5 mt-8">
+            <a href="fit.html" class="rounded-2xl border p-6 hover:shadow-lg transition bg-gradient-to-br from-blue-50 to-white">
+              <p class="text-sm text-blue-700 font-bold">🏋️ Fitnes</p>
+              <h3 class="text-xl font-extrabold mt-1">Hedef & Antrenman</h3>
+              <p class="text-gray-600 mt-2">Vücut tipini seç, kişisel programını al.</p>
+            </a>
+
+            <a href="diyet.html" class="rounded-2xl border p-6 hover:shadow-lg transition bg-gradient-to-br from-green-50 to-white">
+              <p class="text-sm text-green-700 font-bold">🥗 Diyet</p>
+              <h3 class="text-xl font-extrabold mt-1">Kilo Hedefi</h3>
+              <p class="text-gray-600 mt-2">Haftalık hedef belirle, motivasyonla ilerle.</p>
+            </a>
+
+            <a href="deger_olc.html" class="rounded-2xl border p-6 hover:shadow-lg transition bg-gradient-to-br from-amber-50 to-white">
+              <p class="text-sm text-amber-700 font-bold">📊 Değer Ölç</p>
+              <h3 class="text-xl font-extrabold mt-1">Kalori & Protein</h3>
+              <p class="text-gray-600 mt-2">Yediklerini gir, toplamları hesapla.</p>
+            </a>
+          </div>
+
+          <div class="mt-10 rounded-2xl border bg-gray-50 p-6">
+            <h4 class="font-extrabold text-gray-900 text-lg">✅ Profesyonel Yol Haritası</h4>
+            <ul class="mt-3 text-gray-700 space-y-2 list-disc pl-5">
+              <li>Önce profil (yaş/boy/kilo) oluşturulur, BMI & enerji ihtiyacı hesaplanır.</li>
+              <li>Hedef vücut tipi seçilir ve buna göre kalori/protein/antrenman planı belirlenir.</li>
+              <li>Diyet modülünde haftalık kilo takibi yapılır; motivasyon dili her zaman pozitif tutulur.</li>
+              <li>Doğru qidalanma modülünde günlük pratik beslenme önerileri ve “bugünün besini” sunulur.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: Profil Oluştur -->
+  <div id="profileModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+    <div class="bg-white w-full max-w-lg rounded-3xl shadow-2xl p-7">
+      <h3 class="text-2xl font-extrabold text-gray-900">İlk Kez Giriş – Profil Oluştur</h3>
+      <p class="text-gray-600 mt-1">Yaş, boy ve kilonu gir. Kişisel planın buna göre hazırlanacak.</p>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+        <div>
+          <label class="text-sm font-semibold text-gray-700">Yaş</label>
+          <input id="inpYas" type="number" min="10" max="90" class="mt-1 w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-gray-700">Boy (cm)</label>
+          <input id="inpBoy" type="number" min="120" max="230" class="mt-1 w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-gray-700">Kilo (kg)</label>
+          <input id="inpKilo" type="number" step="0.1" min="30" max="250" class="mt-1 w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"/>
+        </div>
+        <div>
+          <label class="text-sm font-semibold text-gray-700">Aktivite Seviyesi</label>
+          <select id="inpAktivite" class="mt-1 w-full border rounded-xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="1">Düşük (haftada 1-2)</option>
+            <option value="2" selected>Orta (haftada 3-4)</option>
+            <option value="3">Yüksek (haftada 5+)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="modalInfo" class="mt-4 text-sm text-gray-600"></div>
+
+      <div class="flex gap-3 mt-6">
+        <button id="saveProfileBtn" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl">
+          Kaydet
+        </button>
+        <button id="closeModalBtn" class="px-5 py-3 rounded-xl border font-semibold hover:bg-gray-50">
+          İptal
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ✅ API her zaman 5000
+    const DEFAULT_API = "http://localhost:5000";
+    const urlApi = new URLSearchParams(location.search).get("api");
+    const API = (urlApi && urlApi.startsWith("http")) ? urlApi.replace(/\/$/, "") : DEFAULT_API;
+
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem("hastaBilgisi")); } catch { return null; }
+    }
+
+    function initials(ad, soyad) {
+      const a = (ad || "").trim()[0] || "";
+      const s = (soyad || "").trim()[0] || "";
+      return (a + s).toUpperCase() || "?";
+    }
+
+    // ✅ Giriş kontrolü: uyarı + login yönlendirme
+    function requireLogin() {
+      const user = getUser();
+      if (!user || !user.id) {
+        alert("Bu sayfayı görüntülemek için giriş yapmalısın. Login sayfasına yönlendiriliyorsun.");
+        window.location.href = "login.html";
+        return null;
+      }
+      return user;
+    }
+
+    function openModal(msg) {
+      const m = document.getElementById("profileModal");
+      document.getElementById("modalInfo").textContent = msg || "";
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+    }
+    function closeModal() {
+      const m = document.getElementById("profileModal");
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+
+    async function safeJson(resp) {
+      try { return await resp.json(); } catch { return null; }
+    }
+
+    async function safeFetch(url, options) {
+      try {
+        return await fetch(url, { cache: "no-store", ...(options || {}) });
+      } catch {
+        throw new Error("SUNUCU_BAGLANTI_HATASI");
+      }
+    }
+
+    async function loadProfile(hastaId) {
+      const r = await safeFetch(`${API}/api/fitness/profile/${hastaId}`);
+      if (r.status === 404) return null;
+      if (!r.ok) {
+        const data = await safeJson(r);
+        throw new Error(data?.error || "Profil alınamadı");
+      }
+      return await r.json();
+    }
+
+    function fillUserCard(user, profile) {
+      document.getElementById("userInitials").textContent = initials(user.ad, user.soyad);
+      document.getElementById("userName").textContent = `${user.ad || ""} ${user.soyad || ""}`.trim() || "-";
+      document.getElementById("userMail").textContent = user.email || "-";
+
+      if (profile) {
+        document.getElementById("vYas").textContent = profile.yas ?? "-";
+        document.getElementById("vBoy").textContent = profile.boy_cm ? `${profile.boy_cm} cm` : "-";
+        document.getElementById("vKilo").textContent = (profile.kilo_kg != null) ? `${Number(profile.kilo_kg).toFixed(1)} kg` : "-";
+        document.getElementById("vDurum").textContent = profile.bmi_durum ?? "-";
+        document.getElementById("vBmiLine").textContent =
+          `BMI: ${Number(profile.bmi).toFixed(2)} | BMR: ${profile.bmr} | TDEE: ${profile.tdee}`;
+      } else {
+        document.getElementById("vYas").textContent = "-";
+        document.getElementById("vBoy").textContent = "-";
+        document.getElementById("vKilo").textContent = "-";
+        document.getElementById("vDurum").textContent = "Profil gerekli";
+        document.getElementById("vBmiLine").textContent = "İlk girişte yaş/boy/kilo doldur.";
+      }
+    }
+
+    async function saveProfile(user) {
+      const yas = Number(document.getElementById("inpYas").value);
+      const boy = Number(document.getElementById("inpBoy").value);
+      const kilo = Number(document.getElementById("inpKilo").value);
+      const aktivite = Number(document.getElementById("inpAktivite").value);
+
+      if (!yas || !boy || !kilo) {
+        document.getElementById("modalInfo").textContent = "Lütfen tüm alanları doldur.";
+        return;
+      }
+
+      const payload = {
+        hasta_id: user.id,
+        yas,
+        boy_cm: boy,
+        kilo_kg: kilo,
+        aktivite_seviyesi: aktivite
+      };
+
+      let r;
+      try {
+        r = await safeFetch(`${API}/api/fitness/profile`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      } catch {
+        document.getElementById("modalInfo").textContent =
+          `❌ Sunucuya bağlanılamadı. Backend çalışıyor mu? (${API})`;
+        return;
+      }
+
+      const data = await safeJson(r);
+
+      if (!r.ok) {
+        document.getElementById("modalInfo").textContent =
+          data?.error || `Kayıt hatası. (HTTP ${r.status})`;
+        return;
+      }
+
+      document.getElementById("modalInfo").textContent =
+        `✅ Kaydedildi. Durum: ${data.bmi_durum} | BMI: ${data.bmi} | TDEE: ${data.tdee}`;
+
+      try {
+        const prof = await loadProfile(user.id);
+        fillUserCard(user, prof);
+        setTimeout(closeModal, 650);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", async () => {
+      const user = requireLogin();
+      if (!user) return;
+
+      console.log("Fitness API:", API);
+
+      // ✅ Geri dön butonu: /saglik.html
+      document.getElementById("backBtn").addEventListener("click", () => {
+        window.location.href = "/saglik.html";
+      });
+
+      try {
+        const prof = await loadProfile(user.id);
+        fillUserCard(user, prof);
+        if (!prof) openModal();
+      } catch (e) {
+        console.error(e);
+
+        if (String(e.message).includes("SUNUCU_BAGLANTI_HATASI")) {
+          fillUserCard(user, null);
+          openModal(`❌ Sunucuya bağlanılamadı. Backend'i başlat: ${API}`);
+        } else {
+          fillUserCard(user, null);
+          openModal(`⚠️ Profil alınamadı: ${e.message}`);
+        }
+      }
+
+      document.getElementById("saveProfileBtn").addEventListener("click", () => saveProfile(user));
+      document.getElementById("closeModalBtn").addEventListener("click", closeModal);
+    });
+  </script>
+</body>
+</html>

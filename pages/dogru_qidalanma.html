@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Doğru Qidalanma</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>body{font-family:Inter, sans-serif;}</style>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="flex items-center justify-between">
+      <a href="fitnes_takip.html" class="text-blue-700 font-bold">← Panele Dön</a>
+      <button id="logoutBtn" class="text-sm font-bold text-red-600">Çıkış</button>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow p-8 mt-4 border">
+      <h1 class="text-3xl font-extrabold">🍎 Doğru Qidalanma</h1>
+      <p class="text-gray-600 mt-2">
+        Günlük beslenme düzeni, performans ve sağlık için temel taşıdır. Burada pratik ve uygulanabilir öneriler var.
+      </p>
+
+      <div class="grid md:grid-cols-2 gap-5 mt-8">
+        <div class="border rounded-2xl p-6 bg-gray-50">
+          <h2 class="text-xl font-extrabold">Günlük Örnek Menü</h2>
+          <ul class="mt-3 space-y-2 text-gray-800 list-disc pl-5">
+            <li><b>Kahvaltı:</b> yumurta + yoğurt + yulaf / tam buğday + zeytin</li>
+            <li><b>Ara:</b> meyve + kuruyemiş (porsiyon kontrollü)</li>
+            <li><b>Öğle:</b> tavuk/balık/baklagil + salata + bulgur/pirinç</li>
+            <li><b>Ara:</b> kefir / yoğurt + tarçın</li>
+            <li><b>Akşam:</b> sebze yemeği + protein + hafif karbonhidrat</li>
+          </ul>
+          <div class="mt-4 bg-blue-50 border border-blue-100 rounded-2xl p-4">
+            <p class="font-bold text-blue-900">Altın Kural</p>
+            <p class="text-blue-900 mt-1">Her ana öğünde: <b>protein + lif + su</b>. Bu kombinasyon açlığı dengeler.</p>
+          </div>
+        </div>
+
+        <div class="border rounded-2xl p-6">
+          <h2 class="text-xl font-extrabold">Bugünün Besini</h2>
+          <div id="foodCard" class="mt-4 bg-green-50 border border-green-100 rounded-2xl p-6">
+            <p class="text-sm text-green-800 font-bold" id="foodName">-</p>
+            <p class="text-gray-800 mt-2" id="foodBenefit">-</p>
+            <p class="text-gray-700 mt-3 text-sm"><b>Günlük öneri:</b> <span id="foodDaily">-</span></p>
+            <p class="text-gray-700 mt-1 text-sm"><b>Kimler için iyi?</b> <span id="foodFor">-</span></p>
+          </div>
+          <button id="refreshFood" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl">
+            Yeni Besin Öner
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-8 border rounded-2xl p-6">
+        <h2 class="text-xl font-extrabold">✅ Günlük Uygulanabilir Kurallar</h2>
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+          <div class="bg-gray-50 border rounded-2xl p-5">
+            <p class="font-extrabold">Su</p>
+            <p class="text-sm text-gray-700 mt-2">Gün içine yay. Antrenmanda ekstra 500-800ml ekle.</p>
+          </div>
+          <div class="bg-gray-50 border rounded-2xl p-5">
+            <p class="font-extrabold">Protein</p>
+            <p class="text-sm text-gray-700 mt-2">Her öğünde 25-40g hedefle (kişiye göre değişir).</p>
+          </div>
+          <div class="bg-gray-50 border rounded-2xl p-5">
+            <p class="font-extrabold">Uyku</p>
+            <p class="text-sm text-gray-700 mt-2">7-9 saat uyku = daha iyi iştah kontrolü ve toparlanma.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function getUser(){ try { return JSON.parse(localStorage.getItem("hastaBilgisi")); } catch { return null; } }
+    function requireLogin(){ const u=getUser(); if(!u||!u.id){ window.location.href="login.html"; return null; } return u; }
+
+    const foods = [
+      { name:"Elma", benefit:"Lif (pektin) sayesinde sindirimi destekler, tokluk hissi verir.", daily:"1-2 orta boy", forWhom:"Tokluk ve bağırsak düzeni isteyenler" },
+      { name:"Yoğurt", benefit:"Protein ve probiyotik içerir. Kas toparlanması ve bağırsak sağlığına destek olur.", daily:"1 kase", forWhom:"Antrenman yapanlar, sindirimi hassas olanlar" },
+      { name:"Yulaf", benefit:"Kompleks karbonhidrat + lif. Enerjiyi dengeli verir.", daily:"40-60g", forWhom:"Düzenli enerji ve tok kalmak isteyenler" },
+      { name:"Badem", benefit:"Sağlıklı yağ + E vitamini. Porsiyon kontrolü önemli.", daily:"15-20 adet", forWhom:"Ara öğünde dengeli atıştırmalık arayanlar" },
+      { name:"Somon", benefit:"Omega-3 desteği ile kalp ve inflamasyon yönetimine yardımcı.", daily:"Haftada 2 kez", forWhom:"Kalp-damar sağlığını desteklemek isteyenler" },
+      { name:"Mercimek", benefit:"Bitkisel protein + lif. Dengeli öğün için çok iyi.", daily:"1 porsiyon", forWhom:"Diyet yapanlar ve bütçe dostu protein arayanlar" },
+    ];
+
+    function pickFood(){
+      const i = Math.floor(Math.random()*foods.length);
+      const f = foods[i];
+      document.getElementById("foodName").textContent = f.name;
+      document.getElementById("foodBenefit").textContent = f.benefit;
+      document.getElementById("foodDaily").textContent = f.daily;
+      document.getElementById("foodFor").textContent = f.forWhom;
+    }
+
+    document.addEventListener("DOMContentLoaded", ()=>{
+      const u = requireLogin(); if(!u) return;
+      pickFood();
+      document.getElementById("refreshFood").addEventListener("click", pickFood);
+      document.getElementById("logoutBtn").addEventListener("click", ()=>{
+        localStorage.removeItem("hastaBilgisi");
+        window.location.href="login.html";
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth"> 
+<!-- scroll-smooth pürüzsüz kaydırma sağlar -->
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Doktorlarımız ve Başarılarımız - Sağlık Portalı</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome (İkonlar için) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <!-- Tailwind Yapılandırması ve Özel Stiller -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif']
+                    },
+                    colors: {
+                        'blue': {
+                            '600': '#005A9C', // Ana mavi (Biraz daha koyu ve kurumsal)
+                            '700': '#004A8C',
+                            '50': '#F0F6FA'   // Çok açık mavi zemin
+                        },
+                        'cyan': {
+                            '500': '#00C1D4', // Vurgu rengi
+                            '600': '#00A9BB'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Özel Stiller (Hero Arkaplanı ve Animasyon için) -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Hero (İlk karşılama) bölümü için özel arkaplan */
+        .hero-banner {
+            background: linear-gradient(rgba(0, 74, 140, 0.8), rgba(0, 74, 140, 0.7)), 
+                        url('https://placehold.co/1920x800/2C3E50/FFFFFF?text=Uzman+Doktor+Ekibimiz') 
+                        no-repeat center center / cover;
+        }
+
+        /* JavaScript ile tetiklenecek scroll animasyonu sınıfları */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .fade-in-up.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* SSS Akordiyon için özel geçiş */
+        .faq-cevap {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <!-- ======== YENİ NAVİGASYON (SİZİN İSTEDİĞİNİZ) ======== -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto flex items-center justify-between p-4 px-6">
+            <div class="text-2xl font-bold text-blue-600">
+                <!-- Linki ana sayfa olarak güncelledim -->
+                <a href="saglik.html">Sağlık Portalı</a>
+            </div>
+
+            <!-- Menü linklerini güncelledim ve 'Doktorlarımız' aktif hale getirildi -->
+            <ul class="hidden md:flex items-center space-x-8 font-semibold text-gray-600">
+                <li><a href="saglik.html" class="hover:text-blue-600 transition-colors">Ana Sayfa</a></li>
+                <li><a href="doktorlarimiz .html" class="hover:text-blue-600 transition-colors">Doktorlarımız</a></li>
+                <li><a href="pages/randevuAlma.html" class="hover:text-blue-600 transition-colors">Randevu Al</a></li>
+                <li><a href="pages/chat_boot.html" class="hover:text-blue-600 transition-colors">Dokdor AI</a></li>
+                <li><a href="hizmetlerimiz.html" class="hover:text-blue-600 transition-colors">Hizmetlerimiz</a></li>
+                <li><a href="iletisim.html" class="hover:text-blue-600 transition-colors">İletişim</a></li>
+            </ul>       
+
+            <div id="userArea">
+                <a href="pages/login.html"
+                    class="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow">
+                    Giriş Yap
+                </a>
+            </div>
+        </nav>
+    </header>
+    <!-- ======== YENİ NAVİGASYON BİTİŞİ ======== -->
+
+
+    <!-- ======== HERO BÖLÜMÜ (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <header class="hero-banner h-[60vh] flex items-center justify-center text-center text-white p-4">
+        <div class="fade-in-up is-visible"> 
+            <!-- İlk açılışta direkt görünsün -->
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Sağlığınız, Alanındaki <strong class="text-cyan-500">En İyilerin</strong> Ellerinde</h1>
+            <p class="text-lg md:text-xl max-w-2xl mx-auto mb-8 font-light">Deneyimli kadromuz, en ileri teknolojilerle ve hasta odaklı yaklaşımla hizmetinizde.</p>
+            <a href="#doktorlar" 
+               class="bg-blue-600 text-white font-bold px-8 py-3 rounded-lg hover:bg-cyan-500 hover:text-gray-900 transition-all duration-300 shadow-lg text-lg transform hover:scale-105">
+               Ekibimizle Tanışın
+            </a>
+        </div>
+    </header>
+
+    <!-- ======== FELSEFEMİZ BÖLÜMÜ (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <section class="container mx-auto px-6 py-12 text-center bg-white rounded-lg shadow-xl -mt-16 relative z-10 fade-in-up">
+        <h2 class="text-3xl font-bold text-gray-900 mb-4">Felsefemiz: Önce İnsan, Daima Bilim</h2>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">En karmaşık vakalarda bile, multidisipliner yaklaşımımız ve kişiye özel tedavi planlarımızla fark yaratıyoruz. Bizim için her hasta, çözülmesi gereken benzersiz bir hikayedir.</p>
+    </section>
+
+    <!-- ======== ÖNE ÇIKAN DOKTORLAR BÖLÜMÜ (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <section id="doktorlar" class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">Uzman Kadromuz</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Doktor Kartı 1 -->
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300 fade-in-up">
+                    <img src="https://placehold.co/600x400/005A9C/FFFFFF?text=Dr.+Elif+Yılmaz" alt="Prof. Dr. Elif Yılmaz" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-blue-700 mb-1">Prof. Dr. Elif Yılmaz</h3>
+                        <p class="text-md font-semibold text-cyan-600 mb-4">Kardiyoloji Uzmanı / Bölüm Başkanı</p>
+                        <p class="text-gray-600 mb-6 flex-grow">Robotik kalp cerrahisi ve minimal invaziv prosedürler konusunda 20 yıllık deneyim.</p>
+                        <a href="#" class="mt-auto text-center bg-gray-100 text-blue-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Tam Profili Gör</a>
+                    </div>
+                </div>
+
+                <!-- Doktor Kartı 2 -->
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300 fade-in-up">
+                    <img src="https://placehold.co/600x400/2C3E50/FFFFFF?text=Doç.+Dr.+Ahmet+Kaya" alt="Doç. Dr. Ahmet Kaya" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-blue-700 mb-1">Doç. Dr. Ahmet Kaya</h3>
+                        <p class="text-md font-semibold text-cyan-600 mb-4">Nöroloji ve Beyin Cerrahisi</p>
+                        <p class="text-gray-600 mb-6 flex-grow">Yapay zeka destekli tümör tespiti ve Parkinson hastalığı tedavilerinde öncü araştırmalar.</p>
+                        <a href="#" class="mt-auto text-center bg-gray-100 text-blue-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Tam Profili Gör</a>
+                    </div>
+                </div>
+
+                <!-- Doktor Kartı 3 -->
+                <div class="bg-white rounded-lg shadow-xl overflow-hidden flex flex-col transform hover:-translate-y-2 transition-transform duration-300 fade-in-up">
+                    <img src="https://placehold.co/600x400/00A9BB/FFFFFF?text=Uzm.+Dr.+Zeynep+Demir" alt="Uzm. Dr. Zeynep Demir" class="w-full h-64 object-cover">
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-blue-700 mb-1">Uzm. Dr. Zeynep Demir</h3>
+                        <p class="text-md font-semibold text-cyan-600 mb-4">Pediatrik Onkoloji</p>
+                        <p class="text-gray-600 mb-6 flex-grow">Çocukluk çağı kanserlerinde genetik temelli yenilikçi tedavi protokolleri uygulamaktadır.</p>
+                        <a href="#" class="mt-auto text-center bg-gray-100 text-blue-700 font-semibold py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors">Tam Profili Gör</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== TEKNOLOJİ BÖLÜMÜ (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <section class="py-20 bg-blue-50">
+        <div class="container mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">En Zor Hastalıklara Karşı: <strong class="text-gray-900">Teknoloji ve Tecrübe</strong></h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Teknoloji Kartı 1 -->
+                <div class="bg-white p-8 text-center rounded-lg shadow-lg transform hover:-translate-y-2 transition-transform duration-300 fade-in-up">
+                    <i class="fas fa-robot text-5xl text-blue-600 mb-6"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Robotik Cerrahi (da Vinci)</h3>
+                    <p class="text-gray-600">En karmaşık ameliyatlarda bile milimetrik hassasiyet, daha az ağrı ve daha hızlı iyileşme sağlıyoruz.</p>
+                </div>
+
+                <!-- Teknoloji Kartı 2 -->
+                <div class="bg-white p-8 text-center rounded-lg shadow-lg transform hover:-translate-y-2 transition-transform duration-300 fade-in-up">
+                    <i class="fas fa-dna text-5xl text-blue-600 mb-6"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Genomik Tıp</h3>
+                    <p class="text-gray-600">Kanserin ve nadir hastalıkların tedavisini kişiselleştiriyoruz. Tedavinizi, genetik haritanıza göre planlıyoruz.</p>
+                </div>
+
+                <!-- Teknoloji Kartı 3 -->
+                <div class="bg-white p-8 text-center rounded-lg shadow-lg transform hover:-translate-y-2 transition-transform duration-300 fade-in-up">
+                    <i class="fas fa-brain text-5xl text-blue-600 mb-6"></i>
+                    <h3 class="text-xl font-bold text-gray-900 mb-3">Yapay Zeka Destekli Teşhis</h3>
+                    <p class="text-gray-600">Radyoloji görüntülerinde (MR, BT) yapay zeka kullanarak, gözden kaçabilecek en küçük riskleri bile erkenden saptıyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== BAŞARILARIMIZ (SAYAÇ) BÖLÜMÜ (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <section class="basarilar-section py-20 container mx-auto px-6">
+        <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">Rakamlarla Başarılarımız</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+            
+            <div class="bg-white p-6 text-center rounded-lg shadow-xl fade-in-up">
+                <i class="fas fa-heart-pulse text-4xl text-cyan-500 mb-4"></i>
+                <h3 class="text-4xl font-bold text-blue-700 counter" data-target="15000">0</h3>
+                <p class="text-gray-500 font-semibold">Başarılı Operasyon</p>
+            </div>
+
+            <div class="bg-white p-6 text-center rounded-lg shadow-xl fade-in-up">
+                <i class="fas fa-award text-4xl text-cyan-500 mb-4"></i>
+                <h3 class="text-4xl font-bold text-blue-700 counter" data-target="45">0</h3>
+                <p class="text-gray-500 font-semibold">Uluslararası Ödül</p>
+            </div>
+
+            <div class="bg-white p-6 text-center rounded-lg shadow-xl fade-in-up">
+                <i class="fas fa-book-medical text-4xl text-cyan-500 mb-4"></i>
+                <h3 class="text-4xl font-bold text-blue-700 counter" data-target="200">0</h3>
+                <p class="text-gray-500 font-semibold">Bilimsel Yayın</p>
+            </div>
+
+            <div class="bg-white p-6 text-center rounded-lg shadow-xl fade-in-up">
+                <i class="fas fa-smile text-4xl text-cyan-500 mb-4"></i>
+                <h3 class="text-4xl font-bold text-blue-700 counter" data-target="99">0</h3>
+                <p class="text-gray-500 font-semibold">% Hasta Memnuniyeti</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- ======== SSS (AKORDİYON) BÖLÜMÜ (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <section class="py-20 bg-gray-50">
+        <h2 class="text-3xl font-bold text-center text-blue-700 mb-12">Merak Edilenler</h2>
+        <div class="container mx-auto max-w-3xl px-6 fade-in-up">
+            
+            <!-- SSS 1 -->
+            <div class="bg-white rounded-lg shadow-md mb-4 overflow-hidden">
+                <button class="faq-soru w-full flex justify-between items-center text-left p-6 hover:bg-gray-50 focus:outline-none">
+                    <span class="text-lg font-semibold text-gray-800">Tedavilerde kullanılan en son teknolojileriniz nelerdir?</span>
+                    <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-cevap"> <!-- Stil `max-height: 0` ve `transition` ile kontrol edilecek -->
+                    <p class="p-6 border-t border-gray-200 text-gray-600">
+                        Hastanemiz, Robotik Cerrahi (da Vinci), Gamma Knife, Kişiselleştirilmiş Kanser Tedavileri (Genomik Tıp) ve Yapay Zeka destekli görüntüleme gibi alanlarda en güncel teknolojileri kullanmaktadır. Bu sayede, "tedavisi zor" olarak bilinen birçok hastalıkta başarı oranlarımızı artırıyoruz.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SSS 2 -->
+            <div class="bg-white rounded-lg shadow-md mb-4 overflow-hidden">
+                <button class="faq-soru w-full flex justify-between items-center text-left p-6 hover:bg-gray-50 focus:outline-none">
+                    <span class="text-lg font-semibold text-gray-800">En zor hastalıklara yaklaşımınız (mücadele şekliniz) nedir?</span>
+                    <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-cevap">
+                    <p class="p-6 border-t border-gray-200 text-gray-600">
+                        Yaklaşımımız "Tümör Konseyi" veya "Multidisipliner Konsey" temeline dayanır. Bir vaka geldiğinde, sadece bir bölüm değil; ilgili tüm branşlardan (Örn: Onkoloji, Cerrahi, Radyoloji, Patoloji) uzman doktorlarımız bir araya gelir. Vaka, tüm yönleriyle tartışılarak en doğru ve en kapsamlı tedavi planı ortak kararla oluşturulur.
+                    </p>
+                </div>
+            </div>
+
+            <!-- SSS 3 -->
+            <div class="bg-white rounded-lg shadow-md mb-4 overflow-hidden">
+                <button class="faq-soru w-full flex justify-between items-center text-left p-6 hover:bg-gray-50 focus:outline-none">
+                    <span class="text-lg font-semibold text-gray-800">Doktorunuzun uzmanlık alanının benim için doğru olup olmadığını nasıl anlarım?</span>
+                    <i class="fas fa-chevron-down text-gray-500 transition-transform duration-300"></i>
+                </button>
+                <div class="faq-cevap">
+                    <p class="p-6 border-t border-gray-200 text-gray-600">
+                        Her doktorumuzun detaylı profil sayfasında, özel ilgi alanları, tedavi ettikleri hastalıklar, uyguladıkları spesifik cerrahi yöntemler ve bilimsel yayınları yer almaktadır. Ayrıca, "Randevu Al" sayfasındaki akıllı yönlendirme sistemi, şikayetlerinize göre sizi en doğru uzmana yönlendirecektir.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ======== FOOTER (TAILWIND İLE YENİDEN DÜZENLENDİ) ======== -->
+    <footer class="bg-gray-800 text-gray-400 text-center p-8 mt-16">
+        <div class="container mx-auto">
+            <p>&copy; 2025 Sağlık Portalı. Tüm Hakları Saklıdır. | Bu bir demo çalışmasıdır.</p>
+        </div>
+    </footer>
+
+
+    <!-- ======== GEREKLİ JAVASCRIPT KODLARI ======== -->
+    <!-- Eski script.js dosyasının içeriği, sayfanın içine gömüldü -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // === 1. SSS (AKORDİYON) FONKSİYONU ===
+            const faqSorular = document.querySelectorAll(".faq-soru");
+
+            faqSorular.forEach(soru => {
+                soru.addEventListener("click", () => {
+                    const cevap = soru.nextElementSibling; // Sorudan sonraki 'faq-cevap' div'i
+                    const icon = soru.querySelector("i");
+
+                    // Tıklananı aç/kapat
+                    if (cevap.style.maxHeight) {
+                        // Kapalıysa aç
+                        cevap.style.maxHeight = null;
+                        icon.classList.remove("rotate-180");
+                    } else {
+                        // Açıksa kapat
+                        cevap.style.maxHeight = cevap.scrollHeight + "px";
+                        icon.classList.add("rotate-180");
+                    }
+                });
+            });
+
+
+            // === 2. SCROLL (KAYDIRMA) ANİMASYONU ===
+            const fadeInElements = document.querySelectorAll(".fade-in-up");
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("is-visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // %10 görününce
+            });
+
+            fadeInElements.forEach(el => {
+                // 'is-visible' sınıfı olmayanları gözlemle (hero banner hariç)
+                if (!el.classList.contains("is-visible")) {
+                    observer.observe(el);
+                }
+            });
+
+
+            // === 3. ANİMASYONLU SAYAÇ FONKSİYONU ===
+            const counters = document.querySelectorAll(".counter");
+            let sayacBasladi = false;
+            const basarilarSection = document.querySelector(".basarilar-section");
+
+            function startCounters() {
+                counters.forEach(counter => {
+                    const target = +counter.getAttribute('data-target');
+                    const speed = 200; 
+                    const increment = target / speed;
+
+                    const updateCount = () => {
+                        const count = +counter.innerText;
+                        if (count < target) {
+                            counter.innerText = Math.ceil(count + increment);
+                            setTimeout(updateCount, 10); // Hızı ayarlamak için
+                        } else {
+                            counter.innerText = target;
+                        }
+                    };
+                    updateCount();
+                });
+            }
+
+            const counterObserver = new IntersectionObserver((entries) => {
+                const [entry] = entries;
+                if (entry.isIntersecting && !sayacBasladi) {
+                    sayacBasladi = true;
+                    startCounters();
+                    counterObserver.unobserve(basarilarSection);
+                }
+            }, {
+                threshold: 0.5 // %50 görününce
+            });
+
+            if (basarilarSection) {
+                counterObserver.observe(basarilarSection);
+            }
+        });
+    </script>
+</body>
+</html>
+
+    <section class="felsefe container fade-in">
+        <h2>Felsefemiz: Önce İnsan, Daima Bilim</h2>
+        <p>En karmaşık vakalarda bile, multidisipliner yaklaşımımız ve kişiye özel tedavi planlarımızla fark yaratıyoruz. Bizim için her hasta, çözülmesi gereken benzersiz bir hikayedir.</p>
+    </section>
+
+    <section id="doktorlar" class="doktor-grid-section container">
+        <h2 class="section-title">Uzman Kadromuz</h2>
+        <div class="doktor-grid">
+            
+            <div class="doktor-kart fade-in">
+                <div class="doktor-foto">
+                    <img src="https://via.placeholder.com/300x300.png?text=Dr.+Elif+Yılmaz" alt="Prof. Dr. Elif Yılmaz">
+                </div>
+                <div class="doktor-bilgi">
+                    <h3>Prof. Dr. Elif Yılmaz</h3>
+                    <p class="unvan">Kardiyoloji Uzmanı / Bölüm Başkanı</p>
+                    <p class="ozet">Robotik kalp cerrahisi ve minimal invaziv prosedürler konusunda 20 yıllık deneyim.</p>
+                    <a href="#" class="btn btn-secondary">Tam Profili Gör</a>
+                </div>
+            </div>
+
+            <div class="doktor-kart fade-in">
+                <div class="doktor-foto">
+                    <img src="https://via.placeholder.com/300x300.png?text=Doç.+Dr.+Ahmet+Kaya" alt="Doç. Dr. Ahmet Kaya">
+                </div>
+                <div class="doktor-bilgi">
+                    <h3>Doç. Dr. Ahmet Kaya</h3>
+                    <p class="unvan">Nöroloji ve Beyin Cerrahisi</p>
+                    <p class="ozet">Yapay zeka destekli tümör tespiti ve Parkinson hastalığı tedavilerinde öncü araştırmalar.</p>
+                    <a href="#" class="btn btn-secondary">Tam Profili Gör</a>
+                </div>
+            </div>
+
+            <div class="doktor-kart fade-in">
+                <div class="doktor-foto">
+                    <img src="https://via.placeholder.com/300x300.png?text=Uzm.+Dr.+Zeynep+Demir" alt="Uzm. Dr. Zeynep Demir">
+                </div>
+                <div class="doktor-bilgi">
+                    <h3>Uzm. Dr. Zeynep Demir</h3>
+                    <p class="unvan">Pediatrik Onkoloji</p>
+                    <p class="ozet">Çocukluk çağı kanserlerinde genetik temelli yenilikçi tedavi protokolleri uygulamaktadır.</p>
+                    <a href="#" class="btn btn-secondary">Tam Profili Gör</a>
+                </div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section class="teknoloji-section">
+        <div class="container">
+            <h2 class="section-title">En Zor Hastalıklara Karşı: **Teknoloji ve Tecrübe**</h2>
+            <div class="teknoloji-grid">
+                
+                <div class="teknoloji-kart fade-in">
+                    <i class="fas fa-robot"></i>
+                    <h3>Robotik Cerrahi (da Vinci)</h3>
+                    <p>En karmaşık ameliyatlarda bile milimetrik hassasiyet, daha az ağrı ve daha hızlı iyileşme sağlıyoruz.</p>
+                </div>
+
+                <div class="teknoloji-kart fade-in">
+                    <i class="fas fa-dna"></i>
+                    <h3>Genomik Tıp</h3>
+                    <p>Kanserin ve nadir hastalıkların tedavisini kişiselleştiriyoruz. Tedavinizi, genetik haritanıza göre planlıyoruz.</p>
+                </div>
+
+                <div class="teknoloji-kart fade-in">
+                    <i class="fas fa-brain"></i>
+                    <h3>Yapay Zeka Destekli Teşhis</h3>
+                    <p>Radyoloji görüntülerinde (MR, BT) yapay zeka kullanarak, gözden kaçabilecek en küçük riskleri bile erkenden saptıyoruz.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="basarilar-section container">
+        <h2 class="section-title">Rakamlarla Başarılarımız</h2>
+        <div class="basari-grid">
+            <div class="basari-item fade-in">
+                <i class="fas fa-heart-pulse"></i>
+                <h3 class="counter" data-target="15000">0</h3>
+                <p>Başarılı Operasyon</p>
+            </div>
+            <div class="basari-item fade-in">
+                <i class="fas fa-award"></i>
+                <h3 class="counter" data-target="45">0</h3>
+                <p>Uluslararası Ödül</p>
+            </div>
+            <div class="basari-item fade-in">
+                <i class="fas fa-book-medical"></i>
+                <h3 class="counter" data-target="200">0</h3>
+                <p>Bilimsel Yayın</p>
+            </div>
+            <div class="basari-item fade-in">
+                <i class="fas fa-smile"></i>
+                <h3 class="counter" data-target="99">0</h3>
+                <p>% Hasta Memnuniyeti</p>
+            </div>
+        </div>
+    </section>
+    
+    <section class="faq-section container">
+        <h2 class="section-title">Merak Edilenler</h2>
+        <div class="faq-container">
+            
+            <div class="faq-item">
+                <button class="faq-soru">
+                    Tedavilerde kullanılan en son teknolojileriniz nelerdir?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-cevap">
+                    <p>Hastanemiz, Robotik Cerrahi (da Vinci), Gamma Knife, Kişiselleştirilmiş Kanser Tedavileri (Genomik Tıp) ve Yapay Zeka destekli görüntüleme gibi alanlarda en güncel teknolojileri kullanmaktadır. Bu sayede, "tedavisi zor" olarak bilinen birçok hastalıkta başarı oranlarımızı artırıyoruz.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-soru">
+                    En zor hastalıklara yaklaşımınız (mücadele şekliniz) nedir?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-cevap">
+                    <p>Yaklaşımımız "Tümör Konseyi" veya "Multidisipliner Konsey" temeline dayanır. Bir vaka geldiğinde, sadece bir bölüm değil; ilgili tüm branşlardan (Örn: Onkoloji, Cerrahi, Radyoloji, Patoloji) uzman doktorlarımız bir araya gelir. Vaka, tüm yönleriyle tartışılarak en doğru ve en kapsamlı tedavi planı ortak kararla oluşturulur.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-soru">
+                    Doktorunuzun uzmanlık alanının benim için doğru olup olmadığını nasıl anlarım?
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-cevap">
+                    <p>Her doktorumuzun detaylı profil sayfasında, özel ilgi alanları, tedavi ettikleri hastalıklar, uyguladıkları spesifik cerrahi yöntemler ve bilimsel yayınları yer almaktadır. Ayrıca, "Randevu Al" sayfasındaki akıllı yönlendirme sistemi, şikayetlerinize göre sizi en doğru uzmana yönlendirecektir.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 HastaneProjesi. Tüm Hakları Saklıdır. | Bu bir demo çalışmasıdır.</p>
+        </div>
+    </footer>
+
+
+    <script src="script.js"></script>
+</body>
+</html>

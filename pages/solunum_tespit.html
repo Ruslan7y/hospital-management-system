@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Solunum Tespit | Nefes Hızı</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --text:#eaf0ff;
+      --muted: rgba(234,240,255,.72);
+      --stroke: rgba(255,255,255,.12);
+      --card: rgba(255,255,255,.08);
+      --shadow: 0 25px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+      --blue:#3b82f6;
+      --green:#22c55e;
+      --yellow:#facc15;
+      --red:#ef4444;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(59,130,246,.55), transparent 60%),
+        radial-gradient(900px 500px at 85% 0%, rgba(34,197,94,.28), transparent 60%),
+        var(--bg);
+      min-height:100vh;
+    }
+    .wrap{max-width:1180px;margin:0 auto;padding:26px 18px 60px;}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
+    .brand{display:flex;gap:12px;align-items:center;}
+    .logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,rgba(59,130,246,.95),rgba(34,197,94,.7));border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 40px rgba(59,130,246,.25);}
+    h1{margin:0;font-size:22px;letter-spacing:-.02em;}
+    .sub{margin:3px 0 0;color:var(--muted);font-size:13px;line-height:1.35;}
+    .btn{border:1px solid var(--stroke);background:rgba(255,255,255,.08);color:var(--text);padding:10px 14px;border-radius:14px;cursor:pointer;font-weight:700;display:inline-flex;gap:10px;align-items:center;}
+    .btn:hover{background:rgba(255,255,255,.12)}
+    .btn:disabled{opacity:.55;cursor:not-allowed}
+    .btnPrimary{background:linear-gradient(135deg,rgba(59,130,246,.95),rgba(96,165,250,.70));border-color:rgba(255,255,255,.22);box-shadow:0 18px 45px rgba(59,130,246,.22);}
+    .chip{font-size:12px;padding:6px 10px;border-radius:999px;border:1px solid var(--stroke);background:rgba(255,255,255,.06);color:var(--muted);}
+    .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:start;}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .card{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.06));border:1px solid var(--stroke);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+    .cardHeader{padding:16px;border-bottom:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.04);display:flex;justify-content:space-between;gap:10px;align-items:flex-start;}
+    .cardHeader h2{margin:0;font-size:16px}
+    .cardHeader p{margin:6px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .cardBody{padding:16px}
+    .videoWrap{position:relative;border-radius:16px;overflow:hidden;background:#000;border:1px solid rgba(255,255,255,.10);}
+    video{width:100%;display:block;aspect-ratio:16/10;object-fit:cover;}
+    .guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+    .guideBox{width:70%;height:72%;border:2px dashed rgba(255,255,255,.55);border-radius:22px;box-shadow:inset 0 0 0 999px rgba(0,0,0,.08);}
+    .overlay{position:absolute;left:14px;right:14px;bottom:12px;display:flex;justify-content:space-between;gap:10px;align-items:center;font-size:13px;color:rgba(255,255,255,.86);text-shadow:0 6px 18px rgba(0,0,0,.55);}
+    .dot{width:10px;height:10px;border-radius:99px;background:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.25);}
+    .dot.green{background:rgba(34,197,94,.95)} .dot.yellow{background:rgba(250,204,21,.95)} .dot.red{background:rgba(239,68,68,.95)}
+    .steps{display:grid;gap:10px;margin-top:14px}
+    .step{padding:12px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);display:flex;gap:12px;align-items:flex-start;}
+    .num{min-width:30px;height:30px;border-radius:10px;display:grid;place-items:center;font-weight:900;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.35)}
+    .step small{color:rgba(234,240,255,.55);line-height:1.35}
+    .statusLine{padding:12px 14px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;}
+    .pill{padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.06);color:var(--muted);}
+    .pill.good{color:rgba(34,197,94,.95);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.08)}
+    .pill.warn{color:rgba(250,204,21,.95);border-color:rgba(250,204,21,.25);background:rgba(250,204,21,.08)}
+    .pill.bad{color:rgba(239,68,68,.95);border-color:rgba(239,68,68,.25);background:rgba(239,68,68,.08)}
+    .box{border-radius:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);padding:12px}
+    .big{font-size:42px;font-weight:900;letter-spacing:-.03em;line-height:1}
+    .muted{color:var(--muted);font-size:13px;line-height:1.4}
+    ul{margin:10px 0 0 18px;color:rgba(234,240,255,.82)}
+    .colorBar{height:10px;border-radius:999px;background:rgba(255,255,255,.10);overflow:hidden;margin-top:10px;border:1px solid rgba(255,255,255,.10)}
+    .fill{height:100%;width:0%}
+    .footer{margin-top:12px;font-size:12px;color:rgba(234,240,255,.55);border-top:1px solid rgba(255,255,255,.10);padding-top:12px;}
+    a{color:rgba(96,165,250,.95);text-decoration:underline;text-decoration-color:rgba(96,165,250,.35);text-underline-offset:3px;}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <h1>Solunum Tespit (Nefes Hızı)</h1>
+          <p class="sub">30 sn boyunca video kaydı yok. Sadece nefes/dk tahmini yapılır. <b>Tanı değildir.</b></p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <span class="chip" id="apiChip">API: 127.0.0.1:8010</span>
+        <button class="btn" id="backBtn">
+            <a href="/saglik.html">← Geri Dön</a></button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Kamera -->
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <h2>Kamera</h2>
+            <p>Omuz ve göğüs çerçevede olsun. 30 sn boyunca mümkünse konuşma/hareket az olsun.</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="openCamBtn">Kamerayı Aç</button>
+            <button class="btn btnPrimary" id="runBtn" disabled>30 sn Ölç</button>
+          </div>
+        </div>
+
+        <div class="cardBody">
+          <div class="videoWrap">
+            <video id="video" autoplay playsinline></video>
+            <div class="guide"><div class="guideBox"></div></div>
+            <div class="overlay">
+              <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+                <span class="dot" id="dotCam"></span><span id="camText">Kamera kapalı</span>
+                <span style="opacity:.5">•</span>
+                <span class="dot" id="dotRun"></span><span id="runText">Hazır</span>
+              </div>
+              <div id="timerText">—</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step"><div class="num">1</div><div><b>Kamerayı aç</b><br><small>Işık dengeli olsun. Yüz değil, <b>omuz-göğüs</b> bölgesi görünmeli.</small></div></div>
+            <div class="step"><div class="num">2</div><div><b>30 saniye ölç</b><br><small>Video kaydedilmez. Belirli aralıklarla kare alınır ve nefes hareketi takip edilir.</small></div></div>
+            <div class="step"><div class="num">3</div><div><b>Sonucu oku</b><br><small>Normal kullanıcı için basit açıklama + öneriler gösterilir.</small></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sonuç -->
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <h2>Sonuç</h2>
+            <p>Nefes hızı (nefes/dk) + ölçüm güveni + öneriler.</p>
+          </div>
+          <span class="chip" id="framesChip">Henüz ölçüm yok</span>
+        </div>
+
+        <div class="cardBody">
+          <div class="statusLine" id="statusLine">
+            <span class="pill warn" id="statusPill">Beklemede</span>
+            <span class="muted" id="statusText">Kamerayı açıp “30 sn Ölç” ile başlayabilirsin.</span>
+          </div>
+
+          <div class="box" id="resultBox">
+            <div class="muted">Henüz ölçüm yapılmadı.</div>
+          </div>
+
+          <div class="footer">
+            Backend kontrol: <a href="http://127.0.0.1:8010/docs" target="_blank" rel="noreferrer">API Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8010"; // server_sol.py portu
+    const DURATION_MS = 30_000;
+    const INTERVAL_MS = 500;
+
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+
+    const openCamBtn = document.getElementById("openCamBtn");
+    const runBtn = document.getElementById("runBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const dotCam = document.getElementById("dotCam");
+    const dotRun = document.getElementById("dotRun");
+    const camText = document.getElementById("camText");
+    const runText = document.getElementById("runText");
+    const timerText = document.getElementById("timerText");
+
+    const framesChip = document.getElementById("framesChip");
+    const statusPill = document.getElementById("statusPill");
+    const statusText = document.getElementById("statusText");
+    const resultBox = document.getElementById("resultBox");
+
+    function setDot(el, state){
+      el.className = "dot " + (state === "green" ? "green" : state === "yellow" ? "yellow" : state === "red" ? "red" : "");
+    }
+    function setStatus(type, text){
+      statusText.textContent = text;
+      statusPill.className = "pill " + (type === "good" ? "good" : type === "bad" ? "bad" : "warn");
+      statusPill.textContent = type === "good" ? "Hazır" : type === "bad" ? "Hata" : "Beklemede";
+    }
+    function sleep(ms){ return new Promise(r=>setTimeout(r, ms)); }
+
+    backBtn.onclick = () => window.location.href = "saglik.html";
+
+    async function captureFrameBlob(){
+      const w = video.videoWidth, h = video.videoHeight;
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, w, h);
+      return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    }
+
+    function colorToWidth(color){
+      if(color === "green") return 45;
+      if(color === "yellow") return 70;
+      if(color === "red") return 90;
+      return 55;
+    }
+
+    let stream = null;
+
+    openCamBtn.onclick = async () => {
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({ video: { width:1280, height:720 }});
+        video.srcObject = stream;
+        runBtn.disabled = false;
+        camText.textContent = "Kamera açık";
+        runText.textContent = "Hazır";
+        timerText.textContent = "—";
+        setDot(dotCam, "green");
+        setDot(dotRun, "yellow");
+        setStatus("good", "Kamera açık. Omuz-göğüs çerçevede olsun.");
+      }catch(e){
+        setDot(dotCam, "red");
+        camText.textContent = "Kamera açılamadı";
+        setStatus("bad", "Kamera izni verilmedi veya cihaz bulunamadı.");
+      }
+    };
+
+    runBtn.onclick = async () => {
+      runBtn.disabled = true;
+      openCamBtn.disabled = true;
+
+      setDot(dotRun, "yellow");
+      runText.textContent = "Toplanıyor";
+      setStatus("warn", "30 saniye boyunca kareler alınıyor (video kaydı yok).");
+
+      const frames = [];
+      const start = Date.now();
+
+      while(Date.now() - start < DURATION_MS){
+        const blob = await captureFrameBlob();
+        if(blob) frames.push(blob);
+
+        const remain = Math.max(0, DURATION_MS - (Date.now() - start));
+        timerText.textContent = `Kalan: ${(remain/1000).toFixed(1)}s • Kare: ${frames.length}`;
+        framesChip.textContent = `Toplanan kare: ${frames.length}`;
+        await sleep(INTERVAL_MS);
+      }
+
+      setStatus("warn", "Analiz ediliyor...");
+      runText.textContent = "Analiz";
+
+      const fd = new FormData();
+      frames.forEach((b,i)=> fd.append("frames", b, `frame_${i}.jpg`));
+
+      try{
+        const res = await fetch(`${API_BASE}/breathing-rate`, { method:"POST", body: fd });
+        const data = await res.json();
+
+        if(!res.ok || !data.ok){
+          setDot(dotRun, "red");
+          runText.textContent = "Hata";
+          setStatus("bad", data.error || `HTTP ${res.status}`);
+          resultBox.innerHTML = `<div class="muted"><b>Hata:</b> ${data.error || "Analiz yapılamadı."}</div>`;
+          return;
+        }
+
+        setDot(dotRun, "green");
+        runText.textContent = "Tamam";
+        timerText.textContent = "Bitti";
+        framesChip.textContent = `Kullanılan kare: ${data.used_frames}/${data.received_frames}`;
+        setStatus("good", "Ölçüm tamamlandı.");
+
+        // UI
+        const width = colorToWidth(data.ui_color);
+        const barColor = data.ui_color === "green" ? "var(--green)" : data.ui_color === "yellow" ? "var(--yellow)" : "var(--red)";
+
+        resultBox.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;">
+            <div>
+              <div class="muted">Tahmini nefes hızı</div>
+              <div class="big">${data.breaths_per_min} <span style="font-size:14px;font-weight:700;opacity:.8">nefes/dk</span></div>
+              <div class="muted" style="margin-top:6px;"><b>Durum:</b> ${data.level} — ${data.message}</div>
+              <div class="muted" style="margin-top:6px;"><b>Ölçüm güveni:</b> ${data.confidence} — ${data.confidence_note}</div>
+            </div>
+            <div style="min-width:220px;max-width:260px;">
+              <div class="muted"><b>Hız göstergesi</b></div>
+              <div class="colorBar"><div class="fill" style="width:${width}%;background:${barColor}"></div></div>
+              <div class="muted" style="margin-top:8px;">Bu gösterge sadece fikir verir.</div>
+            </div>
+          </div>
+
+          <div style="margin-top:12px;">
+            <div class="muted"><b>Ne yapmalıyım?</b></div>
+            <ul>
+              ${(data.actions || []).map(x => `<li>${x}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div style="margin-top:12px;padding:10px;border-radius:14px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.03);">
+            <div class="muted"><b>Acil uyarı</b></div>
+            <ul>
+              ${(data.urgent || []).map(x => `<li>${x}</li>`).join("")}
+            </ul>
+          </div>
+
+          <div class="muted" style="margin-top:12px;">
+            <b>Not:</b> ${data.disclaimer}
+          </div>
+        `;
+
+      }catch(e){
+        setDot(dotRun, "red");
+        runText.textContent = "Hata";
+        setStatus("bad", "Backend'e bağlanılamadı. Server çalışıyor mu?");
+        resultBox.innerHTML = `
+          <div class="muted">
+            <b>Hata:</b> ${e.message}<br>
+            Backend kontrol: <a href="${API_BASE}/docs" target="_blank" rel="noreferrer">${API_BASE}/docs</a>
+          </div>
+        `;
+      }finally{
+        runBtn.disabled = false;
+        openCamBtn.disabled = false;
+      }
+    };
+
+    // ilk durum
+    setDot(dotCam, "");
+    setDot(dotRun, "");
+    setStatus("warn", "Kamerayı açıp başlayabilirsin.");
+  </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Röntgen Analizi - Yapay Zeka Doktor Asistanı</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+          colors: { 'indigo-primary': '#4f46e5', 'cyan': { '500': '#00C1D4' } }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen font-inter">
+
+  <header class="p-4 border-b border-gray-200 bg-white shadow-sm flex items-center justify-between shrink-0">
+    <h1 class="text-xl font-bold text-indigo-primary flex items-center">
+      <i class="fas fa-x-ray mr-3 text-cyan-500"></i> Röntgen Analizi AI
+    </h1>
+    <a href="doktoryardimci_ai.html"
+      class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+      <i class="fas fa-arrow-left mr-2"></i> Sohbet Ekranına Dön
+    </a>
+  </header>
+
+  <main class="flex-1 p-6 flex justify-center items-start">
+    <div class="w-full max-w-2xl bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+      <h2 class="text-2xl font-semibold mb-4 text-center">Akciğer Röntgeni Yükleme</h2>
+
+      <div id="upload-section"
+        class="border-2 border-dashed border-gray-300 p-8 rounded-lg text-center hover:border-indigo-primary transition-colors cursor-pointer">
+        <input type="file" id="rontgen-file" accept=".jpg, .jpeg, .png" class="hidden" onchange="displayFileName(this)">
+        <label for="rontgen-file" class="cursor-pointer">
+          <i class="fas fa-cloud-upload-alt text-5xl text-gray-400 mb-3"></i>
+          <p class="text-gray-700 font-medium">Yüklemek için tıklayın veya dosyayı sürükleyip bırakın.</p>
+          <p id="file-name-display" class="text-sm text-gray-500 mt-1"></p>
+          <p class="text-xs text-gray-400 mt-2">Yalnızca JPG, JPEG veya PNG dosyaları kabul edilir.</p>
+        </label>
+      </div>
+
+      <button onclick="uploadFile()" id="analyze-button" disabled
+        class="mt-6 w-full bg-indigo-primary text-white font-semibold py-3 rounded-lg hover:bg-indigo-primary/90 transition-colors shadow-md disabled:bg-gray-400">
+        <i class="fas fa-brain mr-2"></i> Analiz Et
+      </button>
+
+      <div id="result-output" class="mt-8 hidden">
+        <h3 class="text-xl font-bold mb-3 text-indigo-primary border-b pb-2">Analiz Sonucu</h3>
+        <div class="flex flex-col md:flex-row gap-6">
+          <div class="md:w-1/2 flex justify-center items-center bg-gray-100 p-2 rounded-lg border">
+            <img id="preview-image" src="" alt="Yüklenen Röntgen Resmi"
+              class="max-w-full max-h-80 object-contain rounded-md" />
+          </div>
+          <div class="md:w-1/2">
+            <p class="text-lg font-semibold mb-2">En Olası Sınıflandırma:</p>
+            <p id="prediction-class" class="text-3xl font-extrabold text-cyan-500 mb-4"></p>
+
+            <p class="text-lg font-semibold mb-2 mt-4">Güven Seviyeleri:</p>
+            <ul id="confidence-list" class="space-y-2 text-sm"></ul>
+          </div>
+        </div>
+
+        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+          <i class="fas fa-exclamation-triangle mr-2"></i>
+          <b>Önemli Uyarı:</b> Bu bir yapay zeka tahminidir. Kesin teşhis için her zaman bir doktora başvurunuz.
+        </div>
+      </div>
+
+      <div id="loading-message" class="mt-6 hidden p-4 rounded-lg text-center">
+        <i class="fas fa-circle-notch fa-spin text-2xl text-indigo-primary"></i>
+        <p class="mt-2 text-indigo-primary font-semibold">Röntgen analizi yapılıyor, lütfen bekleyin...</p>
+      </div>
+
+      <div id="error-message"
+        class="mt-6 hidden bg-red-100 p-4 rounded-lg text-center text-red-700 font-medium">
+        <i class="fas fa-times-circle mr-2"></i> <span id="error-text">Bir hata oluştu!</span>
+      </div>
+
+    </div>
+  </main>
+
+  <script>
+    // ✅ Aynı sunucudan çağır: file:// CORS derdi bitiyor
+    const API_URL = '/upload_and_predict';
+
+    const fileInput = document.getElementById('rontgen-file');
+    const analyzeButton = document.getElementById('analyze-button');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const previewImage = document.getElementById('preview-image');
+    const resultOutput = document.getElementById('result-output');
+    const loadingMessage = document.getElementById('loading-message');
+    const errorMessage = document.getElementById('error-message');
+    const errorText = document.getElementById('error-text');
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorMessage.classList.remove('hidden');
+    }
+    function hideError() {
+      errorMessage.classList.add('hidden');
+      errorText.textContent = '';
+    }
+
+    function displayFileName(input) {
+      if (input.files.length > 0) {
+        const file = input.files[0];
+        fileNameDisplay.textContent = `Seçilen Dosya: ${file.name}`;
+        analyzeButton.disabled = false;
+
+        const reader = new FileReader();
+        reader.onload = (e) => previewImage.src = e.target.result;
+        reader.readAsDataURL(file);
+
+        resultOutput.classList.add('hidden');
+        hideError();
+      } else {
+        fileNameDisplay.textContent = '';
+        analyzeButton.disabled = true;
+        previewImage.src = '';
+      }
+    }
+
+    async function uploadFile() {
+      const file = fileInput.files[0];
+      if (!file) return alert("Lütfen bir resim dosyası seçin.");
+
+      loadingMessage.classList.remove('hidden');
+      resultOutput.classList.add('hidden');
+      hideError();
+      analyzeButton.disabled = true;
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch(API_URL, { method: 'POST', body: formData });
+
+        loadingMessage.classList.add('hidden');
+        analyzeButton.disabled = false;
+
+        const payload = await response.json(); // artık güvenli: aynı origin
+
+        if (!response.ok) {
+          showError(payload?.error || response.statusText || "Bilinmeyen hata");
+          return;
+        }
+
+        displayResults(payload);
+
+      } catch (error) {
+        loadingMessage.classList.add('hidden');
+        analyzeButton.disabled = false;
+        showError(`Bağlantı Hatası: (${error.message})`);
+      }
+    }
+
+    function displayResults(result) {
+      document.getElementById('prediction-class').textContent = result.sinif;
+
+      const confidenceList = document.getElementById('confidence-list');
+      confidenceList.innerHTML = '';
+
+      const sorted = Object.entries(result.tum_tahminler).sort((a, b) => b[1] - a[1]);
+
+      for (const [className, prob] of sorted) {
+        const confidencePercent = (prob * 100).toFixed(2);
+        const li = document.createElement('li');
+
+        if (className === result.sinif) {
+          li.className = 'font-bold text-indigo-primary';
+          li.innerHTML = `<i class="fas fa-star mr-2"></i> ${className}: %${confidencePercent}`;
+        } else {
+          li.innerHTML = `<i class="fas fa-dot-circle mr-2 text-gray-500"></i> ${className}: %${confidencePercent}`;
+        }
+        confidenceList.appendChild(li);
+      }
+
+      resultOutput.classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>

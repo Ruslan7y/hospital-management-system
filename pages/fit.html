@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fitnes | Kişisel Program</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>body{font-family:Inter, sans-serif;}</style>
+</head>
+
+<body class="bg-gray-100">
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="flex items-center justify-between">
+      <a href="fitnes_takip.html" class="text-blue-700 font-bold">← Panele Dön</a>
+      <button id="logoutBtn" class="text-sm font-bold text-red-600">Çıkış</button>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow p-8 mt-4 border">
+      <h1 class="text-3xl font-extrabold text-gray-900">🏋️ Fitnes – Hedefini Seç</h1>
+      <p class="text-gray-600 mt-2">
+        Önce istediğin vücut hedefini seç. Sonra 8 görselden sana en yakın hedef görüntüsünü belirle.
+      </p>
+
+      <div class="mt-6">
+        <h2 class="text-lg font-extrabold">1) Hedef Vücut Tipi</h2>
+        <div class="grid md:grid-cols-4 gap-3 mt-3" id="goalTypes">
+          <button data-goal="Zayıf ama aşırı kaslı" class="goalBtn border rounded-2xl p-4 text-left hover:shadow transition">
+            <p class="font-extrabold">Zayıf ama aşırı kaslı</p>
+            <p class="text-sm text-gray-600 mt-1">Net hatlar + yüksek kas yoğunluğu</p>
+          </button>
+          <button data-goal="Orta kaslı (Fit)" class="goalBtn border rounded-2xl p-4 text-left hover:shadow transition">
+            <p class="font-extrabold">Orta kaslı (Fit)</p>
+            <p class="text-sm text-gray-600 mt-1">Estetik görünüm + sürdürülebilir</p>
+          </button>
+          <button data-goal="Büyük ve kaslı" class="goalBtn border rounded-2xl p-4 text-left hover:shadow transition">
+            <p class="font-extrabold">Büyük ve kaslı</p>
+            <p class="text-sm text-gray-600 mt-1">Hacim + güç odaklı</p>
+          </button>
+          <button data-goal="Sağlıklı & dengeli (Form)" class="goalBtn border rounded-2xl p-4 text-left hover:shadow transition">
+            <p class="font-extrabold">Sağlıklı & dengeli (Form)</p>
+            <p class="text-sm text-gray-600 mt-1">Günlük enerji + toparlanma</p>
+          </button>
+        </div>
+        <p class="text-sm text-gray-500 mt-2">Seçilen hedef: <span class="font-bold" id="selectedGoal">-</span></p>
+      </div>
+
+      <div class="mt-10">
+        <h2 class="text-lg font-extrabold">2) 8 Görselden Hedef Görünümünü Seç</h2>
+        <p class="text-sm text-gray-600 mt-1">Kartlardan birini seç ve kaydet.</p>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4" id="bodyCards"></div>
+        <p class="text-sm text-gray-500 mt-2">Seçilen kart: <span class="font-bold" id="selectedCard">-</span></p>
+      </div>
+
+      <div class="mt-10 flex flex-col md:flex-row gap-3">
+        <input id="goalNote" class="flex-1 border rounded-2xl px-4 py-3 outline-none focus:ring-2 focus:ring-blue-500"
+               placeholder="İstersen hedef notu ekle: örn. 'Karın belirgin olsun, omuz genişlesin'">
+        <button id="saveGoalBtn" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-6 py-3 rounded-2xl">
+          Kaydet & Programı Oluştur
+        </button>
+      </div>
+
+      <div id="programBox" class="mt-10 hidden">
+        <h2 class="text-2xl font-extrabold text-gray-900">📌 Kişisel Programın</h2>
+        <div class="grid md:grid-cols-3 gap-4 mt-4">
+          <div class="border rounded-2xl p-5 bg-gray-50">
+            <p class="text-sm text-gray-600">Günlük Kalori</p>
+            <p class="text-2xl font-extrabold" id="outCal">-</p>
+          </div>
+          <div class="border rounded-2xl p-5 bg-gray-50">
+            <p class="text-sm text-gray-600">Günlük Protein</p>
+            <p class="text-2xl font-extrabold" id="outProt">-</p>
+          </div>
+          <div class="border rounded-2xl p-5 bg-gray-50">
+            <p class="text-sm text-gray-600">Haftalık Antrenman</p>
+            <p class="text-2xl font-extrabold" id="outDays">-</p>
+          </div>
+        </div>
+
+        <div class="mt-6 border rounded-2xl p-6">
+          <h3 class="font-extrabold text-gray-900">🏋️ Haftalık Plan</h3>
+          <div id="outPlan" class="mt-3 space-y-2"></div>
+
+          <div class="mt-5 bg-blue-50 border border-blue-100 rounded-2xl p-4">
+            <p class="font-bold text-blue-800">Koç Notu</p>
+            <ul class="list-disc pl-5 text-blue-900 mt-2 space-y-1" id="outNotes"></ul>
+          </div>
+        </div>
+      </div>
+
+      <p id="info" class="mt-6 text-sm text-gray-600"></p>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // ✅ KRİTİK: Live Server (5501) kullansan bile API 5000 olmalı.
+    // İstersen override:
+    //   fit.html?api=http://localhost:5000
+    // =========================================================
+    const DEFAULT_API = "http://localhost:5000";
+    const urlApi = new URLSearchParams(location.search).get("api");
+    const API = (urlApi && urlApi.startsWith("http")) ? urlApi.replace(/\/$/, "") : DEFAULT_API;
+
+    function getUser() {
+      try { return JSON.parse(localStorage.getItem("hastaBilgisi")); }
+      catch { return null; }
+    }
+
+    function requireLogin() {
+      const u = getUser();
+      if (!u || !u.id) {
+        window.location.href = "login.html";
+        return null;
+      }
+      return u;
+    }
+
+    async function safeJson(resp) {
+      try { return await resp.json(); } catch { return null; }
+    }
+
+    async function safeFetch(url, options) {
+      try {
+        return await fetch(url, { cache: "no-store", ...(options || {}) });
+      } catch {
+        throw new Error("SUNUCU_BAGLANTI_HATASI");
+      }
+    }
+
+    // 8 kart (placeholder görsel)
+    const cards = [
+      { id:"Athletic-1", name:"Athletic 1", img:"https://placehold.co/600x800?text=Athletic+1" },
+      { id:"Athletic-2", name:"Athletic 2", img:"https://placehold.co/600x800?text=Athletic+2" },
+      { id:"Lean-1",     name:"Lean 1",     img:"https://placehold.co/600x800?text=Lean+1" },
+      { id:"Lean-2",     name:"Lean 2",     img:"https://placehold.co/600x800?text=Lean+2" },
+      { id:"Muscle-1",   name:"Muscle 1",   img:"https://placehold.co/600x800?text=Muscle+1" },
+      { id:"Muscle-2",   name:"Muscle 2",   img:"https://placehold.co/600x800?text=Muscle+2" },
+      { id:"Strong-1",   name:"Strong 1",   img:"https://placehold.co/600x800?text=Strong+1" },
+      { id:"Strong-2",   name:"Strong 2",   img:"https://placehold.co/600x800?text=Strong+2" },
+    ];
+
+    let selectedGoal = "";
+    let selectedCard = "";
+
+    function renderCards() {
+      const wrap = document.getElementById("bodyCards");
+      wrap.innerHTML = cards.map(c => `
+        <button class="cardBtn border rounded-2xl overflow-hidden hover:shadow transition text-left" data-id="${c.id}">
+          <img src="${c.img}" class="w-full h-44 object-cover" alt="${c.name}">
+          <div class="p-3">
+            <p class="font-extrabold">${c.name}</p>
+            <p class="text-xs text-gray-600 mt-1">Seçmek için tıkla</p>
+          </div>
+        </button>
+      `).join("");
+
+      wrap.querySelectorAll(".cardBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedCard = btn.dataset.id;
+          document.getElementById("selectedCard").textContent = selectedCard;
+          wrap.querySelectorAll(".cardBtn").forEach(b => b.classList.remove("ring-2","ring-blue-600"));
+          btn.classList.add("ring-2","ring-blue-600");
+        });
+      });
+    }
+
+    function bindGoals() {
+      document.querySelectorAll(".goalBtn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedGoal = btn.dataset.goal;
+          document.getElementById("selectedGoal").textContent = selectedGoal;
+          document.querySelectorAll(".goalBtn").forEach(b => b.classList.remove("ring-2","ring-blue-600"));
+          btn.classList.add("ring-2","ring-blue-600");
+        });
+      });
+    }
+
+    async function fetchProfile(hastaId) {
+      const r = await safeFetch(`${API}/api/fitness/profile/${hastaId}`);
+      if (r.status === 404) return null; // profil yok
+      if (!r.ok) {
+        const data = await safeJson(r);
+        throw new Error(data?.error || `Profil alınamadı (HTTP ${r.status})`);
+      }
+      return await r.json();
+    }
+
+    function showProgram(data) {
+      document.getElementById("programBox").classList.remove("hidden");
+      document.getElementById("outCal").textContent = `${data.hedef_kalori} kcal`;
+      document.getElementById("outProt").textContent = `${data.hedef_protein_g} g`;
+      document.getElementById("outDays").textContent = `${data.plan.days} gün`;
+
+      const planWrap = document.getElementById("outPlan");
+      planWrap.innerHTML = (data.plan.plan || []).map(p => `
+        <div class="flex items-center justify-between bg-gray-50 border rounded-xl p-3">
+          <div>
+            <p class="font-bold">Gün ${p.gun} • ${p.odak}</p>
+            <p class="text-sm text-gray-600">Ağırlık: ${p.sure_dk} dk • Kardiyo: ${p.kardiyo_dk} dk</p>
+          </div>
+          <span class="text-xs font-bold bg-blue-100 text-blue-800 px-3 py-1 rounded-full">Plan</span>
+        </div>
+      `).join("");
+
+      const notes = document.getElementById("outNotes");
+      notes.innerHTML = (data.plan.notes || []).map(n => `<li>${n}</li>`).join("");
+    }
+
+    async function saveGoal(u) {
+      const info = document.getElementById("info");
+      info.textContent = "";
+
+      if (!selectedGoal || !selectedCard) {
+        info.textContent = "Lütfen hedef tipini ve kartı seç.";
+        return;
+      }
+
+      // Profil var mı kontrol (doğru porttan)
+      let prof;
+      try {
+        prof = await fetchProfile(u.id);
+      } catch (e) {
+        if (String(e.message).includes("SUNUCU_BAGLANTI_HATASI")) {
+          info.textContent = `❌ Sunucuya bağlanılamadı. Backend çalışıyor mu? (${API})`;
+        } else {
+          info.textContent = `⚠️ ${e.message}`;
+        }
+        return;
+      }
+
+      if (!prof) {
+        info.textContent = "Önce profilini oluşturmalısın (Fitness Takip sayfası).";
+        return;
+      }
+
+      const payload = {
+        hasta_id: u.id,
+        hedef_tip: selectedGoal,
+        secilen_vucut_kart: selectedCard,
+        hedef_aciklama: document.getElementById("goalNote").value || ""
+      };
+
+      let r;
+      try {
+        r = await safeFetch(`${API}/api/fitness/goal`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+      } catch {
+        info.textContent = `❌ Sunucuya bağlanılamadı. Backend çalışıyor mu? (${API})`;
+        return;
+      }
+
+      const data = await safeJson(r);
+
+      if (!r.ok) {
+        info.textContent = data?.error || `Kaydedilemedi. (HTTP ${r.status})`;
+        return;
+      }
+
+      showProgram(data);
+      info.textContent = "✅ Programın oluşturuldu. İstersen hedef notunu güncelleyip tekrar kaydedebilirsin.";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const u = requireLogin();
+      if (!u) return;
+
+      console.log("Fit API:", API); // debug
+
+      renderCards();
+      bindGoals();
+
+      document.getElementById("saveGoalBtn").addEventListener("click", () => saveGoal(u));
+
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("hastaBilgisi");
+        window.location.href = "login.html";
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diyet | Kilo Takip</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>body{font-family:Inter, sans-serif;}</style>
+</head>
+<body class="bg-gray-100">
+  <div class="max-w-6xl mx-auto p-6">
+    <div class="flex items-center justify-between">
+      <a href="fitnes_takip.html" class="text-blue-700 font-bold">← Panele Dön</a>
+
+      <!-- ✅ Çıkış kaldırıldı, geri dön eklendi -->
+      <button id="backBtn" class="text-sm font-bold text-blue-700">Geri Dön</button>
+    </div>
+
+    <div class="bg-white rounded-3xl shadow p-8 mt-4 border">
+      <h1 class="text-3xl font-extrabold">🥗 Diyet – Hedef & Haftalık Takip</h1>
+      <p class="text-gray-600 mt-2">
+        Burada amaç sürdürülebilir ilerleme. Küçük adımlar büyük sonuçlar getirir. 👏
+      </p>
+
+      <div class="grid md:grid-cols-3 gap-4 mt-8">
+        <div class="border rounded-2xl p-6 bg-gray-50">
+          <p class="text-sm text-gray-600">Önerilen Hedef Kilo (ortalama)</p>
+          <p class="text-2xl font-extrabold" id="targetKg">-</p>
+          <p class="text-xs text-gray-600 mt-2">* Boya göre “ortalama sağlıklı aralık” için referans.</p>
+        </div>
+        <div class="border rounded-2xl p-6 bg-gray-50">
+          <p class="text-sm text-gray-600">Mevcut Kilo</p>
+          <p class="text-2xl font-extrabold" id="curKg">-</p>
+          <p class="text-xs text-gray-600 mt-2">Düzenli takip başarıyı hızlandırır.</p>
+        </div>
+        <div class="border rounded-2xl p-6 bg-gray-50">
+          <p class="text-sm text-gray-600">Haftalık Hedef</p>
+          <p class="text-2xl font-extrabold" id="weeklyGoal">0.5 kg</p>
+          <p class="text-xs text-gray-600 mt-2">Güvenli ve sürdürülebilir tempo.</p>
+        </div>
+      </div>
+
+      <div class="mt-8 border rounded-2xl p-6">
+        <h2 class="text-xl font-extrabold">📌 Kişisel Diyet Stratejisi</h2>
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+          <div class="bg-green-50 border border-green-100 rounded-2xl p-5">
+            <p class="font-bold text-green-900">Yemek Planı (Günlük)</p>
+            <ul class="list-disc pl-5 mt-2 text-green-900 space-y-1">
+              <li>Protein her öğünde: yumurta, yoğurt, tavuk, balık, baklagil</li>
+              <li>Lif: salata, sebze, yulaf, meyve</li>
+              <li>Su: gün içine yay, antrenman günleri artır</li>
+              <li>Şekerli içecekleri azalt, protein+lif kombinasyonu yap</li>
+            </ul>
+          </div>
+          <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+            <p class="font-bold text-blue-900">Kardiyo & Aktivite</p>
+            <ul class="list-disc pl-5 mt-2 text-blue-900 space-y-1">
+              <li>Haftada 3 gün 25-35 dk tempolu yürüyüş</li>
+              <li>Günde 7-10 bin adım hedefle</li>
+              <li>2 gün kısa core (plank, dead bug)</li>
+              <li>Esneme: uyku kalitesini artırır</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-8 grid md:grid-cols-2 gap-4">
+        <div class="border rounded-2xl p-6">
+          <h2 class="text-xl font-extrabold">📅 Haftalık Kilo Girişi</h2>
+          <p class="text-gray-600 text-sm mt-1">Her hafta bir kez girmen yeterli. Sistem seni motive edecek. ✅</p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+            <div>
+              <label class="text-sm font-semibold">Hafta Başlangıcı</label>
+              <input id="weekStart" type="date" class="mt-1 w-full border rounded-xl px-4 py-3"/>
+            </div>
+            <div>
+              <label class="text-sm font-semibold">Kilo (kg)</label>
+              <input id="weekKg" type="number" step="0.1" class="mt-1 w-full border rounded-xl px-4 py-3"/>
+            </div>
+            <div class="md:col-span-2">
+              <label class="text-sm font-semibold">Not (isteğe bağlı)</label>
+              <input id="weekNote" class="mt-1 w-full border rounded-xl px-4 py-3" placeholder="Örn: yürüyüşleri artırdım, suyu yükselttim"/>
+            </div>
+          </div>
+
+          <button id="saveCheckinBtn" class="mt-4 w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 rounded-xl">
+            Haftalık Kaydet
+          </button>
+
+          <div id="msg" class="mt-4 text-sm"></div>
+        </div>
+
+        <div class="border rounded-2xl p-6">
+          <h2 class="text-xl font-extrabold">📈 Kayıtlarım</h2>
+          <div id="list" class="mt-4 space-y-3"></div>
+        </div>
+      </div>
+
+      <p id="info" class="mt-6 text-sm text-gray-600"></p>
+    </div>
+  </div>
+
+  <script>
+    // =========================================================
+    // ✅ KRİTİK DÜZELTME: API'yi ASLA location.origin'e bağlama
+    // Live Server -> 5501 olur ve /api istekleri 404 verir.
+    // API default: http://localhost:5000
+    // İstersen: diyet.html?api=http://localhost:5000
+    // =========================================================
+    const DEFAULT_API = "http://localhost:5000";
+    const urlApi = new URLSearchParams(location.search).get("api");
+    const API = (urlApi && urlApi.startsWith("http")) ? urlApi.replace(/\/$/, "") : DEFAULT_API;
+
+    function getUser(){ try { return JSON.parse(localStorage.getItem("hastaBilgisi")); } catch { return null; } }
+
+    // ✅ Giriş yoksa uyarı + login'e yönlendir
+    function requireLogin(){
+      const u = getUser();
+      if(!u || !u.id){
+        alert("Bu sayfayı görüntülemek için giriş yapmalısın. Login sayfasına yönlendiriliyorsun.");
+        window.location.href = "login.html";
+        return null;
+      }
+      return u;
+    }
+
+    async function safeJson(resp){
+      try { return await resp.json(); } catch { return null; }
+    }
+
+    async function safeFetch(url, options){
+      try { return await fetch(url, { cache:"no-store", ...(options || {}) }); }
+      catch { throw new Error("SUNUCU_BAGLANTI_HATASI"); }
+    }
+
+    function calcTargetWeight(heightCm){
+      const h = heightCm/100;
+      return Math.round(22*h*h*10)/10; // BMI 22 referans
+    }
+
+    function positiveMessage(delta){
+      if (isNaN(delta)) return "Harika! Takip etmeye devam. Küçük adımlar büyük fark yaratır. 💪";
+      if (delta < 0) return "Süper! İlerleme var. Aynı sakin tempo ile devam edelim. 👏";
+      if (delta === 0) return "Mükemmel! Stabil kalmak da bir başarı. Rutin oturuyor. ✅";
+      return "Hiç sorun değil! Vücut dalgalanır. Su + yürüyüş + düzenli uyku ile devam. 🌿";
+    }
+
+    async function loadProfile(hastaId){
+      const r = await safeFetch(`${API}/api/fitness/profile/${hastaId}`);
+      if (r.status === 404) return null;
+      if (!r.ok){
+        const data = await safeJson(r);
+        throw new Error(data?.error || `Profil alınamadı (HTTP ${r.status})`);
+      }
+      return await r.json();
+    }
+
+    async function loadCheckins(hastaId){
+      const r = await safeFetch(`${API}/api/fitness/checkins/${hastaId}`);
+      if (r.status === 404) return [];
+      if (!r.ok){
+        const data = await safeJson(r);
+        throw new Error(data?.error || `Kayıtlar alınamadı (HTTP ${r.status})`);
+      }
+      const data = await r.json();
+      const arr = Array.isArray(data) ? data : [];
+      // yeni → eski sıralama (YYYY-MM-DD beklenir)
+      arr.sort((a,b) => String(b.hafta_baslangic).localeCompare(String(a.hafta_baslangic)));
+      return arr;
+    }
+
+    function renderList(items){
+      const wrap = document.getElementById("list");
+      if (!items.length){
+        wrap.innerHTML = `<div class="bg-gray-50 border rounded-xl p-4 text-gray-600">Henüz kayıt yok. İlk haftanı kaydet! ✅</div>`;
+        return;
+      }
+      wrap.innerHTML = items.map(it => `
+        <div class="bg-gray-50 border rounded-xl p-4">
+          <p class="font-extrabold">${it.hafta_baslangic} • ${Number(it.kilo_kg).toFixed(1)} kg</p>
+          ${it.notlar
+            ? `<p class="text-sm text-gray-700 mt-1">${it.notlar}</p>`
+            : `<p class="text-sm text-gray-500 mt-1">Not yok</p>`}
+        </div>
+      `).join("");
+    }
+
+    async function saveCheckin(u){
+      const weekStart = document.getElementById("weekStart").value;
+      const weekKg = Number(document.getElementById("weekKg").value);
+      const weekNote = document.getElementById("weekNote").value;
+
+      const msg = document.getElementById("msg");
+      msg.textContent = "";
+      msg.className = "mt-4 text-sm";
+
+      if (!weekStart || !weekKg){
+        msg.textContent = "Lütfen tarih ve kilo gir.";
+        msg.className = "mt-4 text-sm text-red-600";
+        return;
+      }
+
+      let before = [];
+      try { before = await loadCheckins(u.id); } catch { before = []; }
+      const prev = before[0] ? Number(before[0].kilo_kg) : NaN;
+
+      let r;
+      try{
+        r = await safeFetch(`${API}/api/fitness/checkin`,{
+          method:"POST",
+          headers:{ "Content-Type":"application/json" },
+          body: JSON.stringify({
+            hasta_id: u.id,
+            hafta_baslangic: weekStart,
+            kilo_kg: weekKg,
+            notlar: weekNote || ""
+          })
+        });
+      } catch {
+        msg.textContent = `❌ Sunucuya bağlanılamadı. Backend çalışıyor mu? (${API})`;
+        msg.className = "mt-4 text-sm text-red-600";
+        return;
+      }
+
+      const data = await safeJson(r);
+
+      if (!r.ok){
+        msg.textContent = data?.error || `Kaydedilemedi. (HTTP ${r.status})`;
+        msg.className = "mt-4 text-sm text-red-600";
+        return;
+      }
+
+      const delta = weekKg - prev;
+      msg.textContent = positiveMessage(delta);
+      msg.className = "mt-4 text-sm text-green-700 font-semibold";
+
+      const items = await loadCheckins(u.id);
+      renderList(items);
+    }
+
+    document.addEventListener("DOMContentLoaded", async ()=>{
+      const u = requireLogin();
+      if (!u) return;
+
+      // ✅ Geri dön: /saglik.html
+      document.getElementById("backBtn").addEventListener("click", ()=>{
+        window.location.href = "/saglik.html";
+      });
+
+      // küçük debug
+      console.log("Diyet API:", API);
+
+      let prof;
+      try{
+        prof = await loadProfile(u.id);
+      } catch (e){
+        document.getElementById("info").textContent = String(e.message || e);
+        return;
+      }
+
+      if (!prof){
+        document.getElementById("info").textContent = "Önce Fitness Takip sayfasında profil oluşturmalısın.";
+        return;
+      }
+
+      const target = calcTargetWeight(Number(prof.boy_cm));
+      document.getElementById("targetKg").textContent = `${target} kg`;
+      document.getElementById("curKg").textContent = `${Number(prof.kilo_kg).toFixed(1)} kg`;
+
+      try{
+        const items = await loadCheckins(u.id);
+        renderList(items);
+      } catch (e){
+        document.getElementById("info").textContent = String(e.message || e);
+      }
+
+      document.getElementById("saveCheckinBtn").addEventListener("click", ()=>saveCheckin(u));
+    });
+  </script>
+</body>
+</html>

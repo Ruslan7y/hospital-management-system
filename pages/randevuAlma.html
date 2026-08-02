@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yeni Randevu Oluştur - Sağlık Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/heroicons@2.0.18/24/outline/index.min.js"></script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .step { display: none; animation-duration: 0.5s; }
+        .step.active { display: block; }
+        .brans-card { transition: all 0.2s ease-in-out; }
+        .brans-card.active { transform: scale(1.05); background-color: #2563eb; color: white; border-color: #2563eb; }
+        .brans-card.active svg { color: white; }
+        .gecmis-formu { animation-duration: 0.4s; }
+        .time-slot { transition: all 0.2s ease-in-out; }
+        .time-slot.active { background-color: #16a34a; color: white; font-weight: 600; }
+    </style>
+    
+</head>
+
+<body class="bg-gray-900 text-gray-100 min-h-screen w-full flex items-center justify-center p-4">
+
+    <div id="basari-mesaji-alani" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center p-4 hidden z-50 animate__animated animate__fadeIn">
+        <div class="text-center bg-white p-8 rounded-xl shadow-2xl max-w-lg w-full">
+            <h2 class="text-3xl font-bold text-green-600 mb-4">Randevunuz Başarıyla Oluşturuldu!</h2>
+            <div id="randevu-detaylari" class="text-left space-y-2 text-lg inline-block bg-green-50 text-gray-800 p-6 rounded-lg border border-green-200">
+                </div>
+            <a href="../saglik.html" class="mt-8 block w-full bg-gray-800 text-white font-bold py-3 px-6 rounded-lg hover:bg-gray-900 transition-all">Ana Sayfaya Dön</a>
+        </div>
+    </div>
+    
+
+    <form id="randevuForm" class="bg-white text-gray-800 p-6 md:p-10 rounded-xl shadow-2xl w-full max-w-4xl">
+        
+        <div class="mb-8">
+            <a href="../saglik.html" class="hover:text-blue-600 transition-colors">Ana Sayfa</a>
+            <ol class="flex items-center w-full">
+                <li id="step-indicator-1" class="flex w-full items-center text-blue-600 after:content-[''] after:w-full after:h-1 after:border-b after:border-blue-100 after:border-4 after:inline-block">
+                    <span class="flex items-center justify-center w-10 h-10 bg-blue-100 rounded-full shrink-0"><span class="font-bold text-lg">1</span></span>
+                </li>
+                <li id="step-indicator-2" class="flex w-full items-center after:content-[''] after:w-full after:h-1 after:border-b after:border-gray-100 after:border-4 after:inline-block">
+                    <span class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full shrink-0"><span class="font-bold text-lg text-gray-500">2</span></span>
+                </li>
+                <li id="step-indicator-3" class="flex items-center">
+                    <span class="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full shrink-0"><span class="font-bold text-lg text-gray-500">3</span></span>
+                </li>
+            </ol>
+
+         
+
+           
+        <div id="step-1" class="step active animate__animated animate__fadeIn">
+            
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">1. Şikayet ve Konum</h2>
+            <div class="space-y-8">
+                <div>
+                    <label class="block text-xl font-semibold text-gray-700 mb-4">Hangi bölüm için randevu almak istiyorsunuz?</label>
+                    <div id="brans-secimi" class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="brans-card cursor-pointer p-4 border-2 border-gray-200 rounded-lg text-center hover:bg-gray-50" data-brans-id="1" data-brans-adi="Kardiyoloji">
+                            <svg class="w-10 h-10 mx-auto text-red-500 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"></path></svg>
+                            <span class="font-semibold">Kardiyoloji</span>
+                            <p class="text-xs text-gray-500">Göğüs Ağrısı, Çarpıntı</p>
+                        </div>
+                        <div class="brans-card cursor-pointer p-4 border-2 border-gray-200 rounded-lg text-center hover:bg-gray-50" data-brans-id="2" data-brans-adi="Nöroloji">
+                            <svg class="w-10 h-10 mx-auto text-blue-500 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"></path></svg>
+                            <span class="font-semibold">Nöroloji</span>
+                            <p class="text-xs text-gray-500">Baş Ağrısı, Unutkanlık</p>
+                        </div>
+                         <div class="brans-card cursor-pointer p-4 border-2 border-gray-200 rounded-lg text-center hover:bg-gray-50" data-brans-id="3" data-brans-adi="Ortopedi">
+                            <svg class="w-10 h-10 mx-auto text-green-500 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 4.875 4.875 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.092 1.21-.138 2.43-.138 3.662a4.006 4.006 0 003.7 3.7 4.875 4.875 0 007.324 0 4.006 4.006 0 003.7-3.7zM12 15.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z"></path></svg>
+                            <span class="font-semibold">Ortopedi</span>
+                            <p class="text-xs text-gray-500">Kırık, Diz/Eklem Ağrısı</p>
+                        </div>
+                         <div class="brans-card cursor-pointer p-4 border-2 border-gray-200 rounded-lg text-center hover:bg-gray-50" data-brans-id="5" data-brans-adi="Göz Hastalıkları">
+                            <svg class="w-10 h-10 mx-auto text-purple-500 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"></path><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                            <span class="font-semibold">Göz Hastalıkları</span>
+                            <p class="text-xs text-gray-500">Görme Sorunları, Batma</p>
+                        </div>
+                        <div class="brans-card cursor-pointer p-4 border-2 border-gray-200 rounded-lg text-center hover:bg-gray-50" data-brans-id="4" data-brans-adi="Dahiliye">
+                            <svg class="w-10 h-10 mx-auto text-yellow-500 mb-2" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h12A2.25 2.25 0 0020.25 14.25V3M3.75 3H12m0 0V.75M12 3v2.25m0 0A2.25 2.25 0 0114.25 3v0A2.25 2.25 0 0116.5 5.25v0A2.25 2.25 0 0118.75 3v0A2.25 2.25 0 0121 5.25v9.75M12 3H3.75M3.75 3v11.25A2.25 2.25 0 006 16.5h12A2.25 2.25 0 0020.25 14.25V3m-9 12h9M12 15l-1.07-1.07a2.25 2.25 0 00-3.18 0l-1.07 1.07M12 15l-1.07-1.07a2.25 2.25 0 01-3.18 0l-1.07 1.07m0 0a2.25 2.25 0 003.18 0l1.07-1.07m-4.25 0a2.25 2.25 0 003.18 0l1.07-1.07"></path></svg>
+                            <span class="font-semibold">Dahiliye (İç Hst.)</span>
+                            <p class="text-xs text-gray-500">Diğer, Genel Kontrol</p>
+                        </div>
+                    </div>
+                </div>
+                 <div>
+                    <label for="sehir-input" class="block text-xl font-semibold text-gray-700 mb-2">Hangi şehirde randevu arıyorsunuz?</label>
+                    <select id="sehir-input" name="sehir" required class="w-full p-3 bg-white border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-lg">
+                        <option value="" disabled selected>Lütfen bir şehir seçin...</option>
+                        </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-2" class="step animate__animated">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">2. Tıbbi Detaylar</h2>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-xl font-semibold text-gray-700">Daha önce teşhis edilmiş bir hastalığınız oldu mu?</label>
+                    <div class="flex items-center space-x-6 mt-3">
+                        <label class="flex items-center cursor-pointer"><input type="radio" name="gecmisHastalikVarMi" value="hayir" checked class="mr-2 h-5 w-5"> Hayır, olmadı</label>
+                        <label class="flex items-center cursor-pointer"><input type="radio" name="gecmisHastalikVarMi" value="evet" class="mr-2 h-5 w-5"> Evet, oldu</label>
+                    </div>
+                </div>
+                
+                <div id="gecmis-form-alani" class="hidden space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="text-lg font-semibold text-gray-700">Lütfen geçmiş hastalık bilgilerinizi girin:</h3>
+                        <button type="button" id="add-gecmis-btn" class="flex items-center bg-blue-600 text-white px-3 py-1 rounded-lg hover:bg-blue-700 transition">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"></path></svg>
+                            Yeni Ekle
+                        </button>
+                    </div>
+                    <div id="gecmis-listesi" class="space-y-4 max-h-64 overflow-y-auto pr-2">
+                        </div>
+                </div>
+                
+                <hr class="my-6">
+                
+                <div>
+                    <label for="mevcut_ilaclar" class="block text-xl font-semibold text-gray-700">Şu anda düzenli kullandığınız bir ilaç var mı?</label>
+                    <input type="text" id="mevcut_ilaclar" name="mevcut_ilaclar" placeholder="Varsa ilaç adlarını yazınız..." class="w-full p-2 border-2 border-gray-300 rounded mt-2">
+                </div>
+                 <div>
+                    <label for="ana_sikayet_notu" class="block text-xl font-semibold text-gray-700">Doktorunuza iletmek istediğiniz ek notlar</label>
+                    <textarea id="ana_sikayet_notu" name="ana_sikayet_notu" placeholder="Şikayetinizin detayları..." rows="3" class="w-full p-2 border-2 border-gray-300 rounded mt-2"></textarea>
+                </div>
+            </div>
+        </div>
+
+        <div id="step-3" class="step animate__animated">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-6">3. Doktor ve Zaman Seçimi</h2>
+            
+            <div id="randevu-loader" class="text-center py-10 hidden">
+                 <svg class="animate-spin h-8 w-8 text-blue-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                 <p class="mt-2 font-semibold">Uygun doktorlar ve saatler aranıyor...</p>
+            </div>
+            
+            <div id="randevu-secenekleri" class="space-y-6 max-h-[60vh] overflow-y-auto">
+                </div>
+        </div>
+        
+        <div class="mt-10 flex justify-between items-center">
+            <button type="button" id="geri-btn" class="bg-gray-300 text-gray-800 font-bold py-3 px-8 rounded-lg hover:bg-gray-400 transition hidden">Geri</button>
+            <button type="button" id="ileri-btn" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-blue-700 transition ml-auto">İleri</button>
+            <button type="submit" id="gonder-btn" class="bg-green-600 text-white font-bold py-3 px-8 rounded-lg hover:bg-green-700 transition hidden">Randevuyu Onayla</button>
+              
+        </div>
+    </form>
+
+    <template id="gecmis-form-template">
+        <div class="gecmis-formu grid grid-cols-1 md:grid-cols-2 gap-4 border border-gray-300 p-4 rounded-lg bg-gray-50 animate__animated animate__fadeIn">
+             <div><label class="block font-medium text-sm">Hastalık Teşhisi:</label><input type="text" name="teshis_edilen_hastalik" class="w-full p-2 border border-gray-300 rounded mt-1"></div>
+             <div><label class="block font-medium text-sm">Tedavi Gördüğünüz Hastane:</label><input type="text" name="onceki_hastane" class="w-full p-2 border border-gray-300 rounded mt-1"></div>
+             <div><label class="block font-medium text-sm">Tedaviyi Yapan Doktor:</label><input type="text" name="onceki_doktor" class="w-full p-2 border border-gray-300 rounded mt-1"></div>
+             <div><label class="block font-medium text-sm">Kullandığınız İlaç:</label><input type="text" name="kullanilan_ilac" class="w-full p-2 border border-gray-300 rounded mt-1"></div>
+             <div class="col-span-1 md:col-span-2"><label class="block font-medium text-sm">İlacı Ne Kadar Süre Kullandınız?</label><input type="text" name="ilac_kullanim_suresi" class="w-full p-2 border border-gray-300 rounded mt-1"></div>
+             <button type="button" class="remove-gecmis-btn text-red-600 hover:text-red-800 font-semibold justify-self-end col-span-1 md:col-span-2">Bu Kaydı Sil</button>
+        </div>
+    </template>
+
+
+    <script>
+        // BU BÖLÜMDE HİÇBİR DEĞİŞİKLİK YAPILMADI
+        // (JavaScript kodu zaten doğruydu, sorun HTML etiketindeydi)
+        document.addEventListener('DOMContentLoaded', () => {
+            const hastaBilgisi = JSON.parse(localStorage.getItem('hastaBilgisi'));
+            
+            // --- 1. GİRİŞ KONTROLÜ (SİZİN ESKİ KODUNUZLA AYNI) ---
+            if (!hastaBilgisi) {
+                alert('Bu sayfayı görüntülemek için lütfen giriş yapınız.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // --- 2. STATE (DURUM) YÖNETİMİ ---
+            const randevuData = {
+                bransId: null, bransAdi: null, sehir: null, tibbiGecmis: [],
+                mevcut_ilaclar: null, notlar: null, doktorId: null, randevuTarihi: null,
+                secilenDoktorAdi: null, secilenHastaneAdi: null, secilenTarihStr: null
+            };
+
+            // --- 3. FORM ELEMANLARI ---
+            
+            let currentStep = 1;
+            const adimlar = [document.getElementById('step-1'), document.getElementById('step-2'), document.getElementById('step-3')];
+            const indicators = [document.getElementById('step-indicator-1'), document.getElementById('step-indicator-2'), document.getElementById('step-indicator-3')];
+            const geriBtn = document.getElementById('geri-btn');
+            const ileriBtn = document.getElementById('ileri-btn');
+            const gonderBtn = document.getElementById('gonder-btn');
+            
+            // --- 4. NAVİGASYON FONKSİYONU ---
+            function showStep(stepNumber) {
+                adimlar.forEach((step, index) => {
+                    if (index + 1 === stepNumber) {
+                        step.classList.add('active');
+                        if (step.classList.contains('animate__fadeOutLeft')) {
+                            step.classList.remove('animate__fadeOutLeft');
+                            step.classList.add('animate__fadeInRight');
+                        } else {
+                            step.classList.add('animate__fadeInRight');
+                        }
+                    } else if (step.classList.contains('active')) {
+                        step.classList.remove('animate__fadeInRight');
+                        step.classList.add('animate__fadeOutLeft');
+                        setTimeout(() => step.classList.remove('active'), 500); 
+                    }
+                });
+                
+                indicators.forEach((ind, index) => {
+                    const span = ind.querySelector('span'); const text = span.querySelector('span');
+                    if (index + 1 < stepNumber) { 
+                        span.classList.remove('bg-gray-100'); span.classList.add('bg-green-100');
+                        text.innerHTML = '&#10003;'; text.classList.remove('text-gray-500'); text.classList.add('text-green-600');
+                        ind.classList.add('text-green-600');
+                    } else if (index + 1 === stepNumber) { 
+                        span.classList.remove('bg-gray-100'); span.classList.add('bg-blue-100');
+                        text.innerHTML = stepNumber; text.classList.remove('text-gray-500'); text.classList.add('text-blue-600');
+                        ind.classList.add('text-blue-600');
+                    } else { 
+                        span.classList.add('bg-gray-100'); span.classList.remove('bg-blue-100'); span.classList.remove('bg-green-100');
+                        text.innerHTML = index + 1; text.classList.add('text-gray-500'); text.classList.remove('text-blue-600'); text.classList.remove('text-green-600');
+                        ind.classList.remove('text-blue-600'); ind.classList.remove('text-green-600');
+                    }
+                });
+                
+                geriBtn.classList.toggle('hidden', stepNumber === 1);
+                ileriBtn.classList.toggle('hidden', stepNumber === adimlar.length);
+                gonderBtn.classList.toggle('hidden', stepNumber !== adimlar.length);
+                currentStep = stepNumber;
+            }
+
+            // --- 5. ADIM 1 MANTIĞI (BRANŞ & ŞEHİR) ---
+            const turkiyeSehirleri = ["Adana","Adıyaman","Afyonkarahisar","Ağrı","Amasya","Ankara","Antalya","Artvin","Aydın","Balıkesir","Bilecik","Bingöl","Bitlis","Bolu","Burdur","Bursa","Çanakkale","Çankırı","Çorum","Denizli","Diyarbakır","Edirne","Elazığ","Erzincan","Erzurum","Eskişehir","Gaziantep","Giresun","Gümüşhane","Hakkâri","Hatay","Isparta","Mersin","İstanbul","İzmir","Kars","Kastamonu","Kayseri","Kırklareli","Kırşehir","Kocaeli","Konya","Kütahya","Malatya","Manisa","Kahramanmaraş","Mardin","Muğla","Muş","Nevşehir","Niğde","Ordu","Rize","Sakarya","Samsun","Siirt","Sinop","Sivas","Tekirdağ","Tokat","Trabzon","Tunceli","Şanlıurfa","Uşak","Van","Yozgat","Zonguldak","Aksaray","Bayburt","Karaman","Kırıkkale","Batman","Şırnak","Bartın","Ardahan","Iğdır","Yalova","Karabük","Kilis","Osmaniye","Düzce"];
+            const sehirSelect = document.getElementById('sehir-input');
+            turkiyeSehirleri.forEach(sehir => sehirSelect.innerHTML += `<option value="${sehir}">${sehir}</option>`);
+            
+            sehirSelect.addEventListener('change', (e) => randevuData.sehir = e.target.value);
+            
+            document.querySelectorAll('.brans-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.brans-card').forEach(c => c.classList.remove('active'));
+                    card.classList.add('active');
+                    randevuData.bransId = card.dataset.bransId;
+                    randevuData.bransAdi = card.dataset.bransAdi;
+                });
+            });
+            
+
+            // --- 6. ADIM 2 MANTIĞI (TIBBİ GEÇMİŞ) ---
+            const gecmisFormAlani = document.getElementById('gecmis-form-alani');
+            const gecmisListesi = document.getElementById('gecmis-listesi');
+            const gecmisTemplate = document.getElementById('gecmis-form-template');
+
+            document.querySelectorAll('input[name="gecmisHastalikVarMi"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'evet') {
+                        gecmisFormAlani.classList.remove('hidden');
+                        if (gecmisListesi.children.length === 0) { addGecmisForm(); }
+                    } else {
+                        gecmisFormAlani.classList.add('hidden');
+                    }
+                });
+            });
+
+            function addGecmisForm() {
+                const newForm = gecmisTemplate.content.cloneNode(true);
+                newForm.querySelector('.remove-gecmis-btn').addEventListener('click', (e) => {
+                    e.target.closest('.gecmis-formu').classList.add('animate__fadeOut');
+                    setTimeout(() => e.target.closest('.gecmis-formu').remove(), 400);
+                });
+                gecmisListesi.appendChild(newForm);
+            }
+            document.getElementById('add-gecmis-btn').addEventListener('click', addGecmisForm);
+
+            // --- 7. ADIM 3 MANTIĞI (DOKTOR GETİRME) ---
+            const randevuLoader = document.getElementById('randevu-loader');
+            const randevuSecenekleri = document.getElementById('randevu-secenekleri');
+
+            async function fetchDoktorlar() {
+                randevuData.doktorId = null; randevuData.randevuTarihi = null;
+                randevuData.secilenDoktorAdi = null; randevuData.secilenHastaneAdi = null;
+                randevuData.secilenTarihStr = null;
+                randevuSecenekleri.innerHTML = '';
+                randevuLoader.classList.remove('hidden');
+                
+                try {
+                    const response = await fetch(`http://localhost:5000/uygun-doktorlari-bul?sehir=${randevuData.sehir}&bransId=${randevuData.bransId}`);
+                    if (!response.ok) throw new Error('Sunucu hatası');
+                    const doktorlar = await response.json();
+                    
+                    randevuLoader.classList.add('hidden');
+                    if (doktorlar.length === 0) {
+                        randevuSecenekleri.innerHTML = `<p class="text-center text-lg text-red-500">Maalesef, "<span class="font-semibold">${randevuData.sehir}</span>" şehrinde "<span class="font-semibold">${randevuData.bransAdi}</span>" bölümü için uygun doktor bulunamadı.</p>`;
+                        return;
+                    }
+                    renderDoktorlar(doktorlar);
+                } catch (error) {
+                    randevuLoader.classList.add('hidden');
+                    randevuSecenekleri.innerHTML = `<p class="text-center text-lg text-red-500">Doktorlar getirilirken bir hata oluştu: ${error.message}</p>`;
+                    console.error("Doktor fetch hatası:", error); 
+                }
+            }
+
+            function renderDoktorlar(doktorlar) {
+                doktorlar.forEach(doktor => {
+                    let tarihHtml = '';
+                    doktor.tarih_bilgisi.forEach(gun => {
+                        let saatlerHtml = gun.saatler.map(saat => 
+                            `<button type="button" class="time-slot border border-gray-300 rounded-md px-3 py-1.5 text-sm font-medium hover:bg-gray-100" data-doktor-id="${doktor.doktor_id}" data-hastane-adi="${doktor.hastane_adi}" data-doktor-adi="Dr. ${doktor.isim} ${doktor.soyisim}" data-tarih-iso="${saat.tarihISO}" data-tarih-str="${gun.gun} - ${saat.saat}">
+                                ${saat.saat}
+                            </button>`
+                        ).join('');
+                        
+                        tarihHtml += `
+                            <div class="mt-2">
+                                <p class="text-sm font-semibold text-gray-600">${gun.gun}</p>
+                                <div class="flex flex-wrap gap-2 mt-1">${saatlerHtml}</div>
+                            </div>
+                        `;
+                    });
+
+                    randevuSecenekleri.innerHTML += `
+                        <div class="border border-gray-200 rounded-lg overflow-hidden shadow-sm">
+                            <div class="p-4 bg-gray-50 border-b">
+                                <h3 class="text-xl font-bold text-blue-700">Dr. ${doktor.isim} ${doktor.soyisim}</h3>
+                                <p class="text-gray-600">${doktor.hastane_adi}</p>
+                            </div>
+                            <div class="p-4">${tarihHtml}</div>
+                        </div>
+                    `;
+                });
+                
+                document.querySelectorAll('.time-slot').forEach(button => {
+                    button.addEventListener('click', (e) => {
+                        document.querySelectorAll('.time-slot').forEach(btn => btn.classList.remove('active'));
+                        e.target.classList.add('active');
+                        randevuData.doktorId = e.target.dataset.doktorId;
+                        randevuData.randevuTarihi = e.target.dataset.tarihIso;
+                        randevuData.secilenDoktorAdi = e.target.dataset.doktorAdi;
+                        randevuData.secilenHastaneAdi = e.target.dataset.hastaneAdi;
+                        randevuData.secilenTarihStr = e.target.dataset.tarihStr;
+                        console.log("Randevu seçildi:", randevuData.doktorId, randevuData.randevuTarihi); // Hata ayıklama
+                    });
+                    
+                });
+                
+            }
+            geriBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
+                }
+            });
+            
+
+            // --- 8. NAVİGASYON TIKLAMALARI ---
+            ileriBtn.addEventListener('click', () => {
+                if (currentStep === 1) {
+                    if (!randevuData.bransId || !randevuData.sehir) {
+                        alert('Lütfen bir branş ve şehir seçin.'); return;
+                    }
+                    showStep(2);
+                } else if (currentStep === 2) {
+                    showStep(3);
+                    fetchDoktorlar(); 
+                }
+            });
+            geriBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
+                }
+            });
+
+            // --- 9. FORM GÖNDERME (SUBMIT) ---
+            document.getElementById('randevuForm').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                console.log("Randevu Onayla butonuna tıklandı."); // 1. Tıklama algılandı mı?
+
+                // --- ID Kontrolü (Sizin eski koddaki gibi) ---
+                const HASTA_ID = hastaBilgisi.id || hastaBilgisi.hastaId || hastaBilgisi.HastaID || hastaBilgisi.hasta_id || hastaBilgisi.ID;
+                
+                if (!HASTA_ID) {
+                    console.error("HATA: HASTA_ID bulunamadı.", hastaBilgisi);
+                    alert('Kullanıcı kimliğiniz doğrulanamadı. Lütfen tekrar giriş yapın.');
+                    localStorage.removeItem('hastaBilgisi');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                console.log("Hasta ID bulundu:", HASTA_ID); // 2. ID bulundu mu?
+
+                // --- Seçim Kontrolü ---
+                if (!randevuData.doktorId || !randevuData.randevuTarihi) {
+                    console.error("HATA: Doktor veya Tarih seçilmemiş.");
+                    alert('Lütfen bir doktor ve randevu saati seçin.'); 
+                    return;
+                }
+                console.log("Doktor ID ve Tarih seçilmiş:", randevuData.doktorId, randevuData.randevuTarihi); // 3. Seçimler tamam mı?
+
+                // --- Veri Toplama ---
+                randevuData.mevcut_ilaclar = document.getElementById('mevcut_ilaclar').value;
+                const anaSikayet = document.getElementById('ana_sikayet_notu').value;
+                randevuData.notlar = `Ana Şikayet: ${randevuData.bransAdi}. \nDetay: ${anaSikayet || 'Belirtilmedi'}. \nMevcut İlaçlar: ${randevuData.mevcut_ilaclar || 'Yok'}.`;
+                randevuData.tibbiGecmis = [];
+                document.querySelectorAll('.gecmis-formu').forEach(form => {
+                    const teshis = form.querySelector('[name="teshis_edilen_hastalik"]').value;
+                    if (teshis) { 
+                        randevuData.tibbiGecmis.push({
+                            teshis_edilen_hastalik: teshis,
+                            onceki_hastane: form.querySelector('[name="onceki_hastane"]').value,
+                            onceki_doktor: form.querySelector('[name="onceki_doktor"]').value,
+                            kullanilan_ilac: form.querySelector('[name="kullanilan_ilac"]').value,
+                            ilac_kullanim_suresi: form.querySelector('[name="ilac_kullanim_suresi"]').value
+                        });
+                    }
+                });
+                
+                console.log("Sunucuya gönderilmek üzere hazırlanan veri (payload):"); // 4. Gönderilecek veri hazır mı?
+                
+                try {
+                    gonderBtn.disabled = true; gonderBtn.innerText = 'İşleniyor...';
+                    
+                    const payload = { ...randevuData };
+                    payload.hasta_id = HASTA_ID; 
+                    delete payload.bransAdi; delete payload.sehir;
+                    delete payload.secilenDoktorAdi; delete payload.secilenHastaneAdi;
+                    delete payload.secilenTarihStr;
+
+                    console.log(payload); // Payload'ı konsola yazdır
+
+                    // --- Fetch (Gönderme) ---
+                    console.log("Fetch isteği http://localhost:5000/randevu-olustur adresine gönderiliyor...");
+                    const response = await fetch('http://localhost:5000/randevu-olustur', { 
+                        method: 'POST', 
+                        headers: { 'Content-Type': 'application/json' }, 
+                        body: JSON.stringify(payload) 
+                    });
+                    
+                    console.log("Sunucudan yanıt alındı:", response.status);
+                    const result = await response.json();
+                    
+                    if (response.ok) {
+                        console.log("Randevu BAŞARILI:", result);
+                        const detayAlani = document.getElementById('randevu-detaylari');
+                        detayAlani.innerHTML = `
+                            <p><strong>Hastane:</strong> ${result.randevu.hastane}</p>
+                            <p><strong>Doktor:</strong> ${result.randevu.doktor}</p>
+                            <p><strong>Tarih:</strong> ${result.randevu.tarih}</p>
+                        `;
+                        document.getElementById('basari-mesaji-alani').classList.remove('hidden');
+                    } else { 
+                        console.error("Sunucu Hata Döndürdü:", result);
+                        alert(`Hata: ${result.mesaj}`); 
+                        gonderBtn.disabled = false; gonderBtn.innerText = 'Randevuyu Onayla'; 
+                    }
+                } catch (error) { 
+                    console.error("Fetch sırasında bir HATA oluştu:", error);
+                    alert('Sunucuya bağlanırken bir hata oluştu: ' + error.message); 
+                    gonderBtn.disabled = false; gonderBtn.innerText = 'Randevuyu Onayla'; 
+                }
+            });
+            
+
+            // Sayfa yüklendiğinde ilk adımı başlat
+            showStep(1);
+            
+        });
+    </script>
+</body>
+</html>

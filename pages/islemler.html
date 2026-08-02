@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resepsiyon Paneli - İşlemler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .active-link { background-color: #6d28d9; color: white; font-weight: 600; }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+    <div class="flex min-h-screen">
+        <aside class="w-72 bg-[#1e293b] text-gray-300 flex flex-col p-6 shadow-2xl">
+            <div class="mb-10 text-center border-b border-gray-700 pb-6">
+                <h1 class="text-2xl font-bold text-white tracking-tight">Reception Paneli</h1>
+                <p class="text-xs mt-2 text-purple-400 uppercase font-semibold">Görevli</p>
+                <p id="sidebar-user-name" class="text-white font-bold mt-2 text-lg"></p>
+            </div>
+            <nav class="flex-grow">
+                <ul class="space-y-3">
+                    <li><a href="reception_panel.html" class="flex items-center p-3 rounded-xl hover:bg-gray-700 transition-all">Profil Bilgileri</a></li>
+                    <li><a href="hrandevu_yonetimi.html" class="flex items-center p-3 rounded-xl hover:bg-gray-700 transition-all">Randevu Yönetimi</a></li>
+                    <li><a href="islemler.html" class="active-link flex items-center p-3 rounded-xl transition-all shadow-lg shadow-purple-900/20">İşlemler</a></li>
+                    <li><a href="#" class="flex items-center p-3 rounded-xl hover:bg-gray-700 transition-all">Hasta Kayıt</a></li>
+                </ul>
+            </nav>
+            <div class="mt-auto pt-6 border-t border-gray-700">
+                <button onclick="cikisYap()" class="w-full flex items-center justify-center p-3 rounded-xl bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white transition-all font-bold">
+                    Çıkış Yap
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-10 overflow-y-auto">
+            <header class="mb-10 flex justify-between items-center">
+                <h2 id="hastane-basligi" class="text-3xl font-extrabold text-gray-800 uppercase tracking-tighter"></h2>
+                <div class="bg-white px-4 py-2 rounded-full shadow-sm flex items-center border border-gray-200">
+                    <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                    <span class="text-sm font-bold text-purple-600">Aktif Bekleme Listesi</span>
+                </div>
+            </header>
+
+            <div class="bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-200">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-50 border-b border-gray-200 text-xs uppercase text-gray-400 font-bold">
+                        <tr>
+                            <th class="px-6 py-4">Hasta Bilgisi</th>
+                            <th class="px-6 py-4">Doktor</th>
+                            <th class="px-6 py-4 text-center">Giriş Saati</th>
+                            <th class="px-6 py-4 text-right">Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody id="islem-tablo-body" class="divide-y divide-gray-100 text-sm">
+                        <tr><td colspan="4" class="p-10 text-center text-gray-400">Veriler yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        window.onload = async () => {
+            // LocalStorage'dan bilgileri al
+            const hastaneId = localStorage.getItem('hastaneId');
+            const hastaneAdi = localStorage.getItem('hastaneAdi');
+            const userName = localStorage.getItem('userName');
+
+            // Başlıkları doldur
+            document.getElementById('sidebar-user-name').textContent = userName || "Görevli";
+            document.getElementById('hastane-basligi').textContent = hastaneAdi || "Hastane Paneli";
+
+            if (!hastaneId) {
+                alert("Oturum bilgisi bulunamadı, lütfen tekrar giriş yapın.");
+                window.location.href = 'reception_giris.html';
+                return;
+            }
+
+            await loadActivePatients(hastaneId);
+        };
+
+        async function loadActivePatients(hastaneId) {
+            try {
+                // Tüm randevuları çekiyoruz
+                const response = await fetch(`http://localhost:5000/reception/hastane-randevulari/${hastaneId}`);
+                const data = await response.json();
+                
+                // SADECE randevu_onay sütunu 'Aktif' olanları filtrele
+                const aktifHastalar = data.filter(r => r.randevu_onay === 'Aktif');
+                
+                renderTable(aktifHastalar);
+            } catch (error) {
+                console.error("Veri çekme hatası:", error);
+                document.getElementById('islem-tablo-body').innerHTML = `<tr><td colspan="4" class="p-10 text-center text-red-500">Sunucu bağlantı hatası!</td></tr>`;
+            }
+        }
+
+        function renderTable(patients) {
+            const body = document.getElementById('islem-tablo-body');
+            
+            if (patients.length === 0) {
+                body.innerHTML = `<tr><td colspan="4" class="p-10 text-center text-gray-400 font-medium">Şu an bekleme listesinde aktif hasta bulunmuyor.</td></tr>`;
+                return;
+            }
+
+            body.innerHTML = patients.map(p => `
+                <tr class="hover:bg-purple-50/50 transition-colors group">
+                    <td class="px-6 py-4">
+                        <div class="font-bold text-gray-900">${p.hastaAdSoyad}</div>
+                        <div class="text-[10px] text-gray-400 font-bold uppercase tracking-tight">TC: ${p.TcKimlikNo}</div>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-gray-600 font-medium">Dr. ${p.doktorAdSoyad}</span>
+                    </td>
+                    <td class="px-6 py-4 text-center">
+                        <span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-lg font-bold text-xs">
+                            ${new Date(p.randevu_tarihi).toLocaleTimeString('tr-TR', {hour: '2-digit', minute:'2-digit'})}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4 text-right">
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-extrabold uppercase bg-green-100 text-green-700">
+                            <span class="w-1.5 h-1.5 bg-green-500 rounded-full mr-1.5 animate-pulse"></span>
+                            Doktor Bekliyor
+                        </span>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function cikisYap() {
+            if (confirm('Çıkış yapmak istediğinize emin misiniz?')) {
+                localStorage.clear();
+                window.location.href = 'reception_giris.html';
+            }
+        }
+    </script>
+</body>
+</html>

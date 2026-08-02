@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Yüz Analizi | Görsel Ön Değerlendirme</title>
+
+  <!-- Modern font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card: rgba(255,255,255,.08);
+      --card2: rgba(255,255,255,.06);
+      --stroke: rgba(255,255,255,.12);
+      --text:#eaf0ff;
+      --muted: rgba(234,240,255,.72);
+      --muted2: rgba(234,240,255,.55);
+      --blue:#3b82f6;
+      --blue2:#60a5fa;
+      --green:#22c55e;
+      --yellow:#facc15;
+      --red:#ef4444;
+      --shadow: 0 25px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 15% -10%, rgba(59,130,246,.55), transparent 60%),
+        radial-gradient(900px 500px at 85% 0%, rgba(34,197,94,.28), transparent 60%),
+        radial-gradient(900px 600px at 50% 110%, rgba(250,204,21,.22), transparent 65%),
+        var(--bg);
+      min-height:100vh;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    .wrap{ max-width: 1180px; margin: 0 auto; padding: 26px 18px 60px; }
+
+    /* Header */
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between;
+      gap:12px;
+      margin-bottom: 18px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:12px;
+    }
+    .logo{
+      width:42px; height:42px; border-radius: 14px;
+      background: linear-gradient(135deg, rgba(59,130,246,.95), rgba(34,197,94,.70));
+      box-shadow: 0 14px 40px rgba(59,130,246,.25);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    .titleBox h1{
+      margin:0;
+      font-size: 22px;
+      letter-spacing:-.02em;
+    }
+    .titleBox p{ margin:3px 0 0; color:var(--muted); font-size:13px; }
+
+    .actions{
+      display:flex; align-items:center; gap:10px;
+    }
+
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.08);
+      color:var(--text);
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      font-weight:600;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease, opacity .2s ease;
+      user-select:none;
+    }
+    .btn:hover{ background: rgba(255,255,255,.12); }
+    .btn:active{ transform: translateY(1px); }
+    .btn:disabled{ opacity:.55; cursor:not-allowed; }
+    .btnPrimary{
+      background: linear-gradient(135deg, rgba(59,130,246,.95), rgba(96,165,250,.70));
+      border-color: rgba(255,255,255,.22);
+      box-shadow: 0 18px 45px rgba(59,130,246,.22);
+    }
+    .btnPrimary:hover{ background: linear-gradient(135deg, rgba(59,130,246,1), rgba(96,165,250,.85)); }
+    .btnGhost{
+      background: rgba(255,255,255,.06);
+    }
+
+    .chip{
+      font-size:12px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+    }
+
+    /* Layout */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.05fr .95fr;
+      gap: 16px;
+      align-items:start;
+    }
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.06));
+      border: 1px solid var(--stroke);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .cardHeader{
+      padding: 16px 16px 12px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.04);
+    }
+    .cardHeader h2{
+      margin:0;
+      font-size: 16px;
+      letter-spacing:-.01em;
+    }
+    .cardHeader p{
+      margin:6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.35;
+    }
+    .cardBody{
+      padding: 16px;
+    }
+
+    /* Camera */
+    .videoWrap{
+      position:relative;
+      border-radius: 16px;
+      overflow:hidden;
+      background:#000;
+      border: 1px solid rgba(255,255,255,.10);
+    }
+    video{
+      width:100%;
+      display:block;
+      aspect-ratio: 16/10;
+      object-fit: cover;
+      filter: saturate(1.05) contrast(1.02);
+    }
+    .overlayGuide{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .guideBox{
+      width: 64%;
+      height: 66%;
+      border: 2px dashed rgba(255,255,255,.55);
+      border-radius: 22px;
+      box-shadow: inset 0 0 0 999px rgba(0,0,0,.10);
+    }
+    .overlayText{
+      position:absolute;
+      left: 14px;
+      bottom: 12px;
+      right: 14px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      color: rgba(255,255,255,.88);
+      text-shadow: 0 6px 18px rgba(0,0,0,.55);
+      font-size: 13px;
+    }
+    .overlayText .hint{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      color: rgba(255,255,255,.82);
+    }
+    .dot{
+      width:10px; height:10px; border-radius:99px;
+      background: rgba(255,255,255,.45);
+      border:1px solid rgba(255,255,255,.25);
+    }
+    .dot.green{ background: rgba(34,197,94,.95); }
+    .dot.yellow{ background: rgba(250,204,21,.95); }
+    .dot.red{ background: rgba(239,68,68,.95); }
+
+    /* Steps */
+    .steps{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .step{
+      padding: 12px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+    }
+    .stepNum{
+      min-width: 30px; height: 30px;
+      border-radius: 10px;
+      display:grid; place-items:center;
+      font-weight:800;
+      background: rgba(59,130,246,.18);
+      border: 1px solid rgba(59,130,246,.35);
+      color: rgba(234,240,255,.95);
+    }
+    .step b{ display:block; margin-bottom:4px; }
+    .step small{ color: var(--muted2); line-height: 1.35; }
+
+    /* Report */
+    .statusLine{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      padding: 12px 14px;
+      border-radius: 14px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      margin-bottom: 12px;
+    }
+    .statusPill{
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+    }
+    .statusPill.good{ color: rgba(34,197,94,.95); border-color: rgba(34,197,94,.25); background: rgba(34,197,94,.08); }
+    .statusPill.bad{ color: rgba(239,68,68,.95); border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.08); }
+    .statusPill.warn{ color: rgba(250,204,21,.95); border-color: rgba(250,204,21,.25); background: rgba(250,204,21,.08); }
+
+    .cards{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .finding{
+      border-radius: 16px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      padding: 12px 12px;
+    }
+    .findingTop{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      margin-bottom: 8px;
+    }
+    .findingTitle{
+      font-weight: 700;
+      letter-spacing:-.01em;
+      line-height: 1.2;
+    }
+    .meta{
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.35;
+      margin-top: 6px;
+    }
+
+    .level{
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+    .level .dot{ width: 9px; height: 9px; }
+    .level.low { color: rgba(34,197,94,.95); border-color: rgba(34,197,94,.25); background: rgba(34,197,94,.07); }
+    .level.mid { color: rgba(250,204,21,.95); border-color: rgba(250,204,21,.25); background: rgba(250,204,21,.07); }
+    .level.high{ color: rgba(239,68,68,.95); border-color: rgba(239,68,68,.25); background: rgba(239,68,68,.07); }
+    .level.na  { color: rgba(234,240,255,.75); border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.06); }
+
+    .advice{
+      margin-top: 8px;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color: rgba(234,240,255,.82);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .footerNote{
+      margin-top: 12px;
+      font-size: 12px;
+      color: var(--muted2);
+      line-height: 1.45;
+      border-top: 1px solid rgba(255,255,255,.10);
+      padding-top: 12px;
+    }
+
+    .smallLink{
+      color: rgba(96,165,250,.95);
+      text-decoration: underline;
+      text-decoration-color: rgba(96,165,250,.35);
+      text-underline-offset: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="brand">
+        <div class="logo"></div>
+        <div class="titleBox">
+          <h1>Yüz Tabanlı Görsel Ön Analiz</h1>
+          <p>30 saniyelik örnekleme ile kalite seçimi yapar, <b>tanı koymadan</b> olası bulguları raporlar.</p>
+        </div>
+      </div>
+
+      <div class="actions">
+        <span class="chip" id="apiChip">Backend: 127.0.0.1:8000</span>
+        <button class="btn btnGhost" id="backBtn" title="Sağlık sayfasına dön">
+          <a href="/saglik.html">← Geri Dön </a>  
+          
+        </button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <!-- Kamera Kartı -->
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <h2>Kamera</h2>
+            <p>
+              Yüzünüzü çerçeveye ortalayın, ışığı dengeli tutun ve 30 sn boyunca mümkün olduğunca sabit kalın.
+            </p>
+          </div>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <button class="btn" id="openCamBtn">Kamerayı Aç</button>
+            <button class="btn btnPrimary" id="runBtn" disabled>30 sn Topla & Analiz Et</button>
+          </div>
+        </div>
+
+        <div class="cardBody">
+          <div class="videoWrap">
+            <video id="video" autoplay playsinline></video>
+
+            <div class="overlayGuide">
+              <div class="guideBox"></div>
+            </div>
+
+            <div class="overlayText">
+              <div class="hint">
+                <span class="dot" id="dotCam"></span><span id="hintCam">Kamera kapalı</span>
+                <span style="opacity:.5">•</span>
+                <span class="dot" id="dotQuality"></span><span id="hintQuality">Kalite kontrol</span>
+              </div>
+              <div id="hintTimer">Hazır</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <div class="stepNum">1</div>
+              <div>
+                <b>Kamerayı aç</b>
+                <small>İzin ver, yüzünü çerçeveye ortala. Arka plan çok parlak olmasın.</small>
+              </div>
+            </div>
+            <div class="step">
+              <div class="stepNum">2</div>
+              <div>
+                <b>30 sn örnekleme</b>
+                <small>Video kaydı yapılmaz; belirli aralıklarla kare alınır ve kaliteye göre seçilir.</small>
+              </div>
+            </div>
+            <div class="step">
+              <div class="stepNum">3</div>
+              <div>
+                <b>Raporu incele</b>
+                <small>Sonuçlar sadece “olası bulgu” içerir. Şikayet varsa hekime danış.</small>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Rapor Kartı -->
+      <div class="card">
+        <div class="cardHeader">
+          <div>
+            <h2>Analiz Sonucu</h2>
+            <p>Seçilen karelerden özet istatistik çıkarılır. (min / med / max)</p>
+          </div>
+          <span class="chip" id="usedFramesChip">Henüz analiz yok</span>
+        </div>
+
+        <div class="cardBody">
+          <div class="statusLine" id="statusLine">
+            <span class="statusPill warn" id="statusPill">Beklemede</span>
+            <span style="color:var(--muted)" id="statusText">Kamerayı açıp analizi başlatabilirsin.</span>
+          </div>
+
+          <div class="cards" id="cards">
+            <!-- Findings buraya gelecek -->
+          </div>
+
+          <div class="footerNote">
+            <b>Gizlilik:</b> Bu sayfa video kaydı yapmaz; kareler analiz için backend’e gönderilir.
+            Lokal kullanım için backend’i çalıştırdığını doğrula:
+            <a class="smallLink" href="http://127.0.0.1:8000/docs" target="_blank" rel="noreferrer">API Docs</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <canvas id="canvas" style="display:none;"></canvas>
+
+  <script>
+    // =========================
+    // Ayarlar
+    // =========================
+    const API_BASE = "http://127.0.0.1:8000";
+    const DURATION_MS = 30_000;
+    const INTERVAL_MS = 500;
+
+    // =========================
+    // DOM
+    // =========================
+    const video = document.getElementById("video");
+    const canvas = document.getElementById("canvas");
+    const openCamBtn = document.getElementById("openCamBtn");
+    const runBtn = document.getElementById("runBtn");
+    const backBtn = document.getElementById("backBtn");
+
+    const dotCam = document.getElementById("dotCam");
+    const dotQuality = document.getElementById("dotQuality");
+    const hintCam = document.getElementById("hintCam");
+    const hintQuality = document.getElementById("hintQuality");
+    const hintTimer = document.getElementById("hintTimer");
+
+    const statusPill = document.getElementById("statusPill");
+    const statusText = document.getElementById("statusText");
+    const cards = document.getElementById("cards");
+    const usedFramesChip = document.getElementById("usedFramesChip");
+
+    // =========================
+    // Navigasyon
+    // =========================
+    backBtn.onclick = () => {
+      // pages/yuz_has.html -> pages/saglik.html (aynı klasörde ise)
+      window.location.href = "saglik.html";
+    };
+
+    // =========================
+    // Helpers
+    // =========================
+    const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+    function setStatus(type, text){
+      statusText.textContent = text;
+      statusPill.className = "statusPill " + (type === "good" ? "good" : type === "bad" ? "bad" : "warn");
+      statusPill.textContent = type === "good" ? "Hazır" : type === "bad" ? "Hata" : "Beklemede";
+    }
+
+    function setDot(dotEl, state){
+      dotEl.className = "dot " + (state === "green" ? "green" : state === "yellow" ? "yellow" : state === "red" ? "red" : "");
+    }
+
+    async function captureFrameBlob(){
+      const w = video.videoWidth, h = video.videoHeight;
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video, 0, 0, w, h);
+      return new Promise(resolve => canvas.toBlob(resolve, "image/jpeg", 0.85));
+    }
+
+    function levelPill(level){
+      if(level === "DUSUK") return `<span class="level low"><span class="dot green"></span>DÜŞÜK</span>`;
+      if(level === "ORTA") return `<span class="level mid"><span class="dot yellow"></span>ORTA</span>`;
+      if(level === "YUKSEK")return `<span class="level high"><span class="dot red"></span>YÜKSEK</span>`;
+      return `<span class="level na"><span class="dot"></span>${level || "BILINMIYOR"}</span>`;
+    }
+
+    function statLine(stats){
+      if(!stats) return "İstatistik yok";
+      const {n, min, median, max} = stats;
+      return `n=${n} | min=${min.toFixed(2)} • med=${median.toFixed(2)} • max=${max.toFixed(2)}`;
+    }
+
+    function renderFindings(data){
+      cards.innerHTML = "";
+
+      if(data.error){
+        setStatus("bad", data.error);
+        usedFramesChip.textContent = `Kullanılan kare: 0/${data.received_frames || 0}`;
+        cards.innerHTML = `
+          <div class="finding">
+            <div class="findingTop">
+              <div class="findingTitle">Analiz yapılamadı</div>
+              ${levelPill("OLCULEMEDI")}
+            </div>
+            <div class="meta">
+              Ipuçları: daha iyi ışık, kameraya yakın dur, yüzü çerçeveye ortala, lensi temizle.
+            </div>
+            <div class="advice">
+              Backend çalışıyor mu? <a class="smallLink" href="${API_BASE}/docs" target="_blank" rel="noreferrer">${API_BASE}/docs</a>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      usedFramesChip.textContent = `Kullanılan kare: ${data.used_frames}/${data.received_frames}`;
+
+      if(!data.findings || !data.findings.length){
+        setStatus("warn", "Sonuç bulunamadı.");
+        cards.innerHTML = `<div class="finding">Rapor verisi gelmedi.</div>`;
+        return;
+      }
+
+      setStatus("good", "Analiz tamamlandı. Sonuçlar aşağıda listelendi.");
+
+      data.findings.forEach(f => {
+        const based = (f.based_on || []).join(", ");
+        cards.insertAdjacentHTML("beforeend", `
+          <div class="finding">
+            <div class="findingTop">
+              <div>
+                <div class="findingTitle">${f.title}</div>
+                <div class="meta"><b>Güven:</b> ${f.confidence || "—"} • <b>Neye göre:</b> ${based || "—"}</div>
+              </div>
+              ${levelPill(f.level)}
+            </div>
+
+            <div class="meta"><b>Özet:</b> ${statLine(f.stats)}</div>
+
+            <div class="advice">
+              <b>Öneri:</b> ${f.advice || "Bu bulgu tanı değildir; devam ederse doktora danışın."}
+            </div>
+          </div>
+        `);
+      });
+    }
+
+    // =========================
+    // Kamera
+    // =========================
+    let stream = null;
+
+    openCamBtn.onclick = async () => {
+      try{
+        stream = await navigator.mediaDevices.getUserMedia({ video: { width: 1280, height: 720 }});
+        video.srcObject = stream;
+
+        runBtn.disabled = false;
+        hintCam.textContent = "Kamera açık";
+        setDot(dotCam, "green");
+        hintQuality.textContent = "Hazır";
+        setDot(dotQuality, "yellow");
+        hintTimer.textContent = "Hazır";
+        setStatus("good", "Kamera açık. Analizi başlatabilirsin.");
+      }catch(e){
+        setDot(dotCam, "red");
+        hintCam.textContent = "Kamera açılamadı";
+        setStatus("bad", "Kamera izni verilmedi veya cihaz bulunamadı.");
+      }
+    };
+
+    // =========================
+    // Analiz
+    // =========================
+    runBtn.onclick = async () => {
+      runBtn.disabled = true;
+      openCamBtn.disabled = true;
+
+      setStatus("warn", "30 saniye boyunca kareler toplanıyor (video kaydı yok).");
+      setDot(dotQuality, "yellow");
+      hintQuality.textContent = "Toplanıyor";
+
+      const frames = [];
+      const start = Date.now();
+
+      while(Date.now() - start < DURATION_MS){
+        const blob = await captureFrameBlob();
+        if(blob) frames.push(blob);
+
+        const remain = Math.max(0, DURATION_MS - (Date.now() - start));
+        hintTimer.textContent = `Kalan: ${(remain/1000).toFixed(1)}s • Kare: ${frames.length}`;
+        await sleep(INTERVAL_MS);
+      }
+
+      setStatus("warn", "Backend'e gönderiliyor ve analiz ediliyor...");
+      hintQuality.textContent = "Analiz";
+
+      const fd = new FormData();
+      frames.forEach((b, i) => fd.append("frames", b, `frame_${i}.jpg`));
+
+      try{
+        const res = await fetch(`${API_BASE}/analyze-frames`, { method:"POST", body: fd });
+        const data = await res.json();
+
+        if(!res.ok){
+          setDot(dotQuality, "red");
+          hintQuality.textContent = "Hata";
+          renderFindings({ error: `HTTP ${res.status}`, received_frames: frames.length });
+          runBtn.disabled = false;
+          openCamBtn.disabled = false;
+          return;
+        }
+
+        setDot(dotQuality, "green");
+        hintQuality.textContent = "Tamam";
+        hintTimer.textContent = "Bitti";
+        renderFindings(data);
+
+      }catch(e){
+        setDot(dotQuality, "red");
+        hintQuality.textContent = "Hata";
+        renderFindings({
+          error: "Backend'e baglanilamadi. Server calisiyor mu?",
+          received_frames: frames.length
+        });
+      }finally{
+        runBtn.disabled = false;
+        openCamBtn.disabled = false;
+      }
+    };
+
+    // ilk durum
+    setDot(dotCam, "");
+    setDot(dotQuality, "");
+    setStatus("warn", "Kamerayı açıp başlayabilirsin.");
+  </script>
+</body>
+</html>

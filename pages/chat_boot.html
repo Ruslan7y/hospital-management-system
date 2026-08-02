@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="tr"> 
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Yapay Zeka Doktor Asistanı - Sağlık Portalı</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+    <script>
+        // Tailwind yapılandırması (Aynı kaldı)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { 'inter': ['Inter', 'sans-serif'] },
+                    colors: {
+                        'blue': { '600': '#005A9C', '700': '#004A8C', '50': '#F0F6FA' },
+                        'cyan': { '500': '#00C1D4', '600': '#00A9BB' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /*
+        * KESİN ÇÖZÜM: Sayfanın tamamının kaymasını engellemek için
+        * BODY'ye overflow: hidden ve 100vh verilir.
+        */
+        body {
+            height: 100vh;
+            overflow: hidden; /* Sayfanın kendisi kaymayacak */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800">
+
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto flex items-center justify-between p-4 px-6">
+            <div class="text-2xl font-bold text-blue-600">
+                <a href="../saglik.html">Sağlık Portalı</a>
+            </div>
+
+            <ul class="hidden md:flex items-center space-x-8 font-semibold text-gray-600">
+                <li><a href="../saglik.html" class="hover:text-blue-600 transition-colors">Ana Sayfa</a></li>
+                <li><a href="../doktorlarimiz .html" class="hover:text-blue-600 transition-colors">Doktorlarımız</a></li>
+                <li><a href="randevuAlma.html" class="hover:text-blue-600 transition-colors">Randevu Al</a></li>
+                <li><a href="chat_boot.html" class="text-blue-600 border-b-2 border-blue-600 pb-1">Doktor AI</a></li>
+                <li><a href="../hizmetlerimiz.html" class="hover:text-blue-600 transition-colors">Hizmetlerimiz</a></li>
+                <li><a href="../iletisim.html" class="hover:text-blue-600 transition-colors">İletişim</a></li>
+            </ul>
+
+            <div id="userArea">
+                <a href="login.html"
+                    class="bg-blue-600 text-white font-bold px-5 py-2.5 rounded-lg hover:bg-blue-700 transition-all duration-300 shadow">
+                    Giriş Yap
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="absolute top-[72px] inset-x-0 bottom-0 flex">
+        
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden sm:flex overflow-y-auto">
+            <div class="p-4 border-b border-gray-200 sticky top-0 bg-white z-10">
+                <button onclick="newChat()"
+                    class="w-full bg-cyan-500 text-white font-semibold py-2 rounded-lg hover:bg-cyan-600 transition-colors flex items-center justify-center shadow-md">
+                    <i class="fas fa-plus mr-2"></i> Yeni Sohbet
+                </button>
+            </div>
+            
+            <div class="p-4 text-xs font-semibold text-gray-500 uppercase">
+                Geçmiş Sohbetler
+            </div>
+
+            <nav id="chat-history" class="flex-1 px-2 space-y-1">
+                <a href="#" class="flex items-center p-2 text-sm text-gray-700 rounded-lg hover:bg-gray-100 transition-colors group truncate" onclick="loadChat(1)">
+                    <i class="fas fa-history mr-3 text-gray-400 group-hover:text-blue-600"></i>
+                    <span class="truncate">Baş Ağrısı Şikayeti</span>
+                </a>
+                <a href="#" class="flex items-center p-2 text-sm text-gray-700 rounded-lg bg-gray-100 transition-colors group truncate" onclick="loadChat(2)">
+                    <i class="fas fa-history mr-3 text-gray-400 group-hover:text-blue-600"></i>
+                    <span class="truncate">Mide Bulantısı ve Ateş</span>
+                </a>
+            </nav>
+        </aside>
+
+        <section class="flex-1 flex flex-col bg-gray-50 overflow-hidden">
+            <div class="p-4 border-b border-gray-200 bg-white shadow-sm flex items-center shrink-0">
+                <h1 class="text-xl font-bold text-blue-600">Yardımcı Doktor AI</h1>
+            </div>
+
+            <div id="chat-output" class="flex-1 overflow-y-auto p-6 space-y-4">
+                <div class="flex justify-start">
+                    <div class="max-w-3xl bg-blue-50 border border-blue-200 p-4 rounded-xl shadow-sm">
+                        <p class="font-semibold text-blue-700 mb-1"><i class="fas fa-stethoscope mr-2"></i> Sağlık Dostu:</p>
+                        <p class="text-gray-700">Merhaba, ben Sağlık Dostu. Bir doktordan kesinlikle **tıbbi tavsiye almadığınızı** unutmayın. Lütfen şikayetinizi ve belirtilerinizi detaylıca anlatın. Size yol göstermek için buradayım.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-white border-t border-gray-200 shadow-lg shrink-0">
+                <div class="flex items-center max-w-4xl mx-auto">
+                    <input type="text" id="user-input" placeholder="Şikayetlerinizi buraya yazın..."
+                        class="flex-1 p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition-all text-gray-700 shadow-inner"
+                        onkeydown="if(event.key === 'Enter') sendMessage()">
+                    
+                    <button id="send-button" onclick="sendMessage()"
+                        class="ml-3 bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md disabled:bg-gray-400" disabled>
+                        <i class="fas fa-paper-plane"></i> Gönder
+                    </button>
+                </div>
+                <p class="text-xs text-center text-gray-500 mt-2">Bu bir yapay zeka asistanıdır. Tıbbi teşhis veya tedavi yerine geçmez.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            document.getElementById('send-button').disabled = false;
+        });
+
+        async function sendMessage() {
+            const userInput = document.getElementById('user-input');
+            const userMessage = userInput.value.trim();
+            const chatOutput = document.getElementById('chat-output');
+            const sendButton = document.getElementById('send-button');
+
+            if (userMessage === "") { return; }
+
+            chatOutput.innerHTML += `
+                <div class="flex justify-end">
+                    <div class="max-w-3xl bg-blue-600 text-white p-4 rounded-xl shadow-md">
+                        <p class="font-semibold mb-1">Siz:</p>
+                        <p>${userMessage}</p>
+                    </div>
+                </div>
+            `;
+            
+            userInput.value = ''; 
+            sendButton.disabled = true;
+            sendButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Yanıt bekleniyor...';
+            chatOutput.scrollTop = chatOutput.scrollHeight;
+
+            try {
+                const response = await fetch('http://127.0.0.1:5000/get_chatbot_response', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: userMessage })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP Hata kodu: ${response.status}`);
+                }
+
+                const botResponse = data.response;
+                
+                chatOutput.innerHTML += `
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl bg-white border border-gray-200 p-4 rounded-xl shadow-sm">
+                            <p class="font-semibold text-blue-700 mb-1"><i class="fas fa-stethoscope mr-2"></i> Sağlık Dostu:</p>
+                            <p class="text-gray-700 whitespace-pre-wrap">${botResponse}</p>
+                        </div>
+                    </div>
+                `;
+
+            } catch (error) {
+                console.error('API İletişim Hatası:', error);
+                chatOutput.innerHTML += `
+                    <div class="flex justify-start">
+                        <div class="max-w-3xl bg-red-100 border border-red-300 p-4 rounded-xl shadow-sm text-red-700">
+                            <p class="font-semibold mb-1"><i class="fas fa-exclamation-triangle mr-2"></i> HATA:</p>
+                            <p>Bot ile iletişim kurulamadı. Sunucu (chatbot_api.py) çalışıyor mu? (Hata: ${error.message})</p>
+                        </div>
+                    </div>
+                `;
+            } finally {
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> Gönder';
+                chatOutput.scrollTop = chatOutput.scrollHeight;
+            }
+        }
+        
+        function newChat() {
+             alert('Yeni Sohbet başlatıldı.');
+             document.getElementById('chat-output').innerHTML = `
+                <div class="flex justify-start">
+                    <div class="max-w-3xl bg-blue-50 border border-blue-200 p-4 rounded-xl shadow-sm">
+                        <p class="font-semibold text-blue-700 mb-1"><i class="fas fa-stethoscope mr-2"></i> Sağlık Dostu:</p>
+                        <p class="text-gray-700">Merhaba, yeni bir sohbete başladık. Şikayetinizi anlatın.</p>
+                    </div>
+                </div>
+            `;
+             document.getElementById('user-input').focus();
+        }
+
+        function loadChat(chatId) {
+            alert('Sohbet ID: ' + chatId + ' yüklenecek.');
+        }
+    </script>
+</body>
+</html>

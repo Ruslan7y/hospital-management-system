@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Oda Ekranı</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style> body { font-family: 'Inter', sans-serif; } </style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen flex items-center justify-center p-6">
+
+  <div class="w-full max-w-4xl">
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-2xl font-bold tracking-wide">ODAYA ÇAĞRI EKRANI</h1>
+      <div class="text-sm text-gray-300">
+        Doktor ID: <span id="doktor-id-text" class="font-bold text-white"></span>
+      </div>
+    </div>
+
+    <div class="bg-gray-900/60 border border-gray-800 rounded-3xl p-10 shadow-2xl">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="w-3 h-3 bg-emerald-500 rounded-full animate-pulse"></span>
+        <p class="text-gray-300 font-semibold">Şu an çağrılan hasta</p>
+      </div>
+
+      <div id="ekran-icerik" class="text-center py-10">
+        <p class="text-gray-400 text-xl">Henüz çağrı yok</p>
+      </div>
+    </div>
+
+    <p class="text-xs text-gray-500 mt-4 text-center">
+      Bu ekran otomatik güncellenir.
+    </p>
+  </div>
+
+<script>
+  const qs = new URLSearchParams(window.location.search);
+  const doktorId = qs.get('doktorId');
+
+  if (!doktorId) {
+    document.getElementById('ekran-icerik').innerHTML = '<p class="text-red-400 text-xl">Doktor ID bulunamadı.</p>';
+  } else {
+    document.getElementById('doktor-id-text').textContent = doktorId;
+    poll();
+    setInterval(poll, 3000); // 3 sn
+  }
+
+  async function poll() {
+    try {
+      const res = await fetch(`http://localhost:5000/doktor/son-cagrilan/${doktorId}`);
+      const data = await res.json();
+
+      const el = document.getElementById('ekran-icerik');
+
+      if (!data) {
+        el.innerHTML = `<p class="text-gray-400 text-2xl">Henüz çağrı yok</p>`;
+        return;
+      }
+
+      el.innerHTML = `
+        <div class="space-y-6">
+          <div class="text-5xl md:text-6xl font-extrabold tracking-tight">
+            ${data.hastaAdSoyad}
+          </div>
+
+          <div class="inline-flex items-center gap-3 px-6 py-3 rounded-2xl bg-indigo-600/20 border border-indigo-500/40">
+            <span class="text-indigo-300 text-lg font-bold">Randevu No:</span>
+            <span class="text-white text-3xl font-extrabold">#${data.randevu_id}</span>
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      console.error(e);
+      document.getElementById('ekran-icerik').innerHTML =
+        `<p class="text-red-400 text-xl">Sunucu bağlantı hatası</p>`;
+    }
+  }
+</script>
+</body>
+</html>

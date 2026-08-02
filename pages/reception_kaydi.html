@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Resepsiyonist Kaydı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-gray-800">Yeni Resepsiyonist</h2>
+            <button onclick="window.location.href='yonetici_paneli.html'" class="text-sm text-purple-600 hover:underline">← Geri Dön</button>
+        </div>
+        
+        <form id="receptionForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700">İsim</label>
+                <input type="text" id="isim" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Soyisim</label>
+                <input type="text" id="soyisim" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">E-posta</label>
+                <input type="email" id="email" required class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-purple-500">
+            </div>
+            <button type="submit" class="w-full bg-purple-600 text-white p-3 rounded-lg font-bold hover:bg-purple-700 transition">Kaydı Tamamla</button>
+        </form>
+        <p id="mesaj" class="mt-4 text-center text-sm font-medium"></p>
+    </div>
+
+    <script>
+        document.getElementById('receptionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const mesajEl = document.getElementById('mesaj');
+            mesajEl.textContent = "Kaydediliyor...";
+
+            // LocalStorage'dan yönetici ID'sini al (Sistemdeki gerçek hastane_id'yi bulmak için)
+            const yoneticiId = localStorage.getItem('yoneticiId');
+
+            const veri = {
+                isim: document.getElementById('isim').value,
+                soyisim: document.getElementById('soyisim').value,
+                email: document.getElementById('email').value,
+                hastane_id: 1 // Test aşamasında 1, normalde yöneticinin hastanesine göre dinamik olmalı
+            };
+
+            try {
+                const response = await fetch('http://localhost:5000/yonetici/resepsiyon-ekle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(veri)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    try {
+                        const errorJson = JSON.parse(errorText);
+                        mesajEl.textContent = errorJson.mesaj;
+                    } catch(e) {
+                        mesajEl.textContent = "Hata: Sunucu bu isteği bulamadı veya hata verdi.";
+                    }
+                    mesajEl.className = "mt-4 text-center text-sm font-medium text-red-600";
+                    return;
+                }
+
+                const sonuc = await response.json();
+                mesajEl.textContent = sonuc.mesaj + " Panele yönlendiriliyorsunuz...";
+                mesajEl.className = "mt-4 text-center text-sm font-medium text-green-600";
+                document.getElementById('receptionForm').reset();
+
+                // OTOMATİK YÖNLENDİRME: 2 saniye sonra ana panele gönderir
+                setTimeout(() => {
+                    window.location.href = 'yonetici_paneli.html';
+                }, 2000);
+
+            } catch (error) {
+                mesajEl.textContent = "Sunucuya bağlanılamadı.";
+                mesajEl.className = "mt-4 text-center text-sm font-medium text-red-600";
+            }
+        });
+    </script>
+</body>
+</html>

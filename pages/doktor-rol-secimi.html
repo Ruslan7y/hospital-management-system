@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personel Rolü Seçimi - Sağlık Portalı</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="flex items-center justify-center min-h-screen">
+    <div class="container mx-auto max-w-4xl p-4">
+        <div class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800">Personel Rolünü Belirtin</h1>
+            <p class="text-gray-600 mt-3 text-lg">Lütfen aşağıdaki rollerden size uygun olanı seçiniz.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card">
+                <div class="card-icon">
+                     <svg class="w-20 h-20 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 class="card-title">Doktor Girişi</h2>
+                <p class="card-description">Hasta kayıtlarınıza erişin, randevu takviminizi yönetin ve profesyonel araçları kullanın.</p>
+                <a href="dokdor_giris.html" class="card-button bg-teal-600 hover:bg-teal-700">Doktor Olarak Giriş Yap</a>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">
+                    <svg class="w-20 h-20 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                </div>
+                <h2 class="card-title">Reception Girişi</h2>
+                <p class="card-description">Hastane genel raporlarını görüntüleyin, personel yönetimini yapın ve idari panellere erişin.</p>
+                <a href="reception_giris.html" class="card-button bg-red-600 hover:bg-red-700">PUMA Olarak Giriş Yap</a>
+            </div>
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="login.html" class="text-gray-600 hover:text-blue-600 transition-colors">
+                &larr; Geri Dön
+            </a>
+        </div>
+    </div>
+</body>
+</html>
