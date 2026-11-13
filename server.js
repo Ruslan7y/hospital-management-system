@@ -1,4 +1,6 @@
     // server.js (Tüm görünmez karakterler temizlendi)
+// Gizli bilgiler (veritabanı şifresi, SMTP) .env dosyasından okunur. Örnek: .env.example
+require('dotenv').config();
 // server.js dosyasının en üstüne ekleyin
 const fs = require("fs");
 const path = require("path");
@@ -27,10 +29,10 @@ const upload = multer({
 
     // --- VERİTABANI BAĞLANTI AYARLARI ---
     const ayarlar = {
-        server: 'localhost',
-        database: 'HastaneDB_Gecici',
-        user: 'hastane_user',
-        password: 'HastaneSifre123',
+        server: process.env.DB_SERVER || 'localhost',
+        database: process.env.DB_DATABASE || 'HastaneDB_Gecici',
+        user: process.env.DB_USER,
+        password: process.env.DB_PASSWORD,
         options: {
             trustServerCertificate: true,
             encrypt: false
@@ -64,12 +66,12 @@ async function getPool() {
 
     // --- E-POSTA (Brevo) AYARLARI ---
     const transporter = nodemailer.createTransport({
-        host: 'smtp-relay.brevo.com',
-        port: 587,
+        host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+        port: Number(process.env.SMTP_PORT) || 587,
         secure: false,
         auth: {
-            user: '9964a5001@smtp-brevo.com',
-            pass: 'w32hMkQArbVTyDHP'
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS
         }
     });
 

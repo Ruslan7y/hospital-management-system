@@ -1,11 +1,12 @@
 // veritabani_test.js
+require('dotenv').config();
 const sql = require('mssql');
 
 const ayarlar = {
-    server: 'localhost',
-    database: 'HastaneDB_Gecici',
-    user: 'hastane_user',          
-    password: 'HastaneSifre123',  
+    server: process.env.DB_SERVER || 'localhost',
+    database: process.env.DB_DATABASE || 'HastaneDB_Gecici',
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
     options: {
         trustServerCertificate: true,
         encrypt: false 
